@@ -12,7 +12,7 @@ import {
 import { Mouse, Keyboard } from 'guacamole-js';
 import { BehaviorSubject } from 'rxjs';
 import * as screenfull from 'screenfull';
-import { RemoteDesktopClient } from '../services';
+import { RemoteDesktopService } from '../services';
 
 @Component({
     selector: 'ngx-remote-desktop-display',
@@ -31,7 +31,7 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
      * Remote desktop client
      */
     @Input()
-    private client: RemoteDesktopClient;
+    private client: RemoteDesktopService;
 
     @ViewChild('display')
     private display: ElementRef;

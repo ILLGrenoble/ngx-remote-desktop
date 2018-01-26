@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
-import { RemoteDesktopClient } from '../../../src/services';
+import { RemoteDesktopService } from '../../../src/services';
 
 @Component({
     selector: 'app-clipboard-modal',
@@ -36,7 +36,7 @@ import { RemoteDesktopClient } from '../../../src/services';
 export class ClipboardModalComponent implements OnInit {
 
     @Input()
-    client: RemoteDesktopClient;
+    client: RemoteDesktopService;
 
     private text = '';
     private clipboardData = [];

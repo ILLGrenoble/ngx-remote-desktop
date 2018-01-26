@@ -9,7 +9,7 @@ import {
     OnChanges
 } from '@angular/core';
 
-import { RemoteDesktopClient } from '../services';
+import { RemoteDesktopService } from '../services';
 import { Observable } from 'rxjs';
 import * as screenfull from 'screenfull';
 import { trigger, state, transition, animate, style } from '@angular/animations';
@@ -86,7 +86,7 @@ export class RemoteDesktopComponent implements OnInit {
      * Client that manages the connection to the remote desktop
      */
     @Input()
-    private client: RemoteDesktopClient;
+    private client: RemoteDesktopService;
 
     /**
      * Binds the display input listeners (keyboard and mouse) if set to true
@@ -182,19 +182,19 @@ export class RemoteDesktopComponent implements OnInit {
      */
     private handleState(newState) {
         switch (newState) {
-            case RemoteDesktopClient.STATE.CONNECTED:
+            case RemoteDesktopService.STATE.CONNECTED:
                 this.setState(this.states.CONNECTED);
                 break;
-            case RemoteDesktopClient.STATE.DISCONNECTED:
+            case RemoteDesktopService.STATE.DISCONNECTED:
                 this.exitFullScreen();
                 this.setState(this.states.DISCONNECTED);
                 break;
-            case RemoteDesktopClient.STATE.CONNECTING:
-            case RemoteDesktopClient.STATE.WAITING:
+            case RemoteDesktopService.STATE.CONNECTING:
+            case RemoteDesktopService.STATE.WAITING:
                 this.setState(this.states.CONNECTING);
                 break;
-            case RemoteDesktopClient.STATE.CLIENT_ERROR:
-            case RemoteDesktopClient.STATE.TUNNEL_ERROR:
+            case RemoteDesktopService.STATE.CLIENT_ERROR:
+            case RemoteDesktopService.STATE.TUNNEL_ERROR:
                 this.exitFullScreen();
                 this.setState(this.states.ERROR);
                 break;

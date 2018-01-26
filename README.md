@@ -8,7 +8,7 @@ It has been built for use with Angular 5.0.0+. It has been tested in Chrome, Fir
 
 There is no dependency on any presentation component library / framework (ng-bootstrap, clarity etc.).
 
-By default, the only toolbar item available is to allow the user to go in and out of full screen mode, however, you can add as many toolbar items as you wish and create a handler in your main component. You can also override the scss if you wish to change the styling. The `RemoteDesktopClient` exposes some useful methods for generating a screenshot or thumbnail, getting the client state, subscribing to the remote desktop clipboard and sending data to the remote desktop clipboard.
+By default, the only toolbar item available is to allow the user to go in and out of full screen mode, however, you can add as many toolbar items as you wish and create a handler in your main component. You can also override the scss if you wish to change the styling. The `RemoteDesktopService` exposes some useful methods for generating a screenshot or thumbnail, getting the client state, subscribing to the remote desktop clipboard and sending data to the remote desktop clipboard.
 
 ![Screenshot](https://raw.githubusercontent.com/ILLGrenoble/ngx-remote-desktop/master/screenshot.png)
 
@@ -55,7 +55,7 @@ Then in your `app.component.ts`, you define a new remote desktop client like thi
 ```typescript
 import { Component, OnInit } from '@angular/core';
 
-import { RemoteDesktopClient } from '@ILLGrenoble/ngx-remote-desktop';
+import { RemoteDesktopService } from '@ILLGrenoble/ngx-remote-desktop';
 
 @Component({
     selector: 'app-root',
@@ -66,7 +66,7 @@ import { RemoteDesktopClient } from '@ILLGrenoble/ngx-remote-desktop';
 })
 export class AppComponent implements OnInit {
 
-    private client: RemoteDesktopClient;
+    private remoteDesktopService: RemoteDesktopService;
 
     /**
      * The keyboard and mouse input listeners to the remote display are only bound when
@@ -79,8 +79,8 @@ export class AppComponent implements OnInit {
     ngOnInit() {
       // URL to a websocket broker that communicates with the guacd process
         const url = `ws://localhost/remote-desktop`;
-        this.client = new RemoteDesktopClient(url);
-        this.client.connect();
+        this.remoteDesktopService = new RemoteDesktopService(url);
+        this.remoteDesktopService.connect();
     }
 
 }
@@ -91,7 +91,7 @@ This will give a basic remote desktop client with one toolbar item (full screen)
 ```typescript
 import { Component, OnInit } from '@angular/core';
 
-import { RemoteDesktopClient } from '@ILLGrenoble/ngx-remote-desktop';
+import { RemoteDesktopService } from '@ILLGrenoble/ngx-remote-desktop';
 
 @Component({
     selector: 'app-root',
@@ -104,7 +104,7 @@ import { RemoteDesktopClient } from '@ILLGrenoble/ngx-remote-desktop';
 })
 export class AppComponent implements OnInit {
 
-    private client: RemoteDesktopClient;
+    private remoteDesktopService: RemoteDesktopService;
     
     private isRemoteDesktopFocused = true;
 
@@ -121,9 +121,9 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
-        const url = `ws://localhost/remote-desktop`;
-        this.client = new RemoteDesktopClient(url);
-        this.client.connect();
+        const url = `ws://localhost`;
+        this.remoteDesktopService = new RemoteDesktopService(url);
+        this.remoteDesktopService.connect();
     }
 
 }
@@ -137,7 +137,7 @@ All of these features below are used in the demo application.
 To take a screenshot of the connected remote desktop:
 
 ```typescript
-  this.client.createScreenshot(blob => {
+  this.remoteDesktopService.createScreenshot(blob => {
       if (blob) {
           // do something with blob....
       }
@@ -148,7 +148,7 @@ To take a screenshot of the connected remote desktop:
 To get a thumbnail of the connected remote desktop:
 
 ```typescript
-  const data = this.client.createThumbnail(340, 240) {
+  const data = this.remoteDesktopService.createThumbnail(340, 240) {
   // do something with the data image url...
 ```
 
@@ -156,26 +156,26 @@ To get a thumbnail of the connected remote desktop:
 You can subscribe to the remote clipboard observable:
 
 ```typescript
-  this.client.onClipboard.subscribe(data => console.log('Got clipboard data', data));
+  this.remoteDesktopService.onClipboard.subscribe(data => console.log('Got clipboard data', data));
 ```
 
 #### Send data to the remote clipboard
 ```typescript
-  this.client.sendClipboard('Hello clipboard!');
+  this.remoteDesktopService.sendClipboard('Hello clipboard!');
 ```
 
 #### Get the current guacamole connection state
 ```typescript
-  const state = this.client.getState();
-  if(state === RemoteDesktopClient.STATE.DISCONNECTED) {
+  const state = this.remoteDesktopService.getState();
+  if(state === RemoteDesktopService.STATE.DISCONNECTED) {
     console.log('Oh no!');
   }
 ```
 
 #### Getting access to the guacamole client and tunnel
 ```typescript
-  const client = this.client.getClient();
-  const tunnel = this.client.getTunnel();
+  const client = this.remoteDesktopService.getClient();
+  const tunnel = this.remoteDesktopService.getTunnel();
 ```
 
 ### Thank you

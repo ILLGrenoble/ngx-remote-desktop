@@ -7,10 +7,12 @@ import {
     DisplayComponent
 
 } from './components';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
     imports: [
-        CommonModule
+        CommonModule,
+        BrowserAnimationsModule
     ],
     declarations: [
         /**
