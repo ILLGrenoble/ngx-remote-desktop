@@ -10,7 +10,7 @@ There is no dependency on any presentation component library / framework (ng-boo
 
 By default, the only toolbar item available is to allow the user to go in and out of full screen mode, however, you can add as many toolbar items as you wish and create a handler in your main component. You can also override the scss if you wish to change the styling. The `RemoteDesktopClient` exposes some useful methods for generating a screenshot or thumbnail, getting the client state, subscribing to the remote desktop clipboard and sending data to the remote desktop clipboard.
 
-![Screenshot](https://code.ill.fr/si/ngx-remote-desktop/raw/master/screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/ILLGrenoble/ngx-remote-desktop/master/screenshot.png)
 
 ## Features
   - Fluid screen resizing and scaling
