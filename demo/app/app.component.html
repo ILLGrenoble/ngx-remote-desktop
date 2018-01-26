@@ -1,0 +1,17 @@
+<div class="vdi-container">
+  <ngx-remote-desktop [client]="client" [focused]="isRemoteDesktopFocused">
+    <ngx-remote-desktop-toolbar-item align="left" 
+      [hidden]="!isConnected()"
+      (click)="handleScreenshot()">
+        <i class="fa fa-print"></i> Take screenshot
+    </ngx-remote-desktop-toolbar-item>
+    <ngx-remote-desktop-toolbar-item align="left"
+      [hidden]="!isConnected()"
+      (click)="handleClipboard()" >
+        <i class="fa fa-clipboard"> </i> Clipboard
+    </ngx-remote-desktop-toolbar-item>
+    <ngx-remote-desktop-toolbar-item [hidden]="!isConnected()" (click)="handleDisconnect()" align="right"><i class="fa fa-sign-out"> </i> Disconnect</ngx-remote-desktop-toolbar-item>
+    <ngx-remote-desktop-toolbar-item (click)="handleSettings()" align="right"><i class="fa fa-cog"> </i> Settings</ngx-remote-desktop-toolbar-item>
+    <ngx-remote-desktop-toolbar-item (click)="handleHelp()" align="right"><i class="fa fa-info-circle"> </i> Help</ngx-remote-desktop-toolbar-item>
+  </ngx-remote-desktop>
+</div>

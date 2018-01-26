@@ -1,0 +1,49 @@
+{
+  "extends": "tslint:latest",
+  "rules": {
+    "arrow-parens": false,
+    "class-name": true,
+    "curly": false,
+    "eofline": true,
+    "forin": false,
+    "indent": [true, "spaces"],
+    "interface-name": false,
+    "jsdoc-format": true,
+    "member-access": false,
+    "no-bitwise": false,
+    "no-console": [true, "warn"],
+    "no-reference": false,
+    "no-string-literal": false,
+    "no-trailing-whitespace": false,
+    "no-var-requires": false,
+    "object-literal-key-quotes": [true, "as-needed"],
+    "object-literal-sort-keys": false,
+    "only-arrow-functions": false,
+    "ordered-imports": false,
+    "prefer-for-of": false,
+    "quotemark": [true, "single"],
+    "semicolon": [true, "always"],
+    "trailing-comma": false,
+    "triple-equals": [true, "allow-null-check"],
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+    "prefer-object-spread": false,
+    "prefer-conditional-expression": false,
+    "whitespace": [true,
+      "check-decl",
+      "check-operator",
+      "check-separator",
+      "check-type"
+    ],
+    "no-implicit-dependencies": [true, "dev"],
+    "max-classes-per-file": false,
+    "no-angle-bracket-type-assertion": false,
+    "no-submodule-imports": false,
+    "no-unused-expression": [
+      false
+    ],
+    "arrow-return-shorthand": [
+      false
+    ]
+  },
+  "rulesDirectory": []
+}
