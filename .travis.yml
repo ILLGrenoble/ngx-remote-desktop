@@ -9,7 +9,6 @@ install:
 script:
     - npm run docs
     - cd documentation
-    - rm -R .git
     - git init 
     - git config user.name "Travis CI"
     - git config user.email "github@travis-ci.org"
