@@ -104,6 +104,8 @@ export class AppComponent implements OnInit {
 
 This will give a basic remote desktop client with one toolbar item (full screen), here is an example with more toolbar items and their associated handlers:
 
+
+
 ```typescript
 import { Component, OnInit } from '@angular/core';
 
@@ -164,6 +166,7 @@ export class AppComponent implements OnInit {
 
 }
 ```
+
 
 ### Other features
 

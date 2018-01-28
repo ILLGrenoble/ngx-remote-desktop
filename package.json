@@ -9,7 +9,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "docs": "./node_modules/.bin/compodoc src -p tsconfig.json -n 'ngx-remote-desktop'"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,7 @@
     "@angular/platform-browser": "5.0.0",
     "@angular/platform-browser-dynamic": "5.0.0",
     "@angular/platform-server": "5.0.0",
+    "@compodoc/compodoc": "^1.0.5",
     "@ng-bootstrap/ng-bootstrap": "^1.0.0-beta.9",
     "@types/node": "^8.0.46",
     "@types/zen-observable": "^0.5.3",

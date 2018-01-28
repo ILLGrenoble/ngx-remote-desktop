@@ -14,6 +14,9 @@ import { Observable } from 'rxjs';
 import * as screenfull from 'screenfull';
 import { trigger, state, transition, animate, style } from '@angular/animations';
 
+/**
+ * The main component for displaying a remote desktop
+ */
 @Component({
     selector: 'ngx-remote-desktop',
     template: `
@@ -126,12 +129,12 @@ export class RemoteDesktopComponent implements OnInit {
     /**
      * Full screen mode defaults to false until toggled by the user
      */
-    private isFullScreen = false;
+    private isFullScreen: boolean = false;
 
     /**
      * Hide or show the toolbar
      */
-    private toolbarVisible = 1;
+    private toolbarVisible: number = 1;
 
     /**
      * Manage the component state
@@ -149,6 +152,9 @@ export class RemoteDesktopComponent implements OnInit {
         ERROR: 'ERROR'
     };
 
+    /**
+     * Subscribe to the connection state when the component is initialised
+     */
     ngOnInit(): void {
         this.manager.onStateChange.subscribe(this.handleState.bind(this));
     }
@@ -204,14 +210,14 @@ export class RemoteDesktopComponent implements OnInit {
     /**
      * Exit full screen and show the toolbar
      */
-    private exitFullScreen() {
+    private exitFullScreen(): void {
         if (this.isFullScreen) {
             this.handleFullScreen();
         }
     }
 
     /**
-     * Enter and exit full screen mode
+     * Enter or exit full screen mode
      */
     private handleFullScreen(): void {
         const element = this.container.nativeElement;
@@ -226,6 +232,10 @@ export class RemoteDesktopComponent implements OnInit {
         this.toolbarVisible = (this.isFullScreen) ? 0 : 1;
     }
 
+    /**
+     * Handle the display mouse movement
+     * @param event Mouse event
+     */
     private handleDisplayMouseMove($event): void {
         if (!this.isFullScreen) {
             return;
@@ -233,7 +243,11 @@ export class RemoteDesktopComponent implements OnInit {
         this.showOrHideToolbar($event.x);
     }
 
-    private showOrHideToolbar(x): void {
+    /**
+     * Show or hide the toolbar
+     * @param x
+     */
+    private showOrHideToolbar(x: number): void {
         const toolbarWidth = 170;
 
         if (x >= -1 && x <= 0) {

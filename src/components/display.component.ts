@@ -24,11 +24,14 @@ import { RemoteDesktopManager } from '../services';
 })
 export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
 
+    /**
+     * Emit the mouse move events to any subscribers
+     */
     @Output()
     public onMouseMove = new BehaviorSubject(null);
 
     /**
-     * Remote desktop client
+     * Remote desktop manager
      */
     @Input()
     private manager: RemoteDesktopManager;
@@ -58,14 +61,24 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
     constructor(private viewport: ElementRef) {
     }
 
+    /**
+     * Create the display canvas when initialising the component
+     */
     ngOnInit(): void {
         this.createDisplayCanvas();
     }
 
+    /**
+     * Unbind all display input listeners when destroying the component
+     */
     ngOnDestroy(): void {
         this.removeDisplayInputListeners();
     }
 
+    /**
+     * Rescale the display when any changes are detected
+     * @param changes 
+     */
     ngOnChanges(changes: any): void {
         const isFocused = changes.isFocused;
         if (isFocused && !isFocused.firstChange) {
@@ -74,15 +87,22 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
         window.setTimeout(() => this.setDisplayScale(), 100);
     }
 
+    /**
+     * Rescale the display when the window is resized
+     * @param event 
+     */
     @HostListener('window:resize', ['$event'])
     private onWindowResize(event): void {
         this.setDisplayScale();
     }
 
+    /**
+     * Release all the keyboards when the window loses focus
+     * @param event
+     */
     @HostListener('window:blur', ['$event'])
     private onWindowBlur(event): void {
         if (this.keyboard) {
-            // release all keys
             this.keyboard.reset();
         }
     }
@@ -122,7 +142,7 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
     /**
      * Calculate the scale for the display
      */
-    private calculateDisplayScale() {
+    private calculateDisplayScale(): number {
         const viewportElement = this.viewport.nativeElement;
         const screenElement = window.screen;
         const scale = Math.min(viewportElement.clientWidth / screenElement.width,

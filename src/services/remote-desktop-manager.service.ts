@@ -11,6 +11,9 @@ import {
 import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { URLSearchParams } from '@angular/http';
 
+/**
+ * Manages the connection to the remote desktop
+ */
 export class RemoteDesktopManager {
 
     static STATE = {
@@ -56,14 +59,18 @@ export class RemoteDesktopManager {
         TUNNEL_ERROR: 'TUNNEL_ERROR'
     };
 
+    /**
+     * Remote desktop connection state observable
+     * Subscribe to this if you want to be notified when the connection state changes
+     */
     public onStateChange = new BehaviorSubject(RemoteDesktopManager.STATE.CONNECTING);
 
-    public onRemoteClipboardData = new ReplaySubject(1);
-
     /**
-     * The ID of the connection associated with this client
+     * Remote desktop clipboard observable.
+     * Subscribe to this if you want to be notified if text has been cut/copied within
+     * the remote desktop.
      */
-    private id: string;
+    public onRemoteClipboardData = new ReplaySubject(1);
 
     /**
      * The actual underlying remote desktop client
@@ -75,48 +82,81 @@ export class RemoteDesktopManager {
      */
     private tunnel: Tunnel;
 
-    private dimensionsParameters = { width: 'width', height: 'height' };
-
     /**
      * Current state of the connection
      */
     private state = RemoteDesktopManager.STATE.IDLE;
 
     /**
-     * 
-     * @param tunnel - WebsocketTunnel, HTTPTunnel or ChainedTunnel
-     * @param parameters  - query parameters to send to the tunnel url
+     * The dimensions parameters to send to the tunnel.
+     * This can be overridden by using  {@link setDimensionParameters}
      */
-    constructor(tunnel, private parameters = {}) {
+    private dimensionsParameters = { width: 'width', height: 'height' };
+
+    /**
+     * Set up the manager
+     * @param tunnel  WebsocketTunnel, HTTPTunnel or ChainedTunnel
+     * @param parameters Query parameters to send to the tunnel url
+     */
+    constructor(tunnel: WebSocketTunnel | HTTPTunnel | ChainedTunnel, private parameters = {}) {
         this.tunnel = tunnel;
         this.client = new Client(this.tunnel);
     }
 
+    /**
+     * Get the guacamole connection state
+     */
     public getState() {
         return this.state;
     }
 
-    public isState(state) {
+    /**
+     * Check to see if the given state equals the current state
+     * @param state
+     */
+    public isState(state): boolean {
         return state === this.state;
     }
 
+    /**
+     * Is the tunnel connected?
+     */
+    public isConnected(): boolean {
+        return this.state === RemoteDesktopManager.STATE.CONNECTED;
+    }
+
+    /**
+     * Get the guacamole client
+     */
     public getClient(): Client {
         return this.client;
     }
 
+    /**
+     * Get the guacamole tunnel
+     */
     public getTunnel(): Tunnel {
         return this.tunnel;
     }
 
-    public setDimensionParameters(width, height) {
+    /**
+     * Set the dimensions parameters.
+     * This is used for sending the client dimensions when connecting to the tunnel.
+     * @param width
+     * @param height 
+     */
+    public setDimensionParameters(width: string, height: string) {
         // tslint:disable-next-line:object-literal-shorthand
         this.dimensionsParameters = { width: width, height: height };
     }
 
     /**
      * Generate a thumbnail
+     * @param {number} width  The width of the thumbnail
+     * @param {number} height The height of the thumbnail
+     * @returns {string} An image data url
      */
-    public createThumbnail(width = 340, height = 240) {
+    public createThumbnail(width: number = 340, height: number = 240): string {
         const display = this.client.getDisplay();
         if (display && display.getWidth() > 0 && display.getHeight() > 0) {
             // Get screenshot
@@ -141,8 +181,9 @@ export class RemoteDesktopManager {
 
     /**
      * Generate a screenshot
+     * @param {blob} done Callback with the screenshot blob data
      */
-    public createScreenshot(done) {
+    public createScreenshot(done): void {
         const display = this.client.getDisplay();
         if (display && display.getWidth() > 0 && display.getHeight() > 0) {
             const canvas = display.flatten();
@@ -152,11 +193,47 @@ export class RemoteDesktopManager {
     }
 
     /**
+     * Send text to the remote clipboard
+     * @param {string} text Clipboard text to send
+     */
+    public sendRemoteClipboardData(text: string) {
+        if (text) {
+            this.onRemoteClipboardData.next(text);
+            this.client.setClipboard(text);
+        }
+    }
+
+    /**
+     * Disconnect from the remote desktop
+     */
+    public disconnect(): void {
+        this.client.disconnect();
+    }
+
+    /**
+     * Connect to the remote desktop
+     */
+    public connect(): void {
+        const configuration = this.buildConfiguration();
+        this.client.connect(configuration);
+        this.bindEventHandlers();
+    }
+
+    /**
+     * Set the connection state and emit the new state to any subscribers
+     * @param state Connection state
+     */
+    private setState(state): void {
+        this.state = state;
+        this.onStateChange.next(this.state);
+    }
+
+    /**
      * Receive clipboard data from the remote desktop and emit an event to the client
      * @param stream 
      * @param mimetype 
      */
-    public handleClipboard(stream, mimetype) {
+    private handleClipboard(stream, mimetype: string): void {
         // If the received data is text, read it as a simple string
         if (/^text\//.exec(mimetype)) {
             const reader = new StringReader(stream);
@@ -171,44 +248,20 @@ export class RemoteDesktopManager {
     }
 
     /**
-     * Send text to the remote keyboard
-     * @param text 
+     * Calculate the display dimensions.
+     * We always take the full width and height of the screen as we
+     * always want to scale up rather than scale down.
      */
-    public sendRemoteClipboardData(text) {
-        if (text) {
-            this.onRemoteClipboardData.next(text);
-            this.client.setClipboard(text);
-        }
-    }
-
-    public disconnect(): void {
-        this.client.disconnect();
-    }
-
-    /**
-     * Connect to the remote desktop
-     */
-    public connect(): void {
-        const configuration = this.buildConfiguration();
-        this.client.connect(configuration);
-        this.bindEventHandlers();
-    }
-
-    private setState(state): void {
-        this.state = state;
-        this.onStateChange.next(this.state);
-    }
-
-    /**
-     * Calculate the display dimensions
-     */
-    private calculateDimensions() {
+    private calculateDimensions(): { width: number, height: number } {
         const screen = window.screen;
         const width = screen.width;
         const height = screen.height;
         return { height, width };
     }
 
+    /**
+     * Build the URL query parameters to send to the tunnel connection
+     */
     private buildParameters(): URLSearchParams {
         const params = new URLSearchParams();
         for (const key in this.parameters) {
@@ -219,6 +272,9 @@ export class RemoteDesktopManager {
         return params;
     }
 
+    /**
+     * Build the url query parameters and set the width and height parameters
+     */
     private buildConfiguration() {
         const dimensionsParameters = this.dimensionsParameters;
         const dimensions = this.calculateDimensions();
@@ -228,6 +284,9 @@ export class RemoteDesktopManager {
         return buildParameters.toString();
     }
 
+    /**
+     * Bind the client and tunnel event handlers
+     */
     private bindEventHandlers(): void {
         this.client.onerror = this.handleClientError.bind(this);
         this.client.onstatechange = this.handleClientStateChange.bind(this);
@@ -236,12 +295,20 @@ export class RemoteDesktopManager {
         this.tunnel.onstatechange = this.handleTunnelStateChange.bind(this);
     }
 
+    /**
+     * Handle any client errors by disconnecting and updating the connection state
+     * @param state State received from the client
+     */
     private handleClientError(status): void {
         // Disconnect if connected
         this.disconnect();
         this.setState(RemoteDesktopManager.STATE.CLIENT_ERROR);
     }
 
+    /**
+     * Update the connection state when the client state changes
+     * @param state State received from the client
+     */
     private handleClientStateChange(state): void {
         switch (state) {
             // Idle
@@ -266,11 +333,19 @@ export class RemoteDesktopManager {
         }
     }
 
+    /**
+     * Handle any tunnel errors by disconnecting and updating the connection state
+     * @param status Status received from the tunnel
+     */
     private handleTunnelError(status): void {
         this.disconnect();
         this.setState(RemoteDesktopManager.STATE.TUNNEL_ERROR);
     }
 
+    /**
+     * Update the connection state when the tunnel state changes
+     * @param state State received from the tunnel
+     */
     private handleTunnelStateChange(state): void {
         switch (state) {
             // Connection is being established

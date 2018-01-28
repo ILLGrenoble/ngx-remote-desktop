@@ -3,6 +3,10 @@ import {
     Input
 } from '@angular/core';
 
+/**
+ * Message component for showing error or success messages for when the connection
+ * state changes
+ */
 @Component({
     selector: 'ngx-remote-desktop-message',
     template: `
@@ -21,12 +25,21 @@ import {
 })
 export class MessageComponent {
 
+    /**
+     * Title of the message to display
+     */
     @Input()
-    private title;
+    private title: string;
 
+    /**
+     * Content of the message to display
+     */
     @Input()
-    private message;
+    private message: string;
 
+    /**
+     * Message type. Can be 'success' or 'error'
+     */
     @Input()
     private type = 'success';
 }
