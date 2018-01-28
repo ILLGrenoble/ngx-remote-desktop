@@ -1,0 +1,18 @@
+language: node_js
+branches:
+  only:
+    - master
+node_js:
+    - "6"
+install:
+    - npm install
+script:
+    - npm run docs
+    - cd documentation
+    - rm -R .git
+    - git init 
+    - git config user.name "Travis CI"
+    - git config user.email "github@travis-ci.org"
+    - git add .
+    - git commit -m "Deploy to GitHub Pages"
+    - git push --force "https://${GH_TOKEN}@github.com/ILLGrenoble/ngx-remote-desktop.git" master:gh-pages > /dev/null 2>&1
