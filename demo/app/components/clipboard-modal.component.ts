@@ -46,7 +46,7 @@ export class ClipboardModalComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.clipboardSubscription = this.manager.onClipboard;
+        this.clipboardSubscription = this.manager.onRemoteClipboardData;
         this.clipboardSubscription.subscribe(data => this.text = data);
     }
 

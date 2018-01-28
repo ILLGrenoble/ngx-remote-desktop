@@ -9,7 +9,7 @@ import {
     OnDestroy,
     HostListener
 } from '@angular/core';
-import { Mouse, Keyboard } from 'guacamole-js';
+import { Mouse, Keyboard } from '@illgrenoble/guacamole-common-js';
 import { BehaviorSubject } from 'rxjs';
 import * as screenfull from 'screenfull';
 import { RemoteDesktopManager } from '../services';

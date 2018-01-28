@@ -1,4 +1,13 @@
-import { Client, Tunnel, WebSocketTunnel, Status, StringReader } from 'guacamole-js';
+import {
+    Client,
+    Tunnel,
+    WebSocketTunnel,
+    ChainedTunnel,
+    HTTPTunnel,
+    Status,
+    StringReader
+} from '@illgrenoble/guacamole-common-js';
+
 import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { URLSearchParams } from '@angular/http';
 
@@ -49,7 +58,7 @@ export class RemoteDesktopManager {
 
     public onStateChange = new BehaviorSubject(RemoteDesktopManager.STATE.CONNECTING);
 
-    public onClipboard = new ReplaySubject(1);
+    public onRemoteClipboardData = new ReplaySubject(1);
 
     /**
      * The ID of the connection associated with this client
@@ -66,13 +75,20 @@ export class RemoteDesktopManager {
      */
     private tunnel: Tunnel;
 
+    private dimensionsParameters = { width: 'width', height: 'height' };
+
     /**
      * Current state of the connection
      */
     private state = RemoteDesktopManager.STATE.IDLE;
 
-    constructor(url, private options = {}) {
-        this.tunnel = new WebSocketTunnel(url);
+    /**
+     * 
+     * @param tunnel - WebsocketTunnel, HTTPTunnel or ChainedTunnel
+     * @param parameters  - query parameters to send to the tunnel url
+     */
+    constructor(tunnel, private parameters = {}) {
+        this.tunnel = tunnel;
         this.client = new Client(this.tunnel);
     }
 
@@ -90,6 +106,11 @@ export class RemoteDesktopManager {
 
     public getTunnel(): Tunnel {
         return this.tunnel;
+    }
+
+    public setDimensionParameters(width, height) {
+        // tslint:disable-next-line:object-literal-shorthand
+        this.dimensionsParameters = { width: width, height: height };
     }
 
     /**
@@ -145,7 +166,7 @@ export class RemoteDesktopManager {
             reader.ontext = (text) => data += text;
 
             // Set clipboard contents once stream is finished
-            reader.onend = () => this.onClipboard.next(data);
+            reader.onend = () => this.onRemoteClipboardData.next(data);
         }
     }
 
@@ -153,9 +174,9 @@ export class RemoteDesktopManager {
      * Send text to the remote keyboard
      * @param text 
      */
-    public sendClipboard(text) {
+    public sendRemoteClipboardData(text) {
         if (text) {
-            this.onClipboard.next(text);
+            this.onRemoteClipboardData.next(text);
             this.client.setClipboard(text);
         }
     }
@@ -188,27 +209,23 @@ export class RemoteDesktopManager {
         return { height, width };
     }
 
-    private buildQueryString(options): string {
+    private buildParameters(): URLSearchParams {
         const params = new URLSearchParams();
-        for (const key in options) {
-            if (options.hasOwnProperty(key)) {
-                params.set(key, options[key]);
+        for (const key in this.parameters) {
+            if (this.parameters.hasOwnProperty(key)) {
+                params.set(key, this.parameters[key]);
             }
         }
-        return params.toString();
+        return params;
     }
 
     private buildConfiguration() {
+        const dimensionsParameters = this.dimensionsParameters;
         const dimensions = this.calculateDimensions();
-        const options = {
-            ID: null,
-            WIDTH: dimensions.width,
-            HEIGHT: dimensions.height,
-            AUDIO: 'audio/L16',
-            IMAGE: 'image/png',
-            ...this.options
-        };
-        return this.buildQueryString(options);
+        const buildParameters = this.buildParameters();
+        buildParameters.set(this.dimensionsParameters.width, dimensions.width.toString());
+        buildParameters.set(this.dimensionsParameters.height, dimensions.height.toString());
+        return buildParameters.toString();
     }
 
     private bindEventHandlers(): void {

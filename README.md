@@ -6,7 +6,7 @@
 
 It has been built for use with Angular 5.0.0+. It has been tested in Chrome, Firefox, Edge and Safari. It makes heavy use of flex, therefore it will not work in browsers that do not support flex. 
 
-There is no dependency on any presentation component library / framework (ng-bootstrap, clarity etc.).
+There is no dependency on any presentation component library / framework (ng-bootstrap, clarity etc.). This component does not make any assertions about how the backend web socket broker to guacd is implemented.
 
 By default, the only toolbar item available is to allow the user to go in and out of full screen mode, however, you can add as many toolbar items as you wish and create a handler in your main component. You can also override the scss if you wish to change the styling. The `RemoteDesktopManager` exposes some useful methods for generating a screenshot or thumbnail, getting the client state, subscribing to the remote desktop clipboard and sending data to the remote desktop clipboard.
 
@@ -28,7 +28,7 @@ For a full implementation example, see the demo.
 To use `ngx-remote-desktop` in your project install it via npm:
 
 ```
-npm i @ILLGrenoble/ngx-remote-desktop --save
+npm i @illgrenoble/ngx-remote-desktop --save
 ```
 
 ## Usage
@@ -77,12 +77,29 @@ export class AppComponent implements OnInit {
     private isRemoteDesktopFocused = true;
 
     ngOnInit() {
-      // URL to a websocket broker that communicates with the guacd process
-        const url = `ws://localhost/remote-desktop`;
-        this.manager = new RemoteDesktopManager(url);
+        // Setup tunnel. The tunnel can be either: WebsocketTunnel, HTTPTunnel or ChainedTunnel
+        const tunnel = new WebSocketTunnel('ws://localhost:8080');
+        // URL parameters (image, audio and other query parameters you want to send to the tunnel.)
+        const parameters = {
+            ip: '192.168.13.232',
+            image: 'image/png'
+        };
+        /**
+         *  Create an instance of the remote desktop manager by 
+         *  passing in the tunnel and parameters
+         */
+        this.manager = new RemoteDesktopManager(tunnel, parameters);
+        /**
+         *  ngx-remote-desktop will always send the max screen dimensions as we always want to scale down and never up
+         *  You can override the dimensions parameters that are sent to the tunnel connection 
+         */
+        this.manager.setDimensionParameters('width', 'height');
+        /*
+         * The manager will establish a connection to: 
+         * ws://localhost:8080?width=n&height=n&ip=192.168.13.232&image=image/png
+         */
         this.manager.connect();
     }
-
 }
 ```
 
@@ -120,9 +137,28 @@ export class AppComponent implements OnInit {
         });
     }
 
-    ngOnInit() {
-        const url = `ws://localhost`;
-        this.manager = new RemoteDesktopManager(url);
+   ngOnInit() {
+        // Setup tunnel. The tunnel can be either: WebsocketTunnel, HTTPTunnel or ChainedTunnel
+        const tunnel = new WebSocketTunnel('ws://localhost:8080');
+        // URL parameters (image, audio and other query parameters you want to send to the tunnel.)
+        const parameters = {
+            ip: '192.168.13.232',
+            image: 'image/png'
+        };
+        /**
+         *  Create an instance of the remote desktop manager by 
+         *  passing in the tunnel and parameters
+         */
+        this.manager = new RemoteDesktopManager(tunnel, parameters);
+        /**
+         *  ngx-remote-desktop will always send the max screen dimensions as we always want to scale down and never up
+         *  You can override the dimensions parameters that are sent to the tunnel connection 
+         */
+        this.manager.setDimensionParameters('width', 'height');
+        /*
+         * The manager will establish a connection to: 
+         * ws://localhost:8080?width=n&height=n&ip=192.168.13.232&image=image/png
+         */
         this.manager.connect();
     }
 
@@ -156,12 +192,12 @@ To get a thumbnail of the connected remote desktop:
 You can subscribe to the remote clipboard observable:
 
 ```typescript
-  this.manager.onClipboard.subscribe(data => console.log('Got clipboard data', data));
+  this.manager.onRemoteClipboardData.subscribe(data => console.log('Got clipboard data', data));
 ```
 
 #### Send data to the remote clipboard
 ```typescript
-  this.manager.sendClipboard('Hello clipboard!');
+  this.manager.sendRemoteClipboardData('Hello clipboard!');
 ```
 
 #### Get the current guacamole connection state
