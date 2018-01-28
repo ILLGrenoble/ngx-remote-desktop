@@ -139,7 +139,7 @@ export class RemoteDesktopComponent implements OnInit {
     /**
      * Manage the component state
      */
-    private state;
+    private state: string;
 
     /**
      * Guacamole has more states than the list below however for the component we only interested
@@ -163,7 +163,7 @@ export class RemoteDesktopComponent implements OnInit {
      * Set the component state to the new guacamole state
      * @param newState
      */
-    private setState(newState): void {
+    private setState(newState: string): void {
         this.state = newState;
     }
 
@@ -178,7 +178,7 @@ export class RemoteDesktopComponent implements OnInit {
      * Check if the given state equals the current component state
      * @param newState 
      */
-    private isState(newState) {
+    private isState(newState: string) {
         return this.state === newState;
     }
 
@@ -186,7 +186,7 @@ export class RemoteDesktopComponent implements OnInit {
      * Received the state from the desktop client and update this components state
      * @param newState - state received from the guacamole client
      */
-    private handleState(newState) {
+    private handleState(newState: string) {
         switch (newState) {
             case RemoteDesktopManager.STATE.CONNECTED:
                 this.setState(this.states.CONNECTED);
@@ -222,7 +222,7 @@ export class RemoteDesktopComponent implements OnInit {
     private handleFullScreen(): void {
         const element = this.container.nativeElement;
         screenfull.toggle(element);
-        screenfull.on('change', (change) => {
+        screenfull.on('change', (change: any) => {
             this.isFullScreen = screenfull.isFullscreen;
             this.handleToolbar();
         });
@@ -236,7 +236,7 @@ export class RemoteDesktopComponent implements OnInit {
      * Handle the display mouse movement
      * @param event Mouse event
      */
-    private handleDisplayMouseMove($event): void {
+    private handleDisplayMouseMove($event: any): void {
         if (!this.isFullScreen) {
             return;
         }

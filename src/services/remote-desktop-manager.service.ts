@@ -7,7 +7,6 @@ import {
     Status,
     StringReader
 } from '@illgrenoble/guacamole-common-js';
-
 import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { URLSearchParams } from '@angular/http';
 
@@ -114,7 +113,7 @@ export class RemoteDesktopManager {
      * Check to see if the given state equals the current state
      * @param state
      */
-    public isState(state): boolean {
+    public isState(state: string): boolean {
         return state === this.state;
     }
 
@@ -183,7 +182,7 @@ export class RemoteDesktopManager {
      * Generate a screenshot
      * @param {blob} done Callback with the screenshot blob data
      */
-    public createScreenshot(done): void {
+    public createScreenshot(done: any): void {
         const display = this.client.getDisplay();
         if (display && display.getWidth() > 0 && display.getHeight() > 0) {
             const canvas = display.flatten();
@@ -223,7 +222,7 @@ export class RemoteDesktopManager {
      * Set the connection state and emit the new state to any subscribers
      * @param state Connection state
      */
-    private setState(state): void {
+    private setState(state: string): void {
         this.state = state;
         this.onStateChange.next(this.state);
     }
@@ -233,14 +232,14 @@ export class RemoteDesktopManager {
      * @param stream 
      * @param mimetype 
      */
-    private handleClipboard(stream, mimetype: string): void {
+    private handleClipboard(stream: any, mimetype: string): void {
         // If the received data is text, read it as a simple string
         if (/^text\//.exec(mimetype)) {
             const reader = new StringReader(stream);
 
             // Assemble received data into a single string
             let data = '';
-            reader.ontext = (text) => data += text;
+            reader.ontext = (text: string) => data += text;
 
             // Set clipboard contents once stream is finished
             reader.onend = () => this.onRemoteClipboardData.next(data);
@@ -299,7 +298,7 @@ export class RemoteDesktopManager {
      * Handle any client errors by disconnecting and updating the connection state
      * @param state State received from the client
      */
-    private handleClientError(status): void {
+    private handleClientError(status: any): void {
         // Disconnect if connected
         this.disconnect();
         this.setState(RemoteDesktopManager.STATE.CLIENT_ERROR);
@@ -309,7 +308,7 @@ export class RemoteDesktopManager {
      * Update the connection state when the client state changes
      * @param state State received from the client
      */
-    private handleClientStateChange(state): void {
+    private handleClientStateChange(state: number): void {
         switch (state) {
             // Idle
             case 0:
@@ -337,7 +336,7 @@ export class RemoteDesktopManager {
      * Handle any tunnel errors by disconnecting and updating the connection state
      * @param status Status received from the tunnel
      */
-    private handleTunnelError(status): void {
+    private handleTunnelError(status: any): void {
         this.disconnect();
         this.setState(RemoteDesktopManager.STATE.TUNNEL_ERROR);
     }
@@ -346,7 +345,7 @@ export class RemoteDesktopManager {
      * Update the connection state when the tunnel state changes
      * @param state State received from the tunnel
      */
-    private handleTunnelStateChange(state): void {
+    private handleTunnelStateChange(state: number): void {
         switch (state) {
             // Connection is being established
             case 1:
