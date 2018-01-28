@@ -39,7 +39,6 @@ After installing, include `NgxRemoteDesktopModule` in your application module li
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgxRemoteDesktopModule } from '@ILLGrenoble/ngx-remote-desktop';
-
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -54,8 +53,8 @@ Then in your `app.component.ts`, you define a new remote desktop client like thi
 
 ```typescript
 import { Component, OnInit } from '@angular/core';
-
 import { RemoteDesktopManager } from '@ILLGrenoble/ngx-remote-desktop';
+import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
 
 @Component({
     selector: 'app-root',
@@ -109,6 +108,7 @@ This will give a basic remote desktop client with one toolbar item (full screen)
 import { Component, OnInit } from '@angular/core';
 
 import { RemoteDesktopManager } from '@ILLGrenoble/ngx-remote-desktop';
+import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
 
 @Component({
     selector: 'app-root',
@@ -169,8 +169,10 @@ export class AppComponent implements OnInit {
 
 All of these features below are used in the demo application.
 
+The `RemoteDesktopManager` exposes some useful methods.
+
 #### Screenshot
-To take a screenshot of the connected remote desktop:
+Take a screenshot of the connected remote desktop.
 
 ```typescript
   this.manager.createScreenshot(blob => {
@@ -181,7 +183,7 @@ To take a screenshot of the connected remote desktop:
 ```
 
 #### Thumbnail
-To get a thumbnail of the connected remote desktop:
+Get a thumbnail of the connected remote desktop
 
 ```typescript
   const data = this.manager.createThumbnail(340, 240) {
@@ -189,12 +191,14 @@ To get a thumbnail of the connected remote desktop:
 ```
 
 #### Receive data from the remote clipboard
-You can subscribe to the remote clipboard observable:
+Subscribe to the remote clipboard and receive data
+when text is cut or copied
 
 ```typescript
   this.manager.onRemoteClipboardData.subscribe(data => console.log('Got clipboard data', data));
 ```
 
+Send text to the remote clipboard
 #### Send data to the remote clipboard
 ```typescript
   this.manager.sendRemoteClipboardData('Hello clipboard!');
