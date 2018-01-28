@@ -1,0 +1,10 @@
+[
+    {
+        "title": "Installation",
+        "file": "installation.md"
+    },
+    {
+        "title": "Usage",
+        "file": "usage.md"
+    }
+]
