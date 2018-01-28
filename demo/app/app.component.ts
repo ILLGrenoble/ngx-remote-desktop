@@ -4,7 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NotificationsService } from 'angular2-notifications';
 import { ClipboardModalComponent } from './components';
 import * as FileSaver from 'file-saver';
-import { RemoteDesktopService } from '../../src/services';
+import { RemoteDesktopManager } from '../../src/services';
 
 @Component({
     selector: 'app-root',
@@ -13,7 +13,7 @@ import { RemoteDesktopService } from '../../src/services';
 })
 export class AppComponent implements OnInit {
 
-    private remoteDesktopService: RemoteDesktopService;
+    private manager: RemoteDesktopManager;
 
     /**
      * The keyboard and mouse input listeners to the remote display are only bound when
@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
     }
 
     handleScreenshot(): void {
-        this.remoteDesktopService.createScreenshot(blob => {
+        this.manager.createScreenshot(blob => {
             if (blob) {
                 FileSaver.saveAs(blob, `screenshot.png`);
             }
@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
     }
 
     isConnected() {
-        return this.remoteDesktopService.isState('CONNECTED');
+        return this.manager.isState('CONNECTED');
     }
 
     createModal(classRef) {
@@ -47,7 +47,7 @@ export class AppComponent implements OnInit {
             container: '.ngx-remote-desktop',
             keyboard: false
         });
-        modal.componentInstance.client = this.remoteDesktopService;
+        modal.componentInstance.manager = this.manager;
         return modal;
     }
 
@@ -64,26 +64,26 @@ export class AppComponent implements OnInit {
     }
 
     handleDisconnect(): void {
-        this.remoteDesktopService.getClient().disconnect();
+        this.manager.getClient().disconnect();
     }
 
     handleClipboard(): void {
         const modal = this.createModal(ClipboardModalComponent);
         modal.result.then((text) => {
             this.isRemoteDesktopFocused = true;
-            this.remoteDesktopService.sendClipboard(text);
+            this.manager.sendClipboard(text);
         }, () => this.isRemoteDesktopFocused = true);
     }
 
     handleReconnect(): void {
-        this.remoteDesktopService.connect();
+        this.manager.connect();
     }
 
     ngOnInit() {
         // Setup client
         const url = 'ws://localhost:8080';
-        this.remoteDesktopService = new RemoteDesktopService(url, { ip: '192.168.13.232' });
-        this.remoteDesktopService.connect();
+        this.manager = new RemoteDesktopManager(url, { ip: '192.168.13.232' });
+        this.manager.connect();
     }
 
 }

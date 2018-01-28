@@ -1,1 +1,1 @@
-export * from './remote-desktop.service';
+export * from './remote-desktop-manager.service';

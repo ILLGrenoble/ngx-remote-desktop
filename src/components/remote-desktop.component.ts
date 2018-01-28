@@ -9,7 +9,7 @@ import {
     OnChanges
 } from '@angular/core';
 
-import { RemoteDesktopService } from '../services';
+import { RemoteDesktopManager } from '../services';
 import { Observable } from 'rxjs';
 import * as screenfull from 'screenfull';
 import { trigger, state, transition, animate, style } from '@angular/animations';
@@ -62,7 +62,7 @@ import { trigger, state, transition, animate, style } from '@angular/animations'
                 </ngx-remote-desktop-message>
 
                 <ngx-remote-desktop-display *ngIf="isState(states.CONNECTED)" 
-                    [client]="client"
+                    [manager]="manager"
                     [isFullScreen]="isFullScreen"
                     [isFocused]="isFocused"
                     (onMouseMove)="handleDisplayMouseMove($event)">
@@ -86,7 +86,7 @@ export class RemoteDesktopComponent implements OnInit {
      * Client that manages the connection to the remote desktop
      */
     @Input()
-    private client: RemoteDesktopService;
+    private manager: RemoteDesktopManager;
 
     /**
      * Binds the display input listeners (keyboard and mouse) if set to true
@@ -150,7 +150,7 @@ export class RemoteDesktopComponent implements OnInit {
     };
 
     ngOnInit(): void {
-        this.client.onStateChange.subscribe(this.handleState.bind(this));
+        this.manager.onStateChange.subscribe(this.handleState.bind(this));
     }
 
     /**
@@ -165,7 +165,7 @@ export class RemoteDesktopComponent implements OnInit {
      * Connect to the remote desktop
      */
     private handleConnect(): void {
-        this.client.connect();
+        this.manager.connect();
     }
 
     /**
@@ -182,19 +182,19 @@ export class RemoteDesktopComponent implements OnInit {
      */
     private handleState(newState) {
         switch (newState) {
-            case RemoteDesktopService.STATE.CONNECTED:
+            case RemoteDesktopManager.STATE.CONNECTED:
                 this.setState(this.states.CONNECTED);
                 break;
-            case RemoteDesktopService.STATE.DISCONNECTED:
+            case RemoteDesktopManager.STATE.DISCONNECTED:
                 this.exitFullScreen();
                 this.setState(this.states.DISCONNECTED);
                 break;
-            case RemoteDesktopService.STATE.CONNECTING:
-            case RemoteDesktopService.STATE.WAITING:
+            case RemoteDesktopManager.STATE.CONNECTING:
+            case RemoteDesktopManager.STATE.WAITING:
                 this.setState(this.states.CONNECTING);
                 break;
-            case RemoteDesktopService.STATE.CLIENT_ERROR:
-            case RemoteDesktopService.STATE.TUNNEL_ERROR:
+            case RemoteDesktopManager.STATE.CLIENT_ERROR:
+            case RemoteDesktopManager.STATE.TUNNEL_ERROR:
                 this.exitFullScreen();
                 this.setState(this.states.ERROR);
                 break;

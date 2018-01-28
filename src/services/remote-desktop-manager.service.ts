@@ -2,7 +2,7 @@ import { Client, Tunnel, WebSocketTunnel, Status, StringReader } from 'guacamole
 import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { URLSearchParams } from '@angular/http';
 
-export class RemoteDesktopService {
+export class RemoteDesktopManager {
 
     static STATE = {
         /**
@@ -47,7 +47,7 @@ export class RemoteDesktopService {
         TUNNEL_ERROR: 'TUNNEL_ERROR'
     };
 
-    public onStateChange = new BehaviorSubject(RemoteDesktopService.STATE.CONNECTING);
+    public onStateChange = new BehaviorSubject(RemoteDesktopManager.STATE.CONNECTING);
 
     public onClipboard = new ReplaySubject(1);
 
@@ -69,7 +69,7 @@ export class RemoteDesktopService {
     /**
      * Current state of the connection
      */
-    private state = RemoteDesktopService.STATE.IDLE;
+    private state = RemoteDesktopManager.STATE.IDLE;
 
     constructor(url, private options = {}) {
         this.tunnel = new WebSocketTunnel(url);
@@ -222,25 +222,25 @@ export class RemoteDesktopService {
     private handleClientError(status): void {
         // Disconnect if connected
         this.disconnect();
-        this.setState(RemoteDesktopService.STATE.CLIENT_ERROR);
+        this.setState(RemoteDesktopManager.STATE.CLIENT_ERROR);
     }
 
     private handleClientStateChange(state): void {
         switch (state) {
             // Idle
             case 0:
-                this.setState(RemoteDesktopService.STATE.IDLE);
+                this.setState(RemoteDesktopManager.STATE.IDLE);
                 break;
             // Ignore "connecting" state
             case 1: // Connecting
                 break;
             // Connected + waiting
             case 2:
-                this.setState(RemoteDesktopService.STATE.WAITING);
+                this.setState(RemoteDesktopManager.STATE.WAITING);
                 break;
             // Connected
             case 3:
-                this.setState(RemoteDesktopService.STATE.CONNECTED);
+                this.setState(RemoteDesktopManager.STATE.CONNECTED);
                 break;
             // Update history when disconnecting
             case 4: // Disconnecting
@@ -251,18 +251,18 @@ export class RemoteDesktopService {
 
     private handleTunnelError(status): void {
         this.disconnect();
-        this.setState(RemoteDesktopService.STATE.TUNNEL_ERROR);
+        this.setState(RemoteDesktopManager.STATE.TUNNEL_ERROR);
     }
 
     private handleTunnelStateChange(state): void {
         switch (state) {
             // Connection is being established
             case 1:
-                this.setState(RemoteDesktopService.STATE.CONNECTING);
+                this.setState(RemoteDesktopManager.STATE.CONNECTING);
                 break;
             // Connection has closed
             case 2:
-                this.setState(RemoteDesktopService.STATE.DISCONNECTED);
+                this.setState(RemoteDesktopManager.STATE.DISCONNECTED);
                 break;
         }
     }

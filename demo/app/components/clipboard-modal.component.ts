@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
-import { RemoteDesktopService } from '../../../src/services';
+import { RemoteDesktopManager } from '../../../src/services';
 
 @Component({
     selector: 'app-clipboard-modal',
@@ -36,7 +36,7 @@ import { RemoteDesktopService } from '../../../src/services';
 export class ClipboardModalComponent implements OnInit {
 
     @Input()
-    client: RemoteDesktopService;
+    manager: RemoteDesktopManager;
 
     private text = '';
     private clipboardData = [];
@@ -46,14 +46,8 @@ export class ClipboardModalComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.clipboardSubscription = this.client.onClipboard;
+        this.clipboardSubscription = this.manager.onClipboard;
         this.clipboardSubscription.subscribe(data => this.text = data);
-    }
-
-    ngOnDestroy() {
-        // if (this.clipboardSubscription !== null) {
-        //     this.clipboardSubscription.unsubscribe();
-        // }
     }
 
     public close() {
