@@ -1,3 +1,4 @@
+
 {
   "compilerOptions": {
     "target": "es5",
@@ -11,27 +12,38 @@
     "pretty": true,
     "allowUnreachableCode": true,
     "allowUnusedLabels": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noImplicitReturns": false,
     "noImplicitUseStrict": false,
     "noFallthroughCasesInSwitch": false,
     "allowSyntheticDefaultImports": true,
     "suppressExcessPropertyErrors": true,
     "suppressImplicitAnyIndexErrors": true,
-    "outDir": "dist",
+    "outDir": "release",
+    "declarationDir": "release",
     "lib": ["es6", "dom"],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": []
   },
   "files": [
-    "src/declarations.d.ts",
-    "src/index.ts"
+    "build/declarations.d.ts",
+    "build/index.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "demo",
+    "docs",
+    "additional-doc"
   ],
   "compileOnSave": false,
   "buildOnSave": false,
   "awesomeTypescriptLoaderOptions": {
     "forkChecker": false
+  },
+  "angularCompilerOptions": {
+    "genDir": "release/",
+    "strictMetadataEmit": true,
+    "skipTemplateCodegen": true,
+	"annotationsAs": "decorators"
   }
 }

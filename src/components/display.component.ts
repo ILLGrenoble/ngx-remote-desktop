@@ -92,7 +92,7 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
      * @param event 
      */
     @HostListener('window:resize', ['$event'])
-    private onWindowResize(event): void {
+    private onWindowResize(event: any): void {
         this.setDisplayScale();
     }
 
@@ -101,7 +101,7 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
      * @param event
      */
     @HostListener('window:blur', ['$event'])
-    private onWindowBlur(event): void {
+    private onWindowBlur(event: any): void {
         if (this.keyboard) {
             this.keyboard.reset();
         }
@@ -200,7 +200,7 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
      * Send mouse events to the remote desktop
      * @param mouseState
      */
-    private handleMouseState(mouseState): void {
+    private handleMouseState(mouseState: any): void {
         const display = this.getDisplay();
         const scale = display.getScale();
         const scaledState = new Mouse.State(
@@ -219,7 +219,7 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
      * Send key down event to the remote desktop
      * @param key 
      */
-    private handleKeyDown(key): void {
+    private handleKeyDown(key: any): void {
         this.getClient().sendKeyEvent(1, key);
     }
 
@@ -227,7 +227,7 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
      * Send key up event to the remote desktop
      * @param key
      */
-    private handleKeyUp(key): void {
+    private handleKeyUp(key: any): void {
         this.getClient().sendKeyEvent(0, key);
     }
 

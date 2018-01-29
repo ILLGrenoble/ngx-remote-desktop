@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NotificationsService } from 'angular2-notifications';
@@ -10,10 +10,10 @@ import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+    styleUrls: ['../../src/themes/default.scss', './app.component.scss'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent implements OnInit {
-
     private manager: RemoteDesktopManager;
 
     /**
