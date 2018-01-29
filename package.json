@@ -1,5 +1,5 @@
 {
-  "name": "@ILLGrenoble/ngx-remote-desktop",
+  "name": "@illgrenoble/ngx-remote-desktop",
   "description": "ngx-remote-desktop is an Angular2+ module for connecting to a remote desktop using the guacamole protocol",
   "version": "0.0.0",
   "license": "MIT",
@@ -68,6 +68,7 @@
     "@angular/compiler-cli": "5.0.0",
     "@angular/core": "5.0.0",
     "@angular/http": "5.0.0",
+    "@angular/forms": "5.0.0",
     "@angular/platform-browser": "5.0.0",
     "@angular/platform-browser-dynamic": "5.0.0",
     "@angular/platform-server": "5.0.0",

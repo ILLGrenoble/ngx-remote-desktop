@@ -129,7 +129,7 @@ export class RemoteDesktopManager {
      * Set display focus
      * @param focused
      */
-    public setIsFocused(focused) {
+    public setIsFocused(focused: boolean) {
         this.isFocused = focused;
     }
 
