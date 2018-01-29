@@ -4,8 +4,10 @@ import {
     RemoteDesktopComponent,
     ToolbarItemComponent,
     MessageComponent,
-    DisplayComponent
-
+    DisplayComponent,
+    ErrorMessageComponent,
+    DisconnectedMessageComponent,
+    ConnectingMessageComponent
 } from './components';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -21,14 +23,20 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         RemoteDesktopComponent,
         ToolbarItemComponent,
         MessageComponent,
-        DisplayComponent
+        DisplayComponent,
+        ErrorMessageComponent,
+        DisconnectedMessageComponent,
+        ConnectingMessageComponent
         /**
          * Directives
          */
     ],
     exports: [
         RemoteDesktopComponent,
-        ToolbarItemComponent
+        ToolbarItemComponent,
+        ErrorMessageComponent,
+        DisconnectedMessageComponent,
+        ConnectingMessageComponent
     ],
     entryComponents: [
 

@@ -60,6 +60,14 @@ import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
         <ngx-remote-desktop [manager]="manager">
             <ngx-remote-desktop-toolbar-item (click)="handleScreenshot()" align="left">Take screenshot</ngx-emote-desktop-toolbar-item>
             <ngx-remote-desktop-toolbar-item (click)="handleHelp()" align="right">Help</ngx-remote-desktop-toolbar-item>
+            <ngx-remote-desktop-connecting-message>
+                <div class="ngx-remote-desktop-message-title ngx-remote-desktop-message-title-success">
+                    CONNECTING TO REMOTE DESKTOP
+                </div>
+                <div class="ngx-remote-desktop-message-body">
+                    Attempting to connect to the remote desktop. Waiting for response..
+                </div>
+            </ngx-remote-desktop-connecting-message>
         </ngx-remote-desktop>
     `
 })

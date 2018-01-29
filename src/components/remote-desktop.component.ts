@@ -6,13 +6,18 @@ import {
     ElementRef,
     ViewEncapsulation,
     HostListener,
-    OnChanges
+    OnChanges,
+    forwardRef,
+    ContentChild
 } from '@angular/core';
 
 import { RemoteDesktopManager } from '../services';
 import { Observable } from 'rxjs';
 import * as screenfull from 'screenfull';
 import { trigger, state, transition, animate, style } from '@angular/animations';
+import { ConnectingMessageComponent } from './messages/connecting-message.component';
+import { DisconnectedMessageComponent } from './messages/disconnected-message.component';
+import { ErrorMessageComponent } from './messages/error-message.component';
 
 /**
  * The main component for displaying a remote desktop
@@ -40,36 +45,62 @@ import { trigger, state, transition, animate, style } from '@angular/animations'
                 </ul>
             </nav>
             <section class="ngx-remote-desktop-container">
-                <ngx-remote-desktop-message *ngIf="isState(states.CONNECTING)"
-                    [title]="messages.state.connecting.title"
-                    [message]="messages.state.connecting.message"
-                    type="success">
-                </ngx-remote-desktop-message>
+                <!-- Connecting message -->
+                <div *ngIf="isState(states.CONNECTING)">
+                    <div class="ngx-remote-desktop-message" *ngIf="connectingMessage" >
+                        <ng-content select="ngx-remote-desktop-connecting-message"></ng-content>
+                    </div>
+        
+                    <ngx-remote-desktop-message  *ngIf="!connectingMessage"
+                        title="Connecting to remote desktop"
+                        message="Attempting to connect to the remote desktop. Waiting for response..."
+                        type="success">
+                    </ngx-remote-desktop-message>
+                </div>
+                <!-- End connecting message -->
 
-                <ngx-remote-desktop-message *ngIf="isState(states.ERROR)"
-                    [title]="messages.state.error.title"
-                    [message]="messages.state.error.message"
-                    type="error">
-                    <button (click)="handleConnect()" class="ngx-remote-desktop-message-body-btn">
-                        {{ messages.state.error.connect }}
-                    </button>
-                </ngx-remote-desktop-message>
+                <!-- Disconnected message -->
+                <div *ngIf="isState(states.DISCONNECTED)">
+                    <div class="ngx-remote-desktop-message" *ngIf="disconnectedMessage">
+                        <ng-content select="ngx-remote-desktop-disconnected-message"></ng-content>
+                    </div>
+                    <ngx-remote-desktop-message *ngIf="!disconnectedMessage"
+                        title="Disconnected"
+                        message="The connection to the remote desktop terminated successfully"
+                        type="error">
+                        <button (click)="handleConnect()" class="ngx-remote-desktop-message-body-btn">
+                            Reconnect
+                        </button>
+                    </ngx-remote-desktop-message>
+                </div>
+                <!-- End disconnected message -->
+                
+                <!-- Error message -->
+                <div *ngIf="isState(states.ERROR)">
 
-                <ngx-remote-desktop-message *ngIf="isState(states.DISCONNECTED)"
-                    [title]="messages.state.disconnected.title"
-                    [message]="messages.state.disconnected.message"
-                    type="error">
-                    <button (click)="handleConnect()" class="ngx-remote-desktop-message-body-btn">
-                        {{ messages.state.disconnected.reconnect }}
-                    </button>
-                </ngx-remote-desktop-message>
+                    <div class="ngx-remote-desktop-message" *ngIf="errorMessage">
+                        <ng-content select="ngx-remote-desktop-error-message"></ng-content>
+                    </div>
 
+                    <ngx-remote-desktop-message *ngIf="!errorMessage"
+                        title="Connection error"
+                        message="The remote desktop server is currently unreachable."
+                        type="error">
+                        <button (click)="handleConnect()" class="ngx-remote-desktop-message-body-btn">
+                            Connect
+                        </button>
+                    </ngx-remote-desktop-message>
+                </div>
+                <!-- End error message -->
+                
+                <!-- Display -->
                 <ngx-remote-desktop-display *ngIf="isState(states.CONNECTED)" 
                     [manager]="manager"
                     [isFullScreen]="isFullScreen"
                     [isFocused]="manager.isFocused"
                     (onMouseMove)="handleDisplayMouseMove($event)">
                 </ngx-remote-desktop-display>                
+                <!-- End display -->
             </section>
         </main>
     `,
@@ -96,25 +127,17 @@ export class RemoteDesktopComponent implements OnInit {
     @Input()
     private messages: any = {
         enterFullScreen: 'Full screen',
-        exitFullScreen: 'Exit Full screen',
-        state: {
-            disconnected: {
-                title: 'Disconnected',
-                message: 'The connection to the remote desktop terminated successfully',
-                reconnect: 'Reconnect'
-
-            },
-            connecting: {
-                title: 'Connecting to remote desktop',
-                message: 'Attempting to connect to the remote desktop. Waiting for response...',
-            },
-            error: {
-                title: 'Connection error',
-                message: `The remote desktop server is currently unreachable.`,
-                connect: 'Connect'
-            }
-        }
+        exitFullScreen: 'Exit Full screen'
     };
+
+    @ContentChild(ConnectingMessageComponent)
+    private connectingMessage: ConnectingMessageComponent;
+
+    @ContentChild(DisconnectedMessageComponent)
+    private disconnectedMessage: DisconnectedMessageComponent;
+
+    @ContentChild(ErrorMessageComponent)
+    private errorMessage: ErrorMessageComponent;
 
     @ViewChild('container')
     private container: ElementRef;
