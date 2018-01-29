@@ -25,7 +25,7 @@ For a full implementation example, see the [demo source code](https://github.com
 
 ## Installation
 
-To use ngx-remote-desktop in your project, install it via npm:
+To use `ngx-remote-desktop` in your project, install it via npm:
 
 ```
 npm i @illgrenoble/ngx-remote-desktop --save

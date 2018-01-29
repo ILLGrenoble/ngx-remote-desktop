@@ -23,7 +23,7 @@ import { trigger, state, transition, animate, style } from '@angular/animations'
         <main class="ngx-remote-desktop" #container>
             <nav class="ngx-remote-desktop-toolbar" 
                 [class.ngx-remote-desktop-toolbar-fullscreen]="isFullScreen" 
-                    [@fadeInOut]="toolbarVisible">
+                    [@fadeInOut]="toolbarVisible" #toolbar>
                 <ul class="ngx-remote-desktop-toolbar-items">
                     <ng-content select='ngx-remote-desktop-toolbar-item[align=left]'></ng-content>
                 </ul>
@@ -77,7 +77,7 @@ import { trigger, state, transition, animate, style } from '@angular/animations'
     animations: [
         trigger('fadeInOut', [
             state('1', style({ display: 'visible' })),
-            state('0', style({ opacity: 0, display: 'none' })),
+            state('0', style({ opacity: 0, visibility: 'hidden' })),
             transition('1 => 0', animate('1000ms')),
             transition('0 => 1', animate('0ms'))
         ])
@@ -118,6 +118,9 @@ export class RemoteDesktopComponent implements OnInit {
 
     @ViewChild('container')
     private container: ElementRef;
+
+    @ViewChild('toolbar')
+    private toolbar: ElementRef;
 
     /**
      * Full screen mode defaults to false until toggled by the user
@@ -241,8 +244,7 @@ export class RemoteDesktopComponent implements OnInit {
      * @param x
      */
     private showOrHideToolbar(x: number): void {
-        const toolbarWidth = 170;
-
+        const toolbarWidth = this.toolbar.nativeElement.clientWidth;
         if (x >= -1 && x <= 0) {
             this.toolbarVisible = 1;
         }

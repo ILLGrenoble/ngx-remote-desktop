@@ -27,7 +27,8 @@
     "package:replace-scss": "node ./config/replace-scss.js",
     "package:css": "node-sass -o release/ src/themes && node-sass -o release/components src/components",
     "package:minify": "uglifyjs release/index.js --source-map --compress --mangle --screw-ie8 --output release/index.min.js",
-    "docs": "./node_modules/.bin/compodoc src -p tsconfig.json -n 'ngx-remote-desktop' --includes additional-doc"
+    "docs": "./node_modules/.bin/compodoc src -p tsconfig.json -n 'ngx-remote-desktop' --includes additional-doc",
+    "docs:watch": "./node_modules/.bin/compodoc src -p tsconfig.json -n 'ngx-remote-desktop' -s -w --includes additional-doc"
   },
   "repository": {
     "type": "git",
@@ -45,6 +46,7 @@
     "angular2",
     "desktop",
     "remote",
+    "ngx",
     "guacamole"
   ],
   "peerDependencies": {
@@ -56,7 +58,9 @@
     "@angular/platform-browser-dynamic": ">=4.0.1 || >5.0.0",
     "@angular/animations": ">=4.0.1 || >5.0.0",
     "core-js": "^2.4.0",
-    "rxjs": "^5.0.0",
+    "rxjs": "^5.0.0"
+  },
+  "dependencies": {
     "@illgrenoble/guacamole-common-js": "^0.9.14",
     "screenfull": "^3.3.2"
   },

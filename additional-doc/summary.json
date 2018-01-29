@@ -6,5 +6,9 @@
     {
         "title": "Usage",
         "file": "usage.md"
+    },
+    {
+        "title": "Styling",
+        "file": "styling.md"
     }
 ]
