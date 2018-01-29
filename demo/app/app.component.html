@@ -1,5 +1,5 @@
 <div class="vdi-container">
-  <ngx-remote-desktop [manager]="manager" [focused]="isRemoteDesktopFocused">
+  <ngx-remote-desktop [manager]="manager">
     <ngx-remote-desktop-toolbar-item align="left" 
       [hidden]="!isConnected()"
       (click)="handleScreenshot()">

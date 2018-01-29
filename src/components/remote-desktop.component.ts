@@ -67,7 +67,7 @@ import { trigger, state, transition, animate, style } from '@angular/animations'
                 <ngx-remote-desktop-display *ngIf="isState(states.CONNECTED)" 
                     [manager]="manager"
                     [isFullScreen]="isFullScreen"
-                    [isFocused]="isFocused"
+                    [isFocused]="manager.isFocused"
                     (onMouseMove)="handleDisplayMouseMove($event)">
                 </ngx-remote-desktop-display>                
             </section>
@@ -89,12 +89,6 @@ export class RemoteDesktopComponent implements OnInit {
      */
     @Input()
     private manager: RemoteDesktopManager;
-
-    /**
-     * Binds the display input listeners (keyboard and mouse) if set to true
-     */
-    @Input('focused')
-    private isFocused = true;
 
     /**
      * Message overrides for localisation

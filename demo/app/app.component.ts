@@ -16,14 +16,6 @@ import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
 export class AppComponent implements OnInit {
     private manager: RemoteDesktopManager;
 
-    /**
-     * The keyboard and mouse input listeners to the remote display are only bound when
-     * this is set to true.
-     * Set this to false if you need to use the keyboard or mouse inside another component outside
-     * of the display
-     */
-    private isRemoteDesktopFocused = true;
-
     constructor(private ngbModal: NgbModal, private notificationService: NotificationsService) {
 
     }
@@ -37,11 +29,11 @@ export class AppComponent implements OnInit {
     }
 
     isConnected() {
-        return this.manager.isState('CONNECTED');
+        return this.manager.isConnected();
     }
 
     createModal(classRef) {
-        this.isRemoteDesktopFocused = false;
+        this.manager.setIsFocused(false);
         const modal = this.ngbModal.open(classRef, {
             size: 'lg',
             windowClass: 'modal-xxl',
@@ -71,9 +63,9 @@ export class AppComponent implements OnInit {
     handleClipboard(): void {
         const modal = this.createModal(ClipboardModalComponent);
         modal.result.then((text) => {
-            this.isRemoteDesktopFocused = true;
+            this.manager.setIsFocused(true);
             this.manager.sendRemoteClipboardData(text);
-        }, () => this.isRemoteDesktopFocused = true);
+        }, () => this.manager.setIsFocused(true));
     }
 
     handleReconnect(): void {

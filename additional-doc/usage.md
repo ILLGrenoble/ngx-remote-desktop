@@ -10,21 +10,13 @@ import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
 @Component({
     selector: 'app-root',
     template:`
-        <ngx-remote-desktop [manager]="manager" [focused]="isRemoteDesktopFocused">
+        <ngx-remote-desktop [manager]="manager">
         </ngx-remote-desktop>
     `
 })
 export class AppComponent implements OnInit {
 
     private manager: RemoteDesktopManager;
-
-    /**
-     * The keyboard and mouse input listeners to the remote display are only bound when
-     * this is set to true.
-     * Set this to false if you need to use the keyboard or mouse inside another component outside
-     * of the display
-     */
-    private isRemoteDesktopFocused = true;
 
     ngOnInit() {
         // Setup tunnel. The tunnel can be either: WebsocketTunnel, HTTPTunnel or ChainedTunnel
@@ -65,7 +57,7 @@ import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
 @Component({
     selector: 'app-root',
     template:`
-        <ngx-remote-desktop [manager]="manager" [focused]="isRemoteDesktopFocused">
+        <ngx-remote-desktop [manager]="manager">
             <ngx-remote-desktop-toolbar-item (click)="handleScreenshot()" align="left">Take screenshot</ngx-emote-desktop-toolbar-item>
             <ngx-remote-desktop-toolbar-item (click)="handleHelp()" align="right">Help</ngx-remote-desktop-toolbar-item>
         </ngx-remote-desktop>
@@ -75,8 +67,6 @@ export class AppComponent implements OnInit {
 
     private manager: RemoteDesktopManager;
     
-    private isRemoteDesktopFocused = true;
-
     handleHelp() {
         console.log('Hello help');
     }
@@ -117,12 +107,17 @@ export class AppComponent implements OnInit {
 }
 ```
 
-
 # Other features
 
 All of these features below are used in the demo application.
 
 The `RemoteDesktopManager` exposes some useful methods.
+
+#### Focusing and unfocusing the display
+Sometimes you need to unfocus the display so you can use keyboard events inside another component (i.e. text input inside a modal)
+```typescript
+  this.manager.setIsFocused(true|false);
+```
 
 #### Screenshot
 Take a screenshot of the connected remote desktop.

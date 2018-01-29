@@ -23,5 +23,13 @@ By default, the only toolbar item available is to allow the user to go in and ou
 
 For a full implementation example, see the [demo source code](https://github.com/ILLGrenoble/ngx-remote-desktop/tree/master/demo).
 
+## Installation
+
+To use ngx-remote-desktop in your project, install it via npm:
+
+```
+npm i @illgrenoble/ngx-remote-desktop --save
+```
+
 ### Thank you
-Thank you to the guacamole team for a fantastic project
+Thank you to the guacamole team for a fantastic project.

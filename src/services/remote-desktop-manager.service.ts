@@ -87,6 +87,14 @@ export class RemoteDesktopManager {
     private state = RemoteDesktopManager.STATE.IDLE;
 
     /**
+     * The keyboard and mouse input listeners to the remote display are only bound when
+     * this is set to true.
+     * Set this to false if you need to use the keyboard or mouse inside another component outside
+     * of the display
+     */
+    private isFocused = true;
+
+    /**
      * The dimensions parameters to send to the tunnel.
      * This can be overridden by using  {@link setDimensionParameters}
      */
@@ -115,6 +123,14 @@ export class RemoteDesktopManager {
      */
     public isState(state: string): boolean {
         return state === this.state;
+    }
+
+    /**
+     * Set display focus
+     * @param focused
+     */
+    public setIsFocused(focused) {
+        this.isFocused = focused;
     }
 
     /**
