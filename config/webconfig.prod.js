@@ -40,13 +40,9 @@ module.exports = function(env) {
         minChunks: Infinity
       }),
       new HtmlWebpackPlugin({
-        template: 'demo/index.ejs',
+        template: 'demo/index.html',
         chunksSortMode: 'dependency',
-        title: 'ngx-datatable',
-        googleAnalytics: {
-          trackingId: 'UA-57474611-3',
-          pageViewOnLoad: true
-        }
+        title: 'ngx-remote-desktop'
       }),
       new CleanWebpackPlugin(['dist'], {
         root: dir(),

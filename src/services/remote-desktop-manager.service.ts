@@ -97,7 +97,7 @@ export class RemoteDesktopManager {
      * @param tunnel  WebsocketTunnel, HTTPTunnel or ChainedTunnel
      * @param parameters Query parameters to send to the tunnel url
      */
-    constructor(tunnel: WebSocketTunnel | HTTPTunnel | ChainedTunnel, private parameters = {}) {
+    constructor(tunnel: any, private parameters = {}) {
         this.tunnel = tunnel;
         this.client = new Client(this.tunnel);
     }

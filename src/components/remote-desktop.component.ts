@@ -74,7 +74,6 @@ import { trigger, state, transition, animate, style } from '@angular/animations'
         </main>
     `,
     encapsulation: ViewEncapsulation.None,
-    styleUrls: ['../themes/default.scss'],
     animations: [
         trigger('fadeInOut', [
             state('1', style({ display: 'visible' })),

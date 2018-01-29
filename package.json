@@ -3,6 +3,8 @@
   "description": "ngx-remote-desktop is an Angular2+ module for connecting to a remote desktop using the guacamole protocol",
   "version": "0.0.0",
   "license": "MIT",
+  "main": "release/index.js",
+  "typings": "release/index.d.ts",
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack --display-error-details",
@@ -36,6 +38,28 @@
     "url": "https://github.com/ILLGrenoble/ngx-remote-desktop"
   },
   "homepage": "https://github.com/ILLGrenoble/ngx-remote-desktop",
+  "keywords": [
+    "angularjs",
+    "angular",
+    "javascript",
+    "angular2",
+    "desktop",
+    "remote",
+    "guacamole"
+  ],
+  "peerDependencies": {
+    "@angular/common": ">=4.0.1 || >5.0.0",
+    "@angular/compiler": ">=4.0.1 || >5.0.0",
+    "@angular/core": ">=4.0.1 || >5.0.0",
+    "@angular/http": ">=4.0.1 || >5.0.0",
+    "@angular/platform-browser": ">=4.0.1 || >5.0.0",
+    "@angular/platform-browser-dynamic": ">=4.0.1 || >5.0.0",
+    "@angular/animations": ">=4.0.1 || >5.0.0",
+    "core-js": "^2.4.0",
+    "rxjs": "^5.0.0",
+    "@illgrenoble/guacamole-common-js": "^0.9.14",
+    "screenfull": "^3.3.2"
+  },
   "private": false,
   "devDependencies": {
     "@angular/animations": "5.0.0",
@@ -43,7 +67,6 @@
     "@angular/compiler": "5.0.0",
     "@angular/compiler-cli": "5.0.0",
     "@angular/core": "5.0.0",
-    "@angular/forms": "5.0.0",
     "@angular/http": "5.0.0",
     "@angular/platform-browser": "5.0.0",
     "@angular/platform-browser-dynamic": "5.0.0",
@@ -92,12 +115,8 @@
     "webpack-combine-loaders": "^2.0.3",
     "webpack-dev-server": "^2.9.2",
     "webpack-merge": "^4.1.0",
-    "zone.js": "^0.8.18"
-  },
-  "dependencies": {
+    "zone.js": "^0.8.18",
     "@illgrenoble/guacamole-common-js": "^0.9.14",
-    "@ngtools/webpack": "^1.9.6",
-    "screenfull": "^3.3.2",
-    "zen-observable": "^0.7.1"
+    "screenfull": "^3.3.2"
   }
 }

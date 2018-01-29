@@ -3,32 +3,37 @@ const webpackMerge = require('webpack-merge');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const commonConfig = require('./webpack.common');
-const { ENV, dir, APP_VERSION } = require('./helpers');
-const { CheckerPlugin } = require('awesome-typescript-loader');
-// const ngtools = require('@ngtools/webpack');
+const {
+  ENV,
+  dir,
+  APP_VERSION
+} = require('./helpers');
+const {
+  CheckerPlugin
+} = require('awesome-typescript-loader');
 
 const banner =
-`/**
- * angular2-data-table v${APP_VERSION} (https://github.com/swimlane/angular2-data-table)
- * Copyright 2016
+  `/**
+ * ngx-remote-desktop v${APP_VERSION} (https://github.com/ILLGrenoble/ngx-remote-desktop)
+ * Copyright 2018
  * Licensed under MIT
  */`;
 
-module.exports = function(env) {
-  return webpackMerge(commonConfig({ env: ENV }), {
+module.exports = function (env) {
+  return webpackMerge(commonConfig({
+    env: ENV
+  }), {
     devtool: 'source-map',
     module: {
       exprContextCritical: false,
-      rules: [
-        {
-          test: /\.ts$/,
-          loaders: [
-            'awesome-typescript-loader',
-            'angular2-template-loader'
-          ],
-          exclude: [/\.(spec|e2e|d)\.ts$/]
-        }
-      ]
+      rules: [{
+        test: /\.ts$/,
+        loaders: [
+          'awesome-typescript-loader',
+          'angular2-template-loader'
+        ],
+        exclude: [/\.(spec|e2e|d)\.ts$/]
+      }]
     },
     entry: {
       'index': './src/index.ts'
@@ -44,7 +49,7 @@ module.exports = function(env) {
       '@angular/platform-browser': '@angular/platform-browser',
       '@angular/core': '@angular/core',
       '@angular/common': '@angular/common',
-      '@angular/forms': '@angular/forms',
+      '@angular/animations': '@angular/animations',
       'core-js': 'core-js',
       'core-js/es6': 'core-js/es6',
       'core-js/es7/reflect': 'core-js/es7/reflect',
@@ -52,10 +57,13 @@ module.exports = function(env) {
       'rxjs/Rx': 'rxjs/Rx',
       'rxjs/Observable': 'rxjs/Observable',
       'rxjs/BehaviorSubject': 'rxjs/BehaviorSubject',
-      'rxjs/observable/fromEvent': 'rxjs/observable/fromEvent',
+      'rxjs/ReplaySubject': 'rxjs/ReplaySubject',
       'rxjs/Subscription': 'rxjs/Subscription',
       'rxjs/operators': 'rxjs/operators',
-      'zone.js/dist/zone': 'zone.js/dist/zone'
+      'zone.js/dist/zone': 'zone.js/dist/zone',
+      'screenfull': 'screenfull',
+      '@illgrenoble/guacamole-common-js': '@illgrenoble/guacamole-common-js'
+
     },
     plugins: [
       new webpack.optimize.ModuleConcatenationPlugin(),
@@ -64,19 +72,7 @@ module.exports = function(env) {
         banner: banner,
         raw: true,
         entryOnly: true
-      }),
-      /*
-      new ngtools.AotPlugin({
-        tsConfigPath: 'tsconfig-aot.json',
-        baseDir: dir()
-        entryModule: dir('datatable.module.ts') + '#Angular2DataTableModule'
-      }),
-      new CleanWebpackPlugin(['release'], {
-        root: dir(),
-        verbose: false,
-        dry: false
       })
-      */
     ]
   });
 
