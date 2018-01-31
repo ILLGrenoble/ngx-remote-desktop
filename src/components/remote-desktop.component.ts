@@ -89,7 +89,6 @@ import { ErrorMessageComponent } from './messages/error-message.component';
                 <!-- Display -->
                 <ngx-remote-desktop-display *ngIf="isState(states.CONNECTED)" 
                     [manager]="manager"
-                    [focused]="focused"
                     (onMouseMove)="handleDisplayMouseMove($event)">
                 </ngx-remote-desktop-display>                
                 <!-- End display -->
@@ -122,22 +121,11 @@ export class RemoteDesktopComponent implements OnInit, DoCheck {
     @ContentChild(ErrorMessageComponent)
     private errorMessage: ErrorMessageComponent;
 
-    @ContentChild(ConnectingMessageComponent)
-    private connectingMessage: ConnectingMessageComponent;
-
-    @ContentChild(DisconnectedMessageComponent)
-    private disconnectedMessage: DisconnectedMessageComponent;
-
-    @ContentChild(ErrorMessageComponent)
-    private errorMessage: ErrorMessageComponent;
-
     @ViewChild('container')
     private container: ElementRef;
 
     @ViewChild('toolbar')
     private toolbar: ElementRef;
-
-    private focused = true;
 
     /**
      * Hide or show the toolbar
@@ -172,11 +160,6 @@ export class RemoteDesktopComponent implements OnInit, DoCheck {
      */
     ngDoCheck(): void {
         this.handleFullScreen();
-        if (this.manager.isFocused()) {
-            this.focused = true;
-        } else {
-            this.focused = false;
-        }
     }
 
     /**
@@ -231,6 +214,9 @@ export class RemoteDesktopComponent implements OnInit, DoCheck {
      * Exit full screen and show the toolbar
      */
     private exitFullScreen(): void {
+        if (!screenfull.isFullscreen) {
+            return;
+        }
         this.manager.setFullScreen(false);
         const containerElement = this.container.nativeElement;
         screenfull.exit(containerElement);
@@ -240,6 +226,9 @@ export class RemoteDesktopComponent implements OnInit, DoCheck {
      * Enter full screen mode and auto hide the toolbar
      */
     private enterFullScreen(): void {
+        if (screenfull.isFullscreen) {
+            return;
+        }
         const containerElement = this.container.nativeElement;
         screenfull.request(containerElement);
         screenfull.on('change', (change: any) => {

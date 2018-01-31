@@ -28,10 +28,6 @@ export class AppComponent implements OnInit {
         });
     }
 
-    isConnected() {
-        return this.manager.isConnected();
-    }
-
     createModal(classRef) {
         this.manager.setFocused(false);
         const modal = this.ngbModal.open(classRef, {
@@ -44,17 +40,6 @@ export class AppComponent implements OnInit {
         return modal;
     }
 
-    handleShareDesktop(): void {
-        alert('Not implemented :(');
-    }
-
-    handleHelp(): void {
-        alert('Not implemented :(');
-    }
-
-    handleSettings(): void {
-        alert('Not implemented :(');
-    }
 
     handleDisconnect(): void {
         this.manager.getClient().disconnect();
@@ -74,10 +59,6 @@ export class AppComponent implements OnInit {
             this.manager.setFocused(true);
             this.manager.sendRemoteClipboardData(text);
         }, () => this.manager.setFocused(true));
-    }
-
-    handleReconnect(): void {
-        this.manager.connect();
     }
 
     ngOnInit() {
