@@ -122,6 +122,15 @@ export class RemoteDesktopComponent implements OnInit, DoCheck {
     @ContentChild(ErrorMessageComponent)
     private errorMessage: ErrorMessageComponent;
 
+    @ContentChild(ConnectingMessageComponent)
+    private connectingMessage: ConnectingMessageComponent;
+
+    @ContentChild(DisconnectedMessageComponent)
+    private disconnectedMessage: DisconnectedMessageComponent;
+
+    @ContentChild(ErrorMessageComponent)
+    private errorMessage: ErrorMessageComponent;
+
     @ViewChild('container')
     private container: ElementRef;
 

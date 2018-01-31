@@ -13,10 +13,8 @@
     <ngx-remote-desktop-toolbar-item [hidden]="!isConnected()" (click)="handleDisconnect()" align="right"><i class="fa fa-sign-out"> </i> Disconnect</ngx-remote-desktop-toolbar-item>
     <ngx-remote-desktop-toolbar-item (click)="handleSettings()" align="right"><i class="fa fa-cog"> </i> Settings</ngx-remote-desktop-toolbar-item>
     <ngx-remote-desktop-toolbar-item (click)="handleHelp()" align="right"><i class="fa fa-info-circle"> </i> Help</ngx-remote-desktop-toolbar-item>
-
     <ngx-remote-desktop-toolbar-item (click)="handleEnterFullScreen()" *ngIf="!manager.isFullScreen()" align="right">Enter full screen</ngx-remote-desktop-toolbar-item>
     <ngx-remote-desktop-toolbar-item (click)="handleExitFullScreen()" *ngIf="manager.isFullScreen()" align="right">Exit full screen</ngx-remote-desktop-toolbar-item>
-
     <!-- Override connection state messages -->
     <ngx-remote-desktop-connecting-message>
       <div class="ngx-remote-desktop-message-title ngx-remote-desktop-message-title-success">
