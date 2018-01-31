@@ -1,18 +1,18 @@
 <div class="vdi-container">
   <ngx-remote-desktop [manager]="manager">
-    <ngx-remote-desktop-toolbar-item align="left" [hidden]="!manager.isConnected()" (click)="handleScreenshot()">
+    <ngx-remote-desktop-toolbar-item align="left" *ngIf="manager.isConnected()" (click)="handleScreenshot()">
         <i class="fa fa-print"></i> Take screenshot
     </ngx-remote-desktop-toolbar-item>
-    <ngx-remote-desktop-toolbar-item align="left" [hidden]="!manager.isConnected()" (click)="handleClipboard()" >
+    <ngx-remote-desktop-toolbar-item align="left" *ngIf="manager.isConnected()" (click)="handleClipboard()" >
         <i class="fa fa-clipboard"> </i> Clipboard
     </ngx-remote-desktop-toolbar-item>
-    <ngx-remote-desktop-toolbar-item [hidden]="!manager.isConnected()" (click)="handleDisconnect()" align="right">
+    <ngx-remote-desktop-toolbar-item *ngIf="manager.isConnected()" (click)="handleDisconnect()" align="right">
       <i class="fa fa-sign-out"> </i> Disconnect
     </ngx-remote-desktop-toolbar-item>
-    <ngx-remote-desktop-toolbar-item (click)="handleEnterFullScreen()" *ngIf="!manager.isFullScreen()" align="right">
+    <ngx-remote-desktop-toolbar-item (click)="handleEnterFullScreen()" *ngIf="!manager.isFullScreen() && manager.isConnected()" align="right">
         <i class="fa fa-arrows-alt" aria-hidden="true"></i> Enter full screen
     </ngx-remote-desktop-toolbar-item>
-    <ngx-remote-desktop-toolbar-item (click)="handleExitFullScreen()" *ngIf="manager.isFullScreen()" align="right">
+    <ngx-remote-desktop-toolbar-item (click)="handleExitFullScreen()" *ngIf="manager.isFullScreen() && manager.isConnected()" align="right">
         Exit full screen
     </ngx-remote-desktop-toolbar-item>
     <!-- Override connection state messages -->
@@ -21,7 +21,7 @@
         CONNECTING TO REMOTE DESKTOP
       </div>
       <div class="ngx-remote-desktop-message-body">
-        Attempting to connect to the remote desktop. Waiting for response..
+        Attempting to connect to the remote desktop. Waiting for response...
       </div>
     </ngx-remote-desktop-connecting-message>
 

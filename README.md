@@ -8,7 +8,7 @@ It has been built for use with Angular 5.0.0+. It has been tested in Chrome, Fir
 
 There is no dependency on any presentation component library / framework (ng-bootstrap, clarity etc.). This component does not make any assertions about how the backend web socket broker to guacd is implemented.
 
-By default, the only toolbar item available is to allow the user to go in and out of full screen mode, however, you can add as many toolbar items as you wish and create a handler in your main component. You can also override the scss if you wish to change the styling. The `RemoteDesktopManager` exposes some useful methods for generating a screenshot or thumbnail, getting the client state, subscribing to the remote desktop clipboard and sending data to the remote desktop clipboard.
+By default, there are no toolbar items, however, you can add as many toolbar items as you wish and create a handler in your component. You can also override the scss if you wish to change the styling. The `RemoteDesktopManager` exposes some useful methods for generating a screenshot or thumbnail, entering and exiting full screen mode, focusing and unfocusing the display, getting the client state, subscribing to the remote desktop clipboard and sending data to the remote desktop clipboard.
 
 ![Screenshot](https://raw.githubusercontent.com/ILLGrenoble/ngx-remote-desktop/master/screenshot.png)
 
