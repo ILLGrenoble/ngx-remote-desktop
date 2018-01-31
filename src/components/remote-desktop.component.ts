@@ -93,6 +93,9 @@ import { ErrorMessageComponent } from './messages/error-message.component';
                 </ngx-remote-desktop-display>                
                 <!-- End display -->
             </section>
+            <section [class.ngx-remote-desktop-status-bar-hidden]="manager.isFullScreen()">
+                <ng-content select="ngx-remote-desktop-status-bar"></ng-content>
+            </section>
         </main>
     `,
     encapsulation: ViewEncapsulation.None,

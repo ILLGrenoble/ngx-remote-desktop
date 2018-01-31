@@ -63,7 +63,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         // Setup tunnel. The tunnel can be either: WebsocketTunnel, HTTPTunnel or ChainedTunnel
-        const tunnel = new WebSocketTunnel('ws://localhost:8080');
+        const tunnel = new WebSocketTunnel('ws://hallpclnx.ill.fr:8080');
         // URL parameters (image, audio and other query parameters you want to send to the tunnel.)
         const parameters = {
             ip: '192.168.13.232',

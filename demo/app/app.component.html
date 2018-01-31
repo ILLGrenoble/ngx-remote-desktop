@@ -1,5 +1,6 @@
 <div class="vdi-container">
   <ngx-remote-desktop [manager]="manager">
+    <!-- Toolbar items -->
     <ngx-remote-desktop-toolbar-item align="left" *ngIf="manager.isConnected()" (click)="handleScreenshot()">
         <i class="fa fa-print"></i> Take screenshot
     </ngx-remote-desktop-toolbar-item>
@@ -15,6 +16,7 @@
     <ngx-remote-desktop-toolbar-item (click)="handleExitFullScreen()" *ngIf="manager.isFullScreen() && manager.isConnected()" align="right">
         Exit full screen
     </ngx-remote-desktop-toolbar-item>
+
     <!-- Override connection state messages -->
     <ngx-remote-desktop-connecting-message>
       <div class="ngx-remote-desktop-message-title ngx-remote-desktop-message-title-success">
@@ -25,5 +27,12 @@
       </div>
     </ngx-remote-desktop-connecting-message>
 
+    <!-- Status bar -->
+    <ngx-remote-desktop-status-bar *ngIf="manager.isConnected()">
+      <span>
+        You are currently connected to: <strong>Machine 1</strong>
+      </span>
+      <span>Need help? Look at our <a href="#">documentation</a></span>
+    </ngx-remote-desktop-status-bar>
   </ngx-remote-desktop>
 </div>

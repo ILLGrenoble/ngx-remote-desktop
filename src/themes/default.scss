@@ -6,6 +6,9 @@ $ngx-remote-desktop-toolbar-width: 170px;
 $ngx-remote-desktop-viewport-background-color: #2f323a;
 $ngx-remote-desktop-font-family: inherit;
 $ngx-remote-desktop-background-color: #ffffff;
+$ngx-remote-desktop-status-bar-background-color: #007acc;
+$ngx-remote-desktop-status-bar-border-color: #005188;
+
 .ngx-remote-desktop {
     font-family: $ngx-remote-desktop-font-family;
     background: $ngx-remote-desktop-background-color;
@@ -15,6 +18,33 @@ $ngx-remote-desktop-background-color: #ffffff;
     flex-direction: column;
     display: flex;
     overflow: hidden;
+    .ngx-remote-desktop-status-bar-hidden {
+        display: none;
+    }
+    .ngx-remote-desktop-status-bar {
+        flex: 0 0 20px;
+        height: 20px;
+        width: 100%;
+        display: flex;
+        background: $ngx-remote-desktop-status-bar-background-color;
+        font-weight: 700;
+        font-size: 12px;
+        color: #fff;
+        padding: 0px 5px 0px 5px;
+        border-top: 1px solid $ngx-remote-desktop-status-bar-border-color;
+        justify-content: space-between;
+        a,
+        strong {
+            padding-right: 2px;
+            padding-left: 2px;
+            color: white;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        strong {
+            text-decoration: none;
+        }
+    }
     .ngx-remote-desktop-toolbar {
         flex: 0 0 35px;
         height: 35px;

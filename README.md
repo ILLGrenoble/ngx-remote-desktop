@@ -21,6 +21,7 @@ By default, there are no toolbar items, however, you can add as many toolbar ite
   - Get a thumbnail
   - Subscribe to the remote clipboard observable and receive remote clipboard data
   - Send data to the remote clipboard
+  - Status bar (optional) to provide contextual information
 
 For a full implementation example, see the [demo source code](https://github.com/ILLGrenoble/ngx-remote-desktop/tree/master/demo).
 

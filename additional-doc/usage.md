@@ -38,6 +38,11 @@ import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
                     Attempting to connect to the remote desktop. Waiting for response...
                 </div>
             </ngx-remote-desktop-connecting-message>
+
+            <!-- Status bar -->
+            <ngx-remote-desktop-status-bar *ngIf="manager.isConnected()">
+                Hello world!
+            </ngx-remote-desktop-status-bar>
         </ngx-remote-desktop>
     `
 })
