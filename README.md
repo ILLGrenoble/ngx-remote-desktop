@@ -1,4 +1,5 @@
 # ngx-remote-desktop
+[![npm version](https://badge.fury.io/js/%40illgrenoble%2Fngx-remote-desktop.svg)](https://badge.fury.io/js/%40illgrenoble%2Fngx-remote-desktop)
 
 For installation and usage details go [here](https://illgrenoble.github.io/ngx-remote-desktop/additional-documentation/installation.html)
 
