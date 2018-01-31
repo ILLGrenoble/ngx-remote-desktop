@@ -17,9 +17,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         BrowserAnimationsModule
     ],
     declarations: [
-        /**
-         * Components
-         */
         RemoteDesktopComponent,
         ToolbarItemComponent,
         MessageComponent,
@@ -27,9 +24,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         ErrorMessageComponent,
         DisconnectedMessageComponent,
         ConnectingMessageComponent
-        /**
-         * Directives
-         */
     ],
     exports: [
         RemoteDesktopComponent,

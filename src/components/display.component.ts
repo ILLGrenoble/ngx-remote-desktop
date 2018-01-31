@@ -49,14 +49,11 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
      */
     private mouse: Mouse;
 
-    @Input()
-    private isFullScreen = false;
-
     /**
      * Bind input listeners if display is focused, otherwise, unbind
      */
     @Input()
-    private isFocused = false;
+    private focused = false;
 
     constructor(private viewport: ElementRef) {
     }
@@ -75,12 +72,20 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
         this.removeDisplayInputListeners();
     }
 
+    ngDoCheck() {
+        if(this.focused) {
+            this.bindDisplayInputListeners();
+        } else {
+            this.removeDisplayInputListeners();
+        }
+    }
+
     /**
      * Rescale the display when any changes are detected
      * @param changes 
      */
     ngOnChanges(changes: any): void {
-        const isFocused = changes.isFocused;
+        const isFocused = changes.focused;
         if (isFocused && !isFocused.firstChange) {
             this.bindDisplayInputListeners();
         }
@@ -139,6 +144,7 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
         return this.manager.getClient();
     }
 
+
     /**
      * Calculate the scale for the display
      */
@@ -167,7 +173,7 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
      */
     private bindDisplayInputListeners(): void {
         this.removeDisplayInputListeners();
-        if (this.isFocused) {
+        if (this.focused) {
             this.mouse.onmousedown = this.mouse.onmouseup = this.mouse.onmousemove = this.handleMouseState.bind(this);
             this.keyboard.onkeyup = this.handleKeyUp.bind(this);
             this.keyboard.onkeydown = this.handleKeyDown.bind(this);

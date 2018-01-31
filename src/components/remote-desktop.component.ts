@@ -8,7 +8,8 @@ import {
     HostListener,
     OnChanges,
     forwardRef,
-    ContentChild
+    ContentChild,
+    DoCheck
 } from '@angular/core';
 
 import { RemoteDesktopManager } from '../services';
@@ -27,21 +28,13 @@ import { ErrorMessageComponent } from './messages/error-message.component';
     template: `
         <main class="ngx-remote-desktop" #container>
             <nav class="ngx-remote-desktop-toolbar" 
-                [class.ngx-remote-desktop-toolbar-fullscreen]="isFullScreen" 
+                [class.ngx-remote-desktop-toolbar-fullscreen]="manager.isFullScreen()" 
                     [@fadeInOut]="toolbarVisible" #toolbar>
                 <ul class="ngx-remote-desktop-toolbar-items">
                     <ng-content select='ngx-remote-desktop-toolbar-item[align=left]'></ng-content>
                 </ul>
                 <ul class="ngx-remote-desktop-toolbar-items">
                     <ng-content select='ngx-remote-desktop-toolbar-item[align=right]'></ng-content>
-                    <ngx-remote-desktop-toolbar-item (click)="handleFullScreen()" *ngIf="!isFullScreen" 
-                        [hidden]="!isState('CONNECTED')">
-                        <i class="fa fa-arrows-alt"> </i> {{ messages.enterFullScreen }}
-                    </ngx-remote-desktop-toolbar-item>
-                    <ngx-remote-desktop-toolbar-item (click)="handleFullScreen()" *ngIf="isFullScreen" 
-                        [hidden]="!isState('CONNECTED')">
-                        <i class="fa fa-arrows-alt"> </i> {{ messages.exitFullScreen }}
-                    </ngx-remote-desktop-toolbar-item>
                 </ul>
             </nav>
             <section class="ngx-remote-desktop-container">
@@ -96,8 +89,7 @@ import { ErrorMessageComponent } from './messages/error-message.component';
                 <!-- Display -->
                 <ngx-remote-desktop-display *ngIf="isState(states.CONNECTED)" 
                     [manager]="manager"
-                    [isFullScreen]="isFullScreen"
-                    [isFocused]="manager.isFocused"
+                    [focused]="focused"
                     (onMouseMove)="handleDisplayMouseMove($event)">
                 </ngx-remote-desktop-display>                
                 <!-- End display -->
@@ -114,21 +106,21 @@ import { ErrorMessageComponent } from './messages/error-message.component';
         ])
     ],
 })
-export class RemoteDesktopComponent implements OnInit {
+export class RemoteDesktopComponent implements OnInit, DoCheck {
     /**
      * Client that manages the connection to the remote desktop
      */
     @Input()
     private manager: RemoteDesktopManager;
 
-    /**
-     * Message overrides for localisation
-     */
-    @Input()
-    private messages: any = {
-        enterFullScreen: 'Full screen',
-        exitFullScreen: 'Exit Full screen'
-    };
+    @ContentChild(ConnectingMessageComponent)
+    private connectingMessage: ConnectingMessageComponent;
+
+    @ContentChild(DisconnectedMessageComponent)
+    private disconnectedMessage: DisconnectedMessageComponent;
+
+    @ContentChild(ErrorMessageComponent)
+    private errorMessage: ErrorMessageComponent;
 
     @ContentChild(ConnectingMessageComponent)
     private connectingMessage: ConnectingMessageComponent;
@@ -145,15 +137,12 @@ export class RemoteDesktopComponent implements OnInit {
     @ViewChild('toolbar')
     private toolbar: ElementRef;
 
-    /**
-     * Full screen mode defaults to false until toggled by the user
-     */
-    private isFullScreen: boolean = false;
+    private focused = true;
 
     /**
      * Hide or show the toolbar
      */
-    private toolbarVisible: number = 1;
+    private toolbarVisible: boolean = true;
 
     /**
      * Manage the component state
@@ -176,6 +165,18 @@ export class RemoteDesktopComponent implements OnInit {
      */
     ngOnInit(): void {
         this.manager.onStateChange.subscribe(this.handleState.bind(this));
+    }
+
+    /**
+     * Check if the full screen or focused property has changed
+     */
+    ngDoCheck(): void {
+        this.handleFullScreen();
+        if (this.manager.isFocused()) {
+            this.focused = true;
+        } else {
+            this.focused = false;
+        }
     }
 
     /**
@@ -202,7 +203,7 @@ export class RemoteDesktopComponent implements OnInit {
     }
 
     /**
-     * Received the state from the desktop client and update this components state
+     * Receive the state from the desktop client and update this components state
      * @param newState - state received from the guacamole client
      */
     private handleState(newState: string) {
@@ -230,25 +231,38 @@ export class RemoteDesktopComponent implements OnInit {
      * Exit full screen and show the toolbar
      */
     private exitFullScreen(): void {
-        if (this.isFullScreen) {
-            this.handleFullScreen();
-        }
+        this.manager.setFullScreen(false);
+        const containerElement = this.container.nativeElement;
+        screenfull.exit(containerElement);
     }
 
     /**
-     * Enter or exit full screen mode
+     * Enter full screen mode and auto hide the toolbar
      */
-    private handleFullScreen(): void {
-        const element = this.container.nativeElement;
-        screenfull.toggle(element);
+    private enterFullScreen(): void {
+        const containerElement = this.container.nativeElement;
+        screenfull.request(containerElement);
         screenfull.on('change', (change: any) => {
-            this.isFullScreen = screenfull.isFullscreen;
+            if (!screenfull.isFullscreen) {
+                this.manager.setFullScreen(false);
+            }
             this.handleToolbar();
         });
     }
 
+    /**
+     * Go in and out of full screen
+     */
+    private handleFullScreen(): void {
+        if (this.manager.isFullScreen()) {
+            this.enterFullScreen();
+        } else {
+            this.exitFullScreen();
+        }
+    }
+
     private handleToolbar(): void {
-        this.toolbarVisible = (this.isFullScreen) ? 0 : 1;
+        this.toolbarVisible = (this.manager.isFullScreen()) ? false : true;
     }
 
     /**
@@ -256,7 +270,7 @@ export class RemoteDesktopComponent implements OnInit {
      * @param event Mouse event
      */
     private handleDisplayMouseMove($event: any): void {
-        if (!this.isFullScreen) {
+        if (!this.manager.isFullScreen()) {
             return;
         }
         this.showOrHideToolbar($event.x);
@@ -264,15 +278,15 @@ export class RemoteDesktopComponent implements OnInit {
 
     /**
      * Show or hide the toolbar
-     * @param x
+     * @param x - Mouse x coordinate respective to the container
      */
     private showOrHideToolbar(x: number): void {
         const toolbarWidth = this.toolbar.nativeElement.clientWidth;
         if (x >= -1 && x <= 0) {
-            this.toolbarVisible = 1;
+            this.toolbarVisible = true;
         }
         if (x >= toolbarWidth) {
-            this.toolbarVisible = 0;
+            this.toolbarVisible = false;
         }
     }
 }

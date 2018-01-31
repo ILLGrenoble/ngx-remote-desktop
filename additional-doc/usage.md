@@ -124,7 +124,7 @@ The `RemoteDesktopManager` exposes some useful methods.
 #### Focusing and unfocusing the display
 Sometimes you need to unfocus the display so you can use keyboard events inside another component (i.e. text input inside a modal)
 ```typescript
-  this.manager.setIsFocused(true|false);
+  this.manager.setFocused(true|false);
 ```
 
 #### Screenshot
