@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
     }
 
     createModal(classRef) {
-        this.manager.setIsFocused(false);
+        this.manager.setFocused(false);
         const modal = this.ngbModal.open(classRef, {
             size: 'lg',
             windowClass: 'modal-xxl',
@@ -60,12 +60,20 @@ export class AppComponent implements OnInit {
         this.manager.getClient().disconnect();
     }
 
+    handleEnterFullScreen() {
+        this.manager.setFullScreen(true);
+    }
+
+    handleExitFullScreen() {
+        this.manager.setFullScreen(false);
+    }
+
     handleClipboard(): void {
         const modal = this.createModal(ClipboardModalComponent);
         modal.result.then((text) => {
-            this.manager.setIsFocused(true);
+            this.manager.setFocused(true);
             this.manager.sendRemoteClipboardData(text);
-        }, () => this.manager.setIsFocused(true));
+        }, () => this.manager.setFocused(true));
     }
 
     handleReconnect(): void {

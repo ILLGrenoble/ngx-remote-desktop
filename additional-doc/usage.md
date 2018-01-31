@@ -60,6 +60,14 @@ import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
         <ngx-remote-desktop [manager]="manager">
             <ngx-remote-desktop-toolbar-item (click)="handleScreenshot()" align="left">Take screenshot</ngx-emote-desktop-toolbar-item>
             <ngx-remote-desktop-toolbar-item (click)="handleHelp()" align="right">Help</ngx-remote-desktop-toolbar-item>
+            <ngx-remote-desktop-connecting-message>
+                <div class="ngx-remote-desktop-message-title ngx-remote-desktop-message-title-success">
+                    CONNECTING TO REMOTE DESKTOP
+                </div>
+                <div class="ngx-remote-desktop-message-body">
+                    Attempting to connect to the remote desktop. Waiting for response..
+                </div>
+            </ngx-remote-desktop-connecting-message>
         </ngx-remote-desktop>
     `
 })
@@ -116,7 +124,7 @@ The `RemoteDesktopManager` exposes some useful methods.
 #### Focusing and unfocusing the display
 Sometimes you need to unfocus the display so you can use keyboard events inside another component (i.e. text input inside a modal)
 ```typescript
-  this.manager.setIsFocused(true|false);
+  this.manager.setFocused(true|false);
 ```
 
 #### Screenshot
