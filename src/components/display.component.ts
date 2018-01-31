@@ -7,7 +7,8 @@ import {
     Output,
     OnChanges,
     OnDestroy,
-    HostListener
+    HostListener,
+    DoCheck
 } from '@angular/core';
 import { Mouse, Keyboard } from '@illgrenoble/guacamole-common-js';
 import { BehaviorSubject } from 'rxjs';
@@ -22,7 +23,7 @@ import { RemoteDesktopManager } from '../services';
         </div>
     `
 })
-export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
+export class DisplayComponent implements OnInit, OnDestroy, DoCheck {
 
     /**
      * Emit the mouse move events to any subscribers
@@ -49,12 +50,6 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
      */
     private mouse: Mouse;
 
-    /**
-     * Bind input listeners if display is focused, otherwise, unbind
-     */
-    @Input()
-    private focused = false;
-
     constructor(private viewport: ElementRef) {
     }
 
@@ -72,33 +67,20 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
         this.removeDisplayInputListeners();
     }
 
-    ngDoCheck() {
-        if(this.focused) {
+    ngDoCheck(): void {
+        this.setDisplayScale();
+        this.handleFocused();
+    }
+
+    /**
+     * Bind input listeners if display is focused, otherwise, unbind
+     */
+    private handleFocused(): void {
+        if (this.manager.isFocused()) {
             this.bindDisplayInputListeners();
         } else {
             this.removeDisplayInputListeners();
         }
-    }
-
-    /**
-     * Rescale the display when any changes are detected
-     * @param changes 
-     */
-    ngOnChanges(changes: any): void {
-        const isFocused = changes.focused;
-        if (isFocused && !isFocused.firstChange) {
-            this.bindDisplayInputListeners();
-        }
-        window.setTimeout(() => this.setDisplayScale(), 100);
-    }
-
-    /**
-     * Rescale the display when the window is resized
-     * @param event 
-     */
-    @HostListener('window:resize', ['$event'])
-    private onWindowResize(event: any): void {
-        this.setDisplayScale();
     }
 
     /**
@@ -144,7 +126,6 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
         return this.manager.getClient();
     }
 
-
     /**
      * Calculate the scale for the display
      */
@@ -173,11 +154,9 @@ export class DisplayComponent implements OnInit, OnDestroy, OnChanges {
      */
     private bindDisplayInputListeners(): void {
         this.removeDisplayInputListeners();
-        if (this.focused) {
-            this.mouse.onmousedown = this.mouse.onmouseup = this.mouse.onmousemove = this.handleMouseState.bind(this);
-            this.keyboard.onkeyup = this.handleKeyUp.bind(this);
-            this.keyboard.onkeydown = this.handleKeyDown.bind(this);
-        }
+        this.mouse.onmousedown = this.mouse.onmouseup = this.mouse.onmousemove = this.handleMouseState.bind(this);
+        this.keyboard.onkeyup = this.handleKeyUp.bind(this);
+        this.keyboard.onkeydown = this.handleKeyDown.bind(this);
     }
 
     /**

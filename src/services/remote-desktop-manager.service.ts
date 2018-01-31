@@ -131,8 +131,8 @@ export class RemoteDesktopManager {
     }
 
     /**
-     * Set display focus
-     * @param focused
+     * Set the display focus
+     * @param newFocused
      */
     public setFocused(newFocused: boolean) {
         this.focused = newFocused;
@@ -140,7 +140,7 @@ export class RemoteDesktopManager {
 
     /**
      * Set full screen
-     * @param fullScreen
+     * @param newFullScreen
      */
     public setFullScreen(newFullScreen: boolean) {
         this.fullScreen = newFullScreen;
