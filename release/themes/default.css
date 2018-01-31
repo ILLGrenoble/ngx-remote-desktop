@@ -1,34 +1,34 @@
 .ngx-remote-desktop {
   font-family: inherit;
-  background: white;
+  background: #ffffff;
   width: 100%;
   height: 100%;
   max-height: 100%;
   flex-direction: column;
   display: flex;
   overflow: hidden; }
-  .ngx-remote-desktop .ngx-remote-desktop-toolbar-fullscreen {
-    position: absolute;
-    top: 0px;
-    left: 0;
-    width: 170px !important;
-    height: 100% !important;
-    z-index: 1000;
-    flex-flow: column wrap;
-    border-right: 1px solid #292b2c; }
-    .ngx-remote-desktop .ngx-remote-desktop-toolbar-fullscreen .ngx-remote-desktop-toolbar-items {
-      flex-direction: column !important; }
   .ngx-remote-desktop .ngx-remote-desktop-toolbar {
     flex: 0 0 35px;
     height: 35px;
     width: 100%;
     display: flex;
     justify-content: space-between;
-    background: #343a40;
+    border-bottom: 1px solid #131418;
+    background: #272a31;
     font-weight: 700; }
+    .ngx-remote-desktop .ngx-remote-desktop-toolbar.ngx-remote-desktop-toolbar-fullscreen {
+      position: absolute;
+      top: 0px;
+      left: 0;
+      width: 170px;
+      height: 100%;
+      z-index: 1000;
+      flex-flow: column wrap;
+      border-right: 1px solid #131418;
+      border-bottom: none; }
+      .ngx-remote-desktop .ngx-remote-desktop-toolbar.ngx-remote-desktop-toolbar-fullscreen .ngx-remote-desktop-toolbar-items {
+        flex-direction: column; }
     .ngx-remote-desktop .ngx-remote-desktop-toolbar .ngx-remote-desktop-toolbar-items {
-      display: -webkit-box;
-      display: -ms-flexbox;
       display: flex;
       flex-direction: row;
       padding-left: 0;
@@ -40,7 +40,7 @@
         text-decoration: none;
         user-select: none;
         padding: 0.5em 0.5em;
-        color: rgba(255, 255, 255, 0.5);
+        color: rgba(255, 255, 255, 0.6);
         font-weight: 400; }
         .ngx-remote-desktop .ngx-remote-desktop-toolbar .ngx-remote-desktop-toolbar-items .ngx-remote-desktop-toolbar-item:hover {
           cursor: pointer;
@@ -58,7 +58,7 @@
       align-items: center;
       width: 100%;
       max-height: 100%;
-      background: #333131; }
+      background: #2f323a; }
     .ngx-remote-desktop .ngx-remote-desktop-container .ngx-remote-desktop-message {
       flex-direction: column;
       align-items: center;
@@ -83,9 +83,6 @@
         text-align: center;
         white-space: nowrap;
         vertical-align: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
         user-select: none;
         border: 1px solid transparent;
         padding: .375rem .75rem;

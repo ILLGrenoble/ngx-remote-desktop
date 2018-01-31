@@ -36,7 +36,11 @@ var RemoteDesktopManager = /** @class */ (function () {
          * Set this to false if you need to use the keyboard or mouse inside another component outside
          * of the display
          */
-        this.isFocused = true;
+        this.focused = true;
+        /**
+         * When set to true, this will trigger an event to enter into full screen mode and hide the toolbar
+         */
+        this.fullScreen = false;
         /**
          * The dimensions parameters to send to the tunnel.
          * This can be overridden by using  {@link setDimensionParameters}
@@ -59,11 +63,30 @@ var RemoteDesktopManager = /** @class */ (function () {
         return state === this.state;
     };
     /**
-     * Set display focus
-     * @param focused
+     * Set the display focus
+     * @param newFocused
      */
-    RemoteDesktopManager.prototype.setIsFocused = function (focused) {
-        this.isFocused = focused;
+    RemoteDesktopManager.prototype.setFocused = function (newFocused) {
+        this.focused = newFocused;
+    };
+    /**
+     * Set full screen
+     * @param newFullScreen
+     */
+    RemoteDesktopManager.prototype.setFullScreen = function (newFullScreen) {
+        this.fullScreen = newFullScreen;
+    };
+    /**
+     * Is the display full screen?
+     */
+    RemoteDesktopManager.prototype.isFullScreen = function () {
+        return this.fullScreen;
+    };
+    /**
+     * Is the display focused?
+     */
+    RemoteDesktopManager.prototype.isFocused = function () {
+        return this.focused;
     };
     /**
      * Is the tunnel connected?

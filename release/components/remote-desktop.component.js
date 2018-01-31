@@ -13,42 +13,18 @@ var core_1 = require("@angular/core");
 var services_1 = require("../services");
 var screenfull = require("screenfull");
 var animations_1 = require("@angular/animations");
+var connecting_message_component_1 = require("./messages/connecting-message.component");
+var disconnected_message_component_1 = require("./messages/disconnected-message.component");
+var error_message_component_1 = require("./messages/error-message.component");
 /**
  * The main component for displaying a remote desktop
  */
 var RemoteDesktopComponent = /** @class */ (function () {
     function RemoteDesktopComponent() {
         /**
-         * Message overrides for localisation
-         */
-        this.messages = {
-            enterFullScreen: 'Full screen',
-            exitFullScreen: 'Exit Full screen',
-            state: {
-                disconnected: {
-                    title: 'Disconnected',
-                    message: 'The connection to the remote desktop terminated successfully',
-                    reconnect: 'Reconnect'
-                },
-                connecting: {
-                    title: 'Connecting to remote desktop',
-                    message: 'Attempting to connect to the remote desktop. Waiting for response...',
-                },
-                error: {
-                    title: 'Connection error',
-                    message: "The remote desktop server is currently unreachable.",
-                    connect: 'Connect'
-                }
-            }
-        };
-        /**
-         * Full screen mode defaults to false until toggled by the user
-         */
-        this.isFullScreen = false;
-        /**
          * Hide or show the toolbar
          */
-        this.toolbarVisible = 1;
+        this.toolbarVisible = true;
         /**
          * Guacamole has more states than the list below however for the component we only interested
          * in managing four states.
@@ -65,6 +41,12 @@ var RemoteDesktopComponent = /** @class */ (function () {
      */
     RemoteDesktopComponent.prototype.ngOnInit = function () {
         this.manager.onStateChange.subscribe(this.handleState.bind(this));
+    };
+    /**
+     * Check if the full screen or focused property has changed
+     */
+    RemoteDesktopComponent.prototype.ngDoCheck = function () {
+        this.handleFullScreen();
     };
     /**
      * Set the component state to the new guacamole state
@@ -87,7 +69,7 @@ var RemoteDesktopComponent = /** @class */ (function () {
         return this.state === newState;
     };
     /**
-     * Received the state from the desktop client and update this components state
+     * Receive the state from the desktop client and update this components state
      * @param newState - state received from the guacamole client
      */
     RemoteDesktopComponent.prototype.handleState = function (newState) {
@@ -114,46 +96,65 @@ var RemoteDesktopComponent = /** @class */ (function () {
      * Exit full screen and show the toolbar
      */
     RemoteDesktopComponent.prototype.exitFullScreen = function () {
-        if (this.isFullScreen) {
-            this.handleFullScreen();
+        if (!screenfull.isFullscreen) {
+            return;
         }
+        this.manager.setFullScreen(false);
+        var containerElement = this.container.nativeElement;
+        screenfull.exit(containerElement);
     };
     /**
-     * Enter or exit full screen mode
+     * Enter full screen mode and auto hide the toolbar
      */
-    RemoteDesktopComponent.prototype.handleFullScreen = function () {
+    RemoteDesktopComponent.prototype.enterFullScreen = function () {
         var _this = this;
-        var element = this.container.nativeElement;
-        screenfull.toggle(element);
+        if (screenfull.isFullscreen) {
+            return;
+        }
+        var containerElement = this.container.nativeElement;
+        screenfull.request(containerElement);
         screenfull.on('change', function (change) {
-            _this.isFullScreen = screenfull.isFullscreen;
+            if (!screenfull.isFullscreen) {
+                _this.manager.setFullScreen(false);
+            }
             _this.handleToolbar();
         });
     };
+    /**
+     * Go in and out of full screen
+     */
+    RemoteDesktopComponent.prototype.handleFullScreen = function () {
+        if (this.manager.isFullScreen()) {
+            this.enterFullScreen();
+        }
+        else {
+            this.exitFullScreen();
+        }
+    };
     RemoteDesktopComponent.prototype.handleToolbar = function () {
-        this.toolbarVisible = (this.isFullScreen) ? 0 : 1;
+        this.toolbarVisible = (this.manager.isFullScreen()) ? false : true;
     };
     /**
      * Handle the display mouse movement
      * @param event Mouse event
      */
     RemoteDesktopComponent.prototype.handleDisplayMouseMove = function ($event) {
-        if (!this.isFullScreen) {
+        if (!this.manager.isFullScreen()) {
             return;
         }
         this.showOrHideToolbar($event.x);
     };
     /**
      * Show or hide the toolbar
-     * @param x
+     * @param x - Mouse x coordinate respective to the container
      */
     RemoteDesktopComponent.prototype.showOrHideToolbar = function (x) {
-        var toolbarWidth = 170;
+        var toolbarWidth = this.toolbar.nativeElement.clientWidth;
         if (x >= -1 && x <= 0) {
-            this.toolbarVisible = 1;
+            this.toolbarVisible = true;
         }
         if (x >= toolbarWidth) {
-            this.toolbarVisible = 0;
+            this.toolbarVisible = false;
         }
     };
     __decorate([
@@ -161,22 +162,34 @@ var RemoteDesktopComponent = /** @class */ (function () {
         __metadata("design:type", services_1.RemoteDesktopManager)
     ], RemoteDesktopComponent.prototype, "manager", void 0);
     __decorate([
-        core_1.Input(),
-        __metadata("design:type", Object)
-    ], RemoteDesktopComponent.prototype, "messages", void 0);
+        core_1.ContentChild(connecting_message_component_1.ConnectingMessageComponent),
+        __metadata("design:type", connecting_message_component_1.ConnectingMessageComponent)
+    ], RemoteDesktopComponent.prototype, "connectingMessage", void 0);
+    __decorate([
+        core_1.ContentChild(disconnected_message_component_1.DisconnectedMessageComponent),
+        __metadata("design:type", disconnected_message_component_1.DisconnectedMessageComponent)
+    ], RemoteDesktopComponent.prototype, "disconnectedMessage", void 0);
+    __decorate([
+        core_1.ContentChild(error_message_component_1.ErrorMessageComponent),
+        __metadata("design:type", error_message_component_1.ErrorMessageComponent)
+    ], RemoteDesktopComponent.prototype, "errorMessage", void 0);
     __decorate([
         core_1.ViewChild('container'),
         __metadata("design:type", core_1.ElementRef)
     ], RemoteDesktopComponent.prototype, "container", void 0);
+    __decorate([
+        core_1.ViewChild('toolbar'),
+        __metadata("design:type", core_1.ElementRef)
+    ], RemoteDesktopComponent.prototype, "toolbar", void 0);
     RemoteDesktopComponent = __decorate([
         core_1.Component({
             selector: 'ngx-remote-desktop',
-            template: "\n        <main class=\"ngx-remote-desktop\" #container>\n            <nav class=\"ngx-remote-desktop-toolbar\" \n                [class.ngx-remote-desktop-toolbar-fullscreen]=\"isFullScreen\" \n                    [@fadeInOut]=\"toolbarVisible\">\n                <ul class=\"ngx-remote-desktop-toolbar-items\">\n                    <ng-content select='ngx-remote-desktop-toolbar-item[align=left]'></ng-content>\n                </ul>\n                <ul class=\"ngx-remote-desktop-toolbar-items\">\n                    <ng-content select='ngx-remote-desktop-toolbar-item[align=right]'></ng-content>\n                    <ngx-remote-desktop-toolbar-item (click)=\"handleFullScreen()\" *ngIf=\"!isFullScreen\" \n                        [hidden]=\"!isState('CONNECTED')\">\n                        <i class=\"fa fa-arrows-alt\"> </i> {{ messages.enterFullScreen }}\n                    </ngx-remote-desktop-toolbar-item>\n                    <ngx-remote-desktop-toolbar-item (click)=\"handleFullScreen()\" *ngIf=\"isFullScreen\" \n                        [hidden]=\"!isState('CONNECTED')\">\n                        <i class=\"fa fa-arrows-alt\"> </i> {{ messages.exitFullScreen }}\n                    </ngx-remote-desktop-toolbar-item>\n                </ul>\n            </nav>\n            <section class=\"ngx-remote-desktop-container\">\n                <ngx-remote-desktop-message *ngIf=\"isState(states.CONNECTING)\"\n                    [title]=\"messages.state.connecting.title\"\n                    [message]=\"messages.state.connecting.message\"\n                    type=\"success\">\n                </ngx-remote-desktop-message>\n\n                <ngx-remote-desktop-message *ngIf=\"isState(states.ERROR)\"\n                    [title]=\"messages.state.error.title\"\n                    [message]=\"messages.state.error.message\"\n                    type=\"error\">\n                    <button (click)=\"handleConnect()\" class=\"ngx-remote-desktop-message-body-btn\">\n                        {{ messages.state.error.connect }}\n                    </button>\n                </ngx-remote-desktop-message>\n\n                <ngx-remote-desktop-message *ngIf=\"isState(states.DISCONNECTED)\"\n                    [title]=\"messages.state.disconnected.title\"\n                    [message]=\"messages.state.disconnected.message\"\n                    type=\"error\">\n                    <button (click)=\"handleConnect()\" class=\"ngx-remote-desktop-message-body-btn\">\n                        {{ messages.state.disconnected.reconnect }}\n                    </button>\n                </ngx-remote-desktop-message>\n\n                <ngx-remote-desktop-display *ngIf=\"isState(states.CONNECTED)\" \n                    [manager]=\"manager\"\n                    [isFullScreen]=\"isFullScreen\"\n                    [isFocused]=\"manager.isFocused\"\n                    (onMouseMove)=\"handleDisplayMouseMove($event)\">\n                </ngx-remote-desktop-display>                \n            </section>\n        </main>\n    ",
+            template: "\n        <main class=\"ngx-remote-desktop\" #container>\n            <nav class=\"ngx-remote-desktop-toolbar\" \n                [class.ngx-remote-desktop-toolbar-fullscreen]=\"manager.isFullScreen()\" \n                    [@fadeInOut]=\"toolbarVisible\" #toolbar>\n                <ul class=\"ngx-remote-desktop-toolbar-items\">\n                    <ng-content select='ngx-remote-desktop-toolbar-item[align=left]'></ng-content>\n                </ul>\n                <ul class=\"ngx-remote-desktop-toolbar-items\">\n                    <ng-content select='ngx-remote-desktop-toolbar-item[align=right]'></ng-content>\n                </ul>\n            </nav>\n            <section class=\"ngx-remote-desktop-container\">\n                <!-- Connecting message -->\n                <div *ngIf=\"isState(states.CONNECTING)\">\n                    <div class=\"ngx-remote-desktop-message\" *ngIf=\"connectingMessage\" >\n                        <ng-content select=\"ngx-remote-desktop-connecting-message\"></ng-content>\n                    </div>\n        \n                    <ngx-remote-desktop-message  *ngIf=\"!connectingMessage\"\n                        title=\"Connecting to remote desktop\"\n                        message=\"Attempting to connect to the remote desktop. Waiting for response...\"\n                        type=\"success\">\n                    </ngx-remote-desktop-message>\n                </div>\n                <!-- End connecting message -->\n\n                <!-- Disconnected message -->\n                <div *ngIf=\"isState(states.DISCONNECTED)\">\n                    <div class=\"ngx-remote-desktop-message\" *ngIf=\"disconnectedMessage\">\n                        <ng-content select=\"ngx-remote-desktop-disconnected-message\"></ng-content>\n                    </div>\n                    <ngx-remote-desktop-message *ngIf=\"!disconnectedMessage\"\n                        title=\"Disconnected\"\n                        message=\"The connection to the remote desktop terminated successfully\"\n                        type=\"error\">\n                        <button (click)=\"handleConnect()\" class=\"ngx-remote-desktop-message-body-btn\">\n                            Reconnect\n                        </button>\n                    </ngx-remote-desktop-message>\n                </div>\n                <!-- End disconnected message -->\n                \n                <!-- Error message -->\n                <div *ngIf=\"isState(states.ERROR)\">\n\n                    <div class=\"ngx-remote-desktop-message\" *ngIf=\"errorMessage\">\n                        <ng-content select=\"ngx-remote-desktop-error-message\"></ng-content>\n                    </div>\n\n                    <ngx-remote-desktop-message *ngIf=\"!errorMessage\"\n                        title=\"Connection error\"\n                        message=\"The remote desktop server is currently unreachable.\"\n                        type=\"error\">\n                        <button (click)=\"handleConnect()\" class=\"ngx-remote-desktop-message-body-btn\">\n                            Connect\n                        </button>\n                    </ngx-remote-desktop-message>\n                </div>\n                <!-- End error message -->\n                \n                <!-- Display -->\n                <ngx-remote-desktop-display *ngIf=\"isState(states.CONNECTED)\" \n                    [manager]=\"manager\"\n                    (onMouseMove)=\"handleDisplayMouseMove($event)\">\n                </ngx-remote-desktop-display>                \n                <!-- End display -->\n            </section>\n        </main>\n    ",
             encapsulation: core_1.ViewEncapsulation.None,
             animations: [
                 animations_1.trigger('fadeInOut', [
                     animations_1.state('1', animations_1.style({ display: 'visible' })),
-                    animations_1.state('0', animations_1.style({ opacity: 0, display: 'none' })),
+                    animations_1.state('0', animations_1.style({ opacity: 0, visibility: 'hidden' })),
                     animations_1.transition('1 => 0', animations_1.animate('1000ms')),
                     animations_1.transition('0 => 1', animations_1.animate('0ms'))
                 ])

@@ -1,6 +1,6 @@
-import { ElementRef, OnInit, OnChanges, OnDestroy } from '@angular/core';
+import { ElementRef, OnInit, OnDestroy, DoCheck } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-export declare class DisplayComponent implements OnInit, OnDestroy, OnChanges {
+export declare class DisplayComponent implements OnInit, OnDestroy, DoCheck {
     private viewport;
     /**
      * Emit the mouse move events to any subscribers
@@ -19,11 +19,6 @@ export declare class DisplayComponent implements OnInit, OnDestroy, OnChanges {
      * Remote desktop mouse
      */
     private mouse;
-    private isFullScreen;
-    /**
-     * Bind input listeners if display is focused, otherwise, unbind
-     */
-    private isFocused;
     constructor(viewport: ElementRef);
     /**
      * Create the display canvas when initialising the component
@@ -33,16 +28,11 @@ export declare class DisplayComponent implements OnInit, OnDestroy, OnChanges {
      * Unbind all display input listeners when destroying the component
      */
     ngOnDestroy(): void;
+    ngDoCheck(): void;
     /**
-     * Rescale the display when any changes are detected
-     * @param changes
+     * Bind input listeners if display is focused, otherwise, unbind
      */
-    ngOnChanges(changes: any): void;
-    /**
-     * Rescale the display when the window is resized
-     * @param event
-     */
-    private onWindowResize(event);
+    private handleFocused();
     /**
      * Release all the keyboards when the window loses focus
      * @param event

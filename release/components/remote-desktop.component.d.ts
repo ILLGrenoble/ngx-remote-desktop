@@ -1,21 +1,17 @@
-import { OnInit } from '@angular/core';
+import { OnInit, DoCheck } from '@angular/core';
 /**
  * The main component for displaying a remote desktop
  */
-export declare class RemoteDesktopComponent implements OnInit {
+export declare class RemoteDesktopComponent implements OnInit, DoCheck {
     /**
      * Client that manages the connection to the remote desktop
      */
     private manager;
-    /**
-     * Message overrides for localisation
-     */
-    private messages;
+    private connectingMessage;
+    private disconnectedMessage;
+    private errorMessage;
     private container;
-    /**
-     * Full screen mode defaults to false until toggled by the user
-     */
-    private isFullScreen;
+    private toolbar;
     /**
      * Hide or show the toolbar
      */
@@ -34,6 +30,10 @@ export declare class RemoteDesktopComponent implements OnInit {
      */
     ngOnInit(): void;
     /**
+     * Check if the full screen or focused property has changed
+     */
+    ngDoCheck(): void;
+    /**
      * Set the component state to the new guacamole state
      * @param newState
      */
@@ -48,7 +48,7 @@ export declare class RemoteDesktopComponent implements OnInit {
      */
     private isState(newState);
     /**
-     * Received the state from the desktop client and update this components state
+     * Receive the state from the desktop client and update this components state
      * @param newState - state received from the guacamole client
      */
     private handleState(newState);
@@ -57,7 +57,11 @@ export declare class RemoteDesktopComponent implements OnInit {
      */
     private exitFullScreen();
     /**
-     * Enter or exit full screen mode
+     * Enter full screen mode and auto hide the toolbar
+     */
+    private enterFullScreen();
+    /**
+     * Go in and out of full screen
      */
     private handleFullScreen();
     private handleToolbar();
@@ -68,7 +72,7 @@ export declare class RemoteDesktopComponent implements OnInit {
     private handleDisplayMouseMove($event);
     /**
      * Show or hide the toolbar
-     * @param x
+     * @param x - Mouse x coordinate respective to the container
      */
     private showOrHideToolbar(x);
 }

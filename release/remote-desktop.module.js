@@ -20,20 +20,20 @@ var NgxRemoteDesktopModule = /** @class */ (function () {
                 animations_1.BrowserAnimationsModule
             ],
             declarations: [
-                /**
-                 * Components
-                 */
                 components_1.RemoteDesktopComponent,
                 components_1.ToolbarItemComponent,
                 components_1.MessageComponent,
-                components_1.DisplayComponent
-                /**
-                 * Directives
-                 */
+                components_1.DisplayComponent,
+                components_1.ErrorMessageComponent,
+                components_1.DisconnectedMessageComponent,
+                components_1.ConnectingMessageComponent
             ],
             exports: [
                 components_1.RemoteDesktopComponent,
-                components_1.ToolbarItemComponent
+                components_1.ToolbarItemComponent,
+                components_1.ErrorMessageComponent,
+                components_1.DisconnectedMessageComponent,
+                components_1.ConnectingMessageComponent
             ],
             entryComponents: [],
             bootstrap: [components_1.RemoteDesktopComponent]

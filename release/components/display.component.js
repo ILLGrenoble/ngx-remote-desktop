@@ -20,11 +20,6 @@ var DisplayComponent = /** @class */ (function () {
          * Emit the mouse move events to any subscribers
          */
         this.onMouseMove = new rxjs_1.BehaviorSubject(null);
-        this.isFullScreen = false;
-        /**
-         * Bind input listeners if display is focused, otherwise, unbind
-         */
-        this.isFocused = false;
     }
     /**
      * Create the display canvas when initialising the component
@@ -38,24 +33,20 @@ var DisplayComponent = /** @class */ (function () {
     DisplayComponent.prototype.ngOnDestroy = function () {
         this.removeDisplayInputListeners();
     };
-    /**
-     * Rescale the display when any changes are detected
-     * @param changes
-     */
-    DisplayComponent.prototype.ngOnChanges = function (changes) {
-        var _this = this;
-        var isFocused = changes.isFocused;
-        if (isFocused && !isFocused.firstChange) {
-            this.bindDisplayInputListeners();
-        }
-        window.setTimeout(function () { return _this.setDisplayScale(); }, 100);
+    DisplayComponent.prototype.ngDoCheck = function () {
+        this.setDisplayScale();
+        this.handleFocused();
     };
     /**
-     * Rescale the display when the window is resized
-     * @param event
+     * Bind input listeners if display is focused, otherwise, unbind
      */
-    DisplayComponent.prototype.onWindowResize = function (event) {
-        this.setDisplayScale();
+    DisplayComponent.prototype.handleFocused = function () {
+        if (this.manager.isFocused()) {
+            this.bindDisplayInputListeners();
+        }
+        else {
+            this.removeDisplayInputListeners();
+        }
     };
     /**
      * Release all the keyboards when the window loses focus
@@ -119,11 +110,9 @@ var DisplayComponent = /** @class */ (function () {
      */
     DisplayComponent.prototype.bindDisplayInputListeners = function () {
         this.removeDisplayInputListeners();
-        if (this.isFocused) {
-            this.mouse.onmousedown = this.mouse.onmouseup = this.mouse.onmousemove = this.handleMouseState.bind(this);
-            this.keyboard.onkeyup = this.handleKeyUp.bind(this);
-            this.keyboard.onkeydown = this.handleKeyDown.bind(this);
-        }
+        this.mouse.onmousedown = this.mouse.onmouseup = this.mouse.onmousemove = this.handleMouseState.bind(this);
+        this.keyboard.onkeyup = this.handleKeyUp.bind(this);
+        this.keyboard.onkeydown = this.handleKeyDown.bind(this);
     };
     /**
      * Remove all input listeners
@@ -182,20 +171,6 @@ var DisplayComponent = /** @class */ (function () {
         core_1.ViewChild('display'),
         __metadata("design:type", core_1.ElementRef)
     ], DisplayComponent.prototype, "display", void 0);
-    __decorate([
-        core_1.Input(),
-        __metadata("design:type", Object)
-    ], DisplayComponent.prototype, "isFullScreen", void 0);
-    __decorate([
-        core_1.Input(),
-        __metadata("design:type", Object)
-    ], DisplayComponent.prototype, "isFocused", void 0);
-    __decorate([
-        core_1.HostListener('window:resize', ['$event']),
-        __metadata("design:type", Function),
-        __metadata("design:paramtypes", [Object]),
-        __metadata("design:returntype", void 0)
-    ], DisplayComponent.prototype, "onWindowResize", null);
     __decorate([
         core_1.HostListener('window:blur', ['$event']),
         __metadata("design:type", Function),

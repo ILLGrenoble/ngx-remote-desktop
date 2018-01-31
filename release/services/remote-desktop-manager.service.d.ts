@@ -43,7 +43,11 @@ export declare class RemoteDesktopManager {
      * Set this to false if you need to use the keyboard or mouse inside another component outside
      * of the display
      */
-    private isFocused;
+    private focused;
+    /**
+     * When set to true, this will trigger an event to enter into full screen mode and hide the toolbar
+     */
+    private fullScreen;
     /**
      * The dimensions parameters to send to the tunnel.
      * This can be overridden by using  {@link setDimensionParameters}
@@ -65,10 +69,23 @@ export declare class RemoteDesktopManager {
      */
     isState(state: string): boolean;
     /**
-     * Set display focus
-     * @param focused
+     * Set the display focus
+     * @param newFocused
      */
-    setIsFocused(focused: boolean): void;
+    setFocused(newFocused: boolean): void;
+    /**
+     * Set full screen
+     * @param newFullScreen
+     */
+    setFullScreen(newFullScreen: boolean): void;
+    /**
+     * Is the display full screen?
+     */
+    isFullScreen(): boolean;
+    /**
+     * Is the display focused?
+     */
+    isFocused(): boolean;
     /**
      * Is the tunnel connected?
      */

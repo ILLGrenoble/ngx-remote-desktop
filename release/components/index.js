@@ -7,4 +7,7 @@ __export(require("./remote-desktop.component"));
 __export(require("./toolbar-item.component"));
 __export(require("./message.component"));
 __export(require("./display.component"));
+__export(require("./messages/connecting-message.component"));
+__export(require("./messages/error-message.component"));
+__export(require("./messages/disconnected-message.component"));
 //# sourceMappingURL=index.js.map
