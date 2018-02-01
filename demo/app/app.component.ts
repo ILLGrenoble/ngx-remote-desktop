@@ -40,7 +40,6 @@ export class AppComponent implements OnInit {
         return modal;
     }
 
-
     handleDisconnect(): void {
         this.manager.getClient().disconnect();
     }
