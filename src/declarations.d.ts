@@ -16,13 +16,11 @@ declare module '@illgrenoble/guacamole-common-js' {
         onfilesystem(object: Object, name: string): void;
         onpipe(mimetype: string, name: string): void;
         onsync(timestamp: number): void;
-
         sendMouseState(mouseState: Mouse.State): void;
         sendKeyEvent(pressed: number, keysym: number): void;
         sendSize(width: number, height: number): void;
         setClipboard(data: string): void;
-        //  TODO
-        // createOutputStream(): 
+        createOutputStream(): OutputStream;
         createAudioStream(mimetype: string);
         createFileStream(mimetype: string, filename: string);
         createPipeStream(mimetype: string, name: string);
@@ -35,21 +33,67 @@ declare module '@illgrenoble/guacamole-common-js' {
     }
 
     export class Tunnel {
-        constructor(element: WebSocketTunnel | HTTPTunnel | ChainedTunnel);
-        onerror(error: any);
-        onstatechange(state: any);
+        connect(data: string): void;
+        disconnect(): void;
+        onerror(error: Status): void;
+        onstatechange(state: number): void;
+        oninstruction(opcode: string, parameters: any): void;
+        sendMessage(elements: any): void;
+        setState(state: number): void;
     }
 
-    export class WebSocketTunnel {
-        constructor(url: string);
+
+    export class WebSocketTunnel extends Tunnel {
+        constructor(tunnelURL: string);
     }
 
-    export class ChainedTunnel {
-        constructor(url: string);
+    export class ChainedTunnel extends Tunnel {
+        constructor(tunnelChannel: any);
     }
 
-    export class HTTPTunnel {
-        constructor(url: string);
+    export class HTTPTunnel extends Tunnel {
+        constructor(tunnelURL: string, crossDomain: boolean, extraTunnelHeaders: any);
+    }
+
+    export class StaticHTTPTunnel extends Tunnel {
+        constructor(url: string, crossDomain: boolean, extraTunnelHeaders: any);
+    }
+
+    export class AudioPlayer {
+        sync(): void;
+        static isSupportedType(mimetype: string): boolean;
+        static getSupportedTypes(): any;
+        static getInstance(stream: InputStream, mimetype: string): AudioPlayer;
+    }
+
+    export class RawAudioPlayer extends AudioPlayer {
+        constructor(stream: InputStream, mimetype: string);
+    }
+
+    export class AudioRecorder {
+        onclose(): void;
+        onerror(): void;
+        static isSupportedType(mimetype: string): boolean;
+        static getSupportedTypes(): any;
+    }
+
+    export class RawAudioRecorder extends AudioRecorder {
+        constructor(stream: AudioRecorder, mimetype: string);
+        static isSupportedType(mimetype: string): boolean;
+        static getSupportedTypes(): any;
+    }
+
+    export class ArrayBufferReader {
+        constructor(stream: InputStream);
+        ondata(buffer: ArrayBuffer): void;
+        onend(): void;
+    }
+
+    export class ArrayBufferWriter {
+        constructor(stream: OutputStream);
+        sendData(data: any);
+        sendEnd(): void;
+        onack(status: Status);
 
     }
 
@@ -61,7 +105,6 @@ declare module '@illgrenoble/guacamole-common-js' {
         press(keysym: number): boolean;
         release(keysym: number): void;
         reset(): void;
-
     }
 
     export class Display {
@@ -112,16 +155,17 @@ declare module '@illgrenoble/guacamole-common-js' {
         getScale(): number;
         flatten(): any;
     }
+
     export class Mouse {
         constructor(element: any);
         onmousedown(event: any);
         onmouseup(event: any);
         onmousemove(event: any);
         onmousedown(event: any);
-
     }
 
     export class Layer {
+        constructor(width: number, height: number);
         getCanvas(): any;
         toCanvas(): any;
         resize(newWidth: number, newHeight: number);
@@ -148,12 +192,15 @@ declare module '@illgrenoble/guacamole-common-js' {
         transform(a: number, b: number, c: number, d: number, e: number, f: number): void;
         setChannelMask(mask: number): void;
         setMiterLimit(limit: number): void;
-
     }
 
     namespace Mouse {
         export class State {
             constructor(x: number, y: number, left: boolean, middle: boolean, right: boolean, up: boolean, down: boolean);
+            onmousedown(state: State): void;
+            onmouseup(state: State): void;
+            onmousemove(state: State);
+
         }
     }
 
@@ -166,16 +213,90 @@ declare module '@illgrenoble/guacamole-common-js' {
             move(parent: VisibleLayer, x: number, y: number, z: number): void;
             shade(a: number);
             dispose(): void;
-            distort(a: number, b: number, c: number, d: number, e: number, f: number);
+            distort(a: number, b: number, c: number, d: number, e: number, f: number): void;
         }
     }
+    
     export class Status {
         Code: any;
     }
 
+    export class InputStream {
+        constructor(client: Client, index: number);
+        sendAck(message: string, code: number): void;
+    }
+
+    export class OutputStream {
+        constructor(client: Client, index: number);
+        sendBlob(data: string): void;
+        sendEnd(): void;
+    }
+
+    export class IntegerPool {
+        next();
+        free(integer: number);
+    }
+
     export class StringReader {
-        constructor(stream: any);
-        ontext(text: string);
-        onend(event: any);
+        constructor(stream: InputStream);
+        ontext(text: string): void;
+        onend();
+    }
+
+    export class BlobWriter {
+        constructor(stream: OutputStream);
+        sendBlob(blob: any): void;
+        sendEnd(): void;
+        onack(status: Status): void;
+        onerror(blob: any, offset: number, error: any): void;
+        onprogress(blob: any, offset: number): void;
+        oncomplete(blob: any): void;
+    }
+
+    export class BlobWriter {
+        constructor(stream: InputStream, mimetype: string);
+        getLength(): number;
+        getBlob(): any;
+        onprogress(length: number);
+        onend(): void;
+    }
+
+    export class DataURIReader {
+        constructor(stream: InputStream, mimetype: InputStream);
+        getURI(): string;
+        onend(): void;
+    }
+
+    export class Object {
+        constructor(client: Client, index: number);
+        onbody(inputStream: InputStream, mimetype: string, name: string): void;
+        onundefine(): void;
+        requestInputStream(name: string, bodyCallback: any): void;
+        createOutputStream(mimetype: string, name: string): OutputStream;
+    }
+
+    export class JSONReader {
+        constructor(stream: InputStream);
+        getLength(): number;
+        getJSON(): any;
+        onprogress(length: number): void;
+        onend(): void;
+    }
+
+    export class StringWriter {
+        constructor(stream: InputStream);
+        sendText(text: string): void;
+        sendEnd(): void;
+        onack(status: Status): void;
+    }
+
+    export class Parser {
+        receive(packet: string): void;
+        oninstruction(opcode: string, parameters: any): void;
+    }
+
+    export class RawAudioFormat {
+        constructor(template: any);
+        parse(mimetype: string): RawAudioFormat;
     }
 }
