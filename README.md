@@ -23,7 +23,7 @@ By default, there are no toolbar items, however, you can add as many toolbar ite
   - Send data to the remote clipboard
   - Status bar (optional) to provide contextual information
 
-For a full implementation example, see the [demo source code](https://github.com/ILLGrenoble/ngx-remote-desktop/tree/master/demo).
+For a full implementation example, see the [demo source code](https://github.com/ILLGrenoble/ngx-remote-desktop/tree/master/demo)
 
 ## Installation
 
@@ -31,6 +31,13 @@ To use `ngx-remote-desktop` in your project, install it via npm:
 
 ```
 npm i @illgrenoble/ngx-remote-desktop --save
+```
+
+We also require two peer dependencies:
+
+```
+npm i @illgrenoble/guacamole-common-js --save
+npm i screenfull --save
 ```
 
 ### Thank you
