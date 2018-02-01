@@ -7,6 +7,29 @@
   flex-direction: column;
   display: flex;
   overflow: hidden; }
+  .ngx-remote-desktop .ngx-remote-desktop-status-bar-hidden {
+    display: none; }
+  .ngx-remote-desktop .ngx-remote-desktop-status-bar {
+    flex: 0 0 20px;
+    height: 20px;
+    width: 100%;
+    display: flex;
+    background: #007acc;
+    font-weight: 700;
+    font-size: 12px;
+    color: #fff;
+    padding: 0px 5px 0px 5px;
+    border-top: 1px solid #005188;
+    justify-content: space-between; }
+    .ngx-remote-desktop .ngx-remote-desktop-status-bar a,
+    .ngx-remote-desktop .ngx-remote-desktop-status-bar strong {
+      padding-right: 2px;
+      padding-left: 2px;
+      color: white;
+      font-weight: bold;
+      text-decoration: underline; }
+    .ngx-remote-desktop .ngx-remote-desktop-status-bar strong {
+      text-decoration: none; }
   .ngx-remote-desktop .ngx-remote-desktop-toolbar {
     flex: 0 0 35px;
     height: 35px;

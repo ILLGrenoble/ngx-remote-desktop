@@ -26,14 +26,16 @@ var NgxRemoteDesktopModule = /** @class */ (function () {
                 components_1.DisplayComponent,
                 components_1.ErrorMessageComponent,
                 components_1.DisconnectedMessageComponent,
-                components_1.ConnectingMessageComponent
+                components_1.ConnectingMessageComponent,
+                components_1.StatusBarComponent
             ],
             exports: [
                 components_1.RemoteDesktopComponent,
                 components_1.ToolbarItemComponent,
                 components_1.ErrorMessageComponent,
                 components_1.DisconnectedMessageComponent,
-                components_1.ConnectingMessageComponent
+                components_1.ConnectingMessageComponent,
+                components_1.StatusBarComponent
             ],
             entryComponents: [],
             bootstrap: [components_1.RemoteDesktopComponent]

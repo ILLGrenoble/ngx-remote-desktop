@@ -58,7 +58,7 @@ export declare class RemoteDesktopManager {
      * @param tunnel  WebsocketTunnel, HTTPTunnel or ChainedTunnel
      * @param parameters Query parameters to send to the tunnel url
      */
-    constructor(tunnel: any, parameters?: {});
+    constructor(tunnel: Tunnel, parameters?: {});
     /**
      * Get the guacamole connection state
      */

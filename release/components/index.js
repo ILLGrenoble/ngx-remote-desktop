@@ -10,4 +10,5 @@ __export(require("./display.component"));
 __export(require("./messages/connecting-message.component"));
 __export(require("./messages/error-message.component"));
 __export(require("./messages/disconnected-message.component"));
+__export(require("./status-bar.component"));
 //# sourceMappingURL=index.js.map
