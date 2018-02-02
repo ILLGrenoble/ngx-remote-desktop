@@ -18,7 +18,7 @@ After installing, include `NgxRemoteDesktopModule` in your application module li
 ```typescript
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgxRemoteDesktopModule } from '@ILLGrenoble/ngx-remote-desktop';
+import { NgxRemoteDesktopModule } from '@illgrenoble/ngx-remote-desktop';
 import { AppComponent } from './app.component';
 
 @NgModule({

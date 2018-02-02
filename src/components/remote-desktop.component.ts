@@ -27,16 +27,27 @@ import { ErrorMessageComponent } from './messages/error-message.component';
     selector: 'ngx-remote-desktop',
     template: `
         <main class="ngx-remote-desktop" #container>
-            <nav class="ngx-remote-desktop-toolbar" 
-                [class.ngx-remote-desktop-toolbar-fullscreen]="manager.isFullScreen()" 
-                    [@fadeInOut]="toolbarVisible" #toolbar>
+            <!-- Toolbar items template -->
+            <ng-template #toolbarItems>
                 <ul class="ngx-remote-desktop-toolbar-items">
                     <ng-content select='ngx-remote-desktop-toolbar-item[align=left]'></ng-content>
                 </ul>
                 <ul class="ngx-remote-desktop-toolbar-items">
                     <ng-content select='ngx-remote-desktop-toolbar-item[align=right]'></ng-content>
                 </ul>
+            </ng-template>
+            <!-- End toolbar items template -->
+            <!-- Normal toolbar -->
+            <nav class="ngx-remote-desktop-toolbar" *ngIf="!manager.isFullScreen()" >
+                <template [ngTemplateOutlet]="toolbarItems"></template>
             </nav>
+            <!-- End normal toolbar -->
+            <!-- Full screen toolbar -->
+            <nav class="ngx-remote-desktop-toolbar ngx-remote-desktop-toolbar-fullscreen" *ngIf="manager.isFullScreen()"
+                [@toolbarAnimation]="toolbarVisible" #toolbar>
+                <template [ngTemplateOutlet]="toolbarItems"></template>
+            </nav>
+            <!-- End full screen toolbar -->
             <section class="ngx-remote-desktop-container">
                 <!-- Connecting message -->
                 <div *ngIf="isState(states.CONNECTING)">
@@ -100,11 +111,11 @@ import { ErrorMessageComponent } from './messages/error-message.component';
     `,
     encapsulation: ViewEncapsulation.None,
     animations: [
-        trigger('fadeInOut', [
-            state('1', style({ display: 'visible' })),
-            state('0', style({ opacity: 0, visibility: 'hidden' })),
-            transition('1 => 0', animate('1000ms')),
-            transition('0 => 1', animate('0ms'))
+        trigger('toolbarAnimation', [
+            state('1', style({ transform: 'translateX(0%)' })),
+            state('0', style({ transform: 'translateX(-100%)' })),
+            transition('1 => 0', animate('200ms 200ms ease-out')),
+            transition('0 => 1', animate('225ms ease-in'))
         ])
     ],
 })
