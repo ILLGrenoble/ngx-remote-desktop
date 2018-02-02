@@ -7,11 +7,15 @@ import { HttpModule } from '@angular/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
-import { SimpleNotificationsModule } from 'angular2-notifications';
+import { MatSnackBarModule } from '@angular/material';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/markdown/markdown';
 
 import {
   ClipboardModalComponent
 } from './components';
+import { OverlayContainer, FullscreenOverlayContainer } from '@angular/cdk/overlay';
 
 @NgModule({
   declarations: [
@@ -22,11 +26,12 @@ import {
     BrowserModule,
     NgxRemoteDesktopModule,
     HttpModule,
+    MatSnackBarModule,
+    CodemirrorModule,
     FormsModule,
-    NgbModule.forRoot(),
-    SimpleNotificationsModule.forRoot()
+    NgbModule.forRoot()
   ],
-  providers: [],
+  providers: [{provide: OverlayContainer, useClass: FullscreenOverlayContainer}],
   entryComponents: [
     ClipboardModalComponent
   ],

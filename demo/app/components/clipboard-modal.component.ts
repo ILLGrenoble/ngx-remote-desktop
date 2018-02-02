@@ -14,11 +14,20 @@ import { RemoteDesktopManager } from '../../../src/services';
         </div>
         <div class="modal-body">
             <p>
-            Text copied/cut within the remote desktop will appear here. Sending the text below will affect the remote desktop clipboard.</p>
-
+                Text copied/cut within the remote desktop will appear here. 
+                Sending the text below will affect the remote desktop clipboard.
+            </p>
             <form>
                 <div class="form-group">
-                    <textarea [(ngModel)]="text" name="text" autocomplete="off" autofocus class="form-control"></textarea>
+                    <ngx-codemirror 
+                        [(ngModel)]="text" 
+                        name="text"
+                        [options]="{
+                            lineNumbers: true,
+                            theme: 'material',
+                            mode: 'text/plain'
+                        }">
+                    </ngx-codemirror>
                 </div>
             </form>
         </div>

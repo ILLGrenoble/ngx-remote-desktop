@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { NotificationsService } from 'angular2-notifications';
 import { ClipboardModalComponent } from './components';
 import * as FileSaver from 'file-saver';
 import { RemoteDesktopManager } from '../../src/services';
 import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
     selector: 'app-root',
@@ -16,7 +16,7 @@ import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
 export class AppComponent implements OnInit {
     private manager: RemoteDesktopManager;
 
-    constructor(private ngbModal: NgbModal, private notificationService: NotificationsService) {
+    constructor(private ngbModal: NgbModal, private snackBar: MatSnackBar) {
 
     }
 
@@ -56,7 +56,12 @@ export class AppComponent implements OnInit {
         const modal = this.createModal(ClipboardModalComponent);
         modal.result.then((text) => {
             this.manager.setFocused(true);
-            this.manager.sendRemoteClipboardData(text);
+            if (text) {
+                this.manager.sendRemoteClipboardData(text);
+                this.snackBar.open('Sent to remote clipboard', 'OK', {
+                    duration: 2000,
+                });
+            }
         }, () => this.manager.setFocused(true));
     }
 
@@ -83,6 +88,12 @@ export class AppComponent implements OnInit {
          * ws://localhost:8080?width=n&height=n&ip=192.168.13.232&image=image/png
          */
         this.manager.connect();
+        this.manager.onRemoteClipboardData.subscribe(text => {
+            const snackbar = this.snackBar.open('Received from remote clipboard', 'OPEN CLIPBOARD', {
+                duration: 1500,
+            });
+            snackbar.onAction().subscribe(() => this.handleClipboard());
+        });
     }
 
 }
