@@ -10,5 +10,9 @@
     {
         "title": "Styling",
         "file": "styling.md"
+    },
+    {
+        "title": "Running the demo",
+        "file": "demo.md"
     }
 ]
