@@ -90,8 +90,9 @@ var DisplayComponent = /** @class */ (function () {
      */
     DisplayComponent.prototype.calculateDisplayScale = function () {
         var viewportElement = this.viewport.nativeElement;
+        var display = this.getDisplay();
         var screenElement = window.screen;
-        var scale = Math.min(viewportElement.clientWidth / screenElement.width, viewportElement.clientHeight / screenElement.height);
+        var scale = Math.min(viewportElement.clientWidth / display.getWidth(), viewportElement.clientHeight / display.getHeight());
         return scale;
     };
     /**
