@@ -131,9 +131,10 @@ export class DisplayComponent implements OnInit, OnDestroy, DoCheck {
      */
     private calculateDisplayScale(): number {
         const viewportElement = this.viewport.nativeElement;
+        const display = this.getDisplay();
         const screenElement = window.screen;
-        const scale = Math.min(viewportElement.clientWidth / screenElement.width,
-            viewportElement.clientHeight / screenElement.height);
+        const scale = Math.min(viewportElement.clientWidth / display.getWidth(),
+            viewportElement.clientHeight / display.getHeight());
         return scale;
     }
 

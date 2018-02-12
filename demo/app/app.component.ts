@@ -74,12 +74,11 @@ export class AppComponent implements OnInit {
             const connectionId = params['id'] || null;
 
             // Setup tunnel. The tunnel can be either: WebsocketTunnel, HTTPTunnel or ChainedTunnel
-            const tunnel = new WebSocketTunnel('ws://127.0.0.1:8080/ws');
+            const tunnel = new WebSocketTunnel('ws://localhost:8080/ws');
             // URL parameters (image, audio and other query parameters you want to send to the tunnel.)
             const parameters = {
-                ip: '192.168.99.100',
+                hostname: 'localhost',
                 port: 3389,
-                type: 'rdp',
                 image: 'image/png',
                 audio: 'audio/L16',
                 dpi: 96,
