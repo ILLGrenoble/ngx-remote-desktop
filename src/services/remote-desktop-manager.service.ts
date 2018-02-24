@@ -71,6 +71,12 @@ export class RemoteDesktopManager {
      */
     public onRemoteClipboardData = new ReplaySubject(1);
 
+    public onKeyboardReset = new BehaviorSubject<boolean>(true);
+
+    public onFocused = new BehaviorSubject<boolean>(true);
+
+    public onFullScreen = new BehaviorSubject<boolean>(false);
+
     /**
      * The actual underlying remote desktop client
      */
@@ -87,25 +93,6 @@ export class RemoteDesktopManager {
     private state = RemoteDesktopManager.STATE.IDLE;
 
     /**
-     * The keyboard and mouse input listeners to the remote display are only bound when
-     * this is set to true.
-     * Set this to false if you need to use the keyboard or mouse inside another component outside
-     * of the display
-     */
-    private focused = true;
-
-    /**
-     * When set to true, this will trigger an event to enter into full screen mode and hide the toolbar
-     */
-    private fullScreen = false;
-
-    /**
-     * The dimensions parameters to send to the tunnel.
-     * This can be overridden by using  {@link setDimensionParameters}
-     */
-    private dimensionsParameters = { width: 'width', height: 'height' };
-
-    /**
      * Set up the manager
      * @param tunnel  WebsocketTunnel, HTTPTunnel or ChainedTunnel
      * @param parameters Query parameters to send to the tunnel url
@@ -113,7 +100,6 @@ export class RemoteDesktopManager {
     constructor(tunnel: Tunnel, private parameters = {}) {
         this.tunnel = tunnel;
         this.client = new Client(this.tunnel);
-
     }
 
     /**
@@ -136,7 +122,7 @@ export class RemoteDesktopManager {
      * @param newFocused
      */
     public setFocused(newFocused: boolean) {
-        this.focused = newFocused;
+        this.onFocused.next(newFocused);
     }
 
     /**
@@ -144,21 +130,14 @@ export class RemoteDesktopManager {
      * @param newFullScreen
      */
     public setFullScreen(newFullScreen: boolean) {
-        this.fullScreen = newFullScreen;
+        this.onFullScreen.next(newFullScreen);
     }
 
     /**
      * Is the display full screen?
      */
-    public isFullScreen() {
-        return this.fullScreen;
-    }
-
-    /**
-     * Is the display focused?
-     */
-    public isFocused() {
-        return this.focused;
+    public isFullScreen(): boolean {
+        return this.onFullScreen.getValue();
     }
 
     /**
@@ -181,18 +160,7 @@ export class RemoteDesktopManager {
     public getTunnel(): Tunnel {
         return this.tunnel;
     }
-
-    /**
-     * Set the dimensions parameters.
-     * This is used for sending the client dimensions when connecting to the tunnel.
-     * @param width
-     * @param height 
-     */
-    public setDimensionParameters(width: string, height: string) {
-        // tslint:disable-next-line:object-literal-shorthand
-        this.dimensionsParameters = { width: width, height: height };
-    }
-
+    
     /**
      * Generate a thumbnail
      * @param {number} width  The width of the thumbnail
@@ -244,6 +212,14 @@ export class RemoteDesktopManager {
             this.onRemoteClipboardData.next(text);
             this.client.setClipboard(text);
         }
+    }
+
+    /** 
+     * Reset the keyboard
+     * This will release all keys
+     */
+    public resetKeyboard(): void {
+        this.onKeyboardReset.next(true);
     }
 
     /**
@@ -319,11 +295,8 @@ export class RemoteDesktopManager {
      * Build the url query parameters and set the width and height parameters
      */
     private buildConfiguration() {
-        const dimensionsParameters = this.dimensionsParameters;
         const dimensions = this.calculateDimensions();
         const buildParameters = this.buildParameters();
-        buildParameters.set(this.dimensionsParameters.width, dimensions.width.toString());
-        buildParameters.set(this.dimensionsParameters.height, dimensions.height.toString());
         return buildParameters.toString();
     }
 

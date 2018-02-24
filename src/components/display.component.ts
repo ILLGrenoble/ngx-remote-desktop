@@ -8,11 +8,12 @@ import {
     OnChanges,
     OnDestroy,
     HostListener,
-    DoCheck
+    DoCheck,
+    AfterViewInit,
+    AfterViewChecked
 } from '@angular/core';
 import { Mouse, Keyboard } from '@illgrenoble/guacamole-common-js';
-import { BehaviorSubject } from 'rxjs';
-import * as screenfull from 'screenfull';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { RemoteDesktopManager } from '../services';
 
 @Component({
@@ -23,7 +24,7 @@ import { RemoteDesktopManager } from '../services';
         </div>
     `
 })
-export class DisplayComponent implements OnInit, OnDestroy, DoCheck {
+export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
 
     /**
      * Emit the mouse move events to any subscribers
@@ -50,6 +51,11 @@ export class DisplayComponent implements OnInit, OnDestroy, DoCheck {
      */
     private mouse: Mouse;
 
+    /**
+     * Subscriptions
+     */
+    private subscriptions: Subscription[] = [];
+
     constructor(private viewport: ElementRef) {
     }
 
@@ -58,6 +64,11 @@ export class DisplayComponent implements OnInit, OnDestroy, DoCheck {
      */
     ngOnInit(): void {
         this.createDisplayCanvas();
+        this.bindSubscriptions();
+    }
+
+    ngAfterViewChecked(): void {
+        this.setDisplayScale();
     }
 
     /**
@@ -65,18 +76,31 @@ export class DisplayComponent implements OnInit, OnDestroy, DoCheck {
      */
     ngOnDestroy(): void {
         this.removeDisplayInputListeners();
+        this.unbindSubscriptions();
     }
 
-    ngDoCheck(): void {
-        this.setDisplayScale();
-        this.handleFocused();
+    /** 
+     * Bind all subscriptions
+     */
+    private bindSubscriptions(): void {
+        this.subscriptions.push(this.manager.onKeyboardReset.subscribe(_ => {
+            this.resetKeyboard();
+        }));
+        this.subscriptions.push(this.manager.onFocused.subscribe(this.handleFocused.bind(this)));
+    }
+
+    /** 
+     * Unbind all subscriptions
+     */
+    private unbindSubscriptions(): void {
+        this.subscriptions.forEach(subscription => subscription.unsubscribe());
     }
 
     /**
      * Bind input listeners if display is focused, otherwise, unbind
      */
-    private handleFocused(): void {
-        if (this.manager.isFocused()) {
+    private handleFocused(newFocused: boolean): void {
+        if (newFocused) {
             this.bindDisplayInputListeners();
         } else {
             this.removeDisplayInputListeners();
@@ -89,9 +113,16 @@ export class DisplayComponent implements OnInit, OnDestroy, DoCheck {
      */
     @HostListener('window:blur', ['$event'])
     private onWindowBlur(event: any): void {
-        if (this.keyboard) {
-            this.keyboard.reset();
-        }
+        this.resetKeyboard();
+    }
+
+    /**
+     * Resize the display scale when the window is resized
+     * @param event
+     */
+    @HostListener('window:resize', ['$event'])
+    private onWindowResize(event: any): void {
+        this.setDisplayScale();
     }
 
     /**
@@ -132,7 +163,6 @@ export class DisplayComponent implements OnInit, OnDestroy, DoCheck {
     private calculateDisplayScale(): number {
         const viewportElement = this.viewport.nativeElement;
         const display = this.getDisplay();
-        const screenElement = window.screen;
         const scale = Math.min(viewportElement.clientWidth / display.getWidth(),
             viewportElement.clientHeight / display.getHeight());
         return scale;
@@ -199,6 +229,15 @@ export class DisplayComponent implements OnInit, OnDestroy, DoCheck {
             mouseState.down);
         this.getClient().sendMouseState(scaledState);
         this.onMouseMove.next(mouseState);
+    }
+
+    /**
+     * Resetting the keyboard will release all keys
+     */
+    private resetKeyboard(): void {
+        if (this.keyboard) {
+            this.keyboard.reset();
+        }
     }
 
     /**

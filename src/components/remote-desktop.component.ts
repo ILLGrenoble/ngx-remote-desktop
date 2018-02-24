@@ -9,11 +9,12 @@ import {
     OnChanges,
     forwardRef,
     ContentChild,
-    DoCheck
+    DoCheck,
+    OnDestroy
 } from '@angular/core';
 
 import { RemoteDesktopManager } from '../services';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import * as screenfull from 'screenfull';
 import { trigger, state, transition, animate, style } from '@angular/animations';
 import { ConnectingMessageComponent } from './messages/connecting-message.component';
@@ -119,7 +120,7 @@ import { ErrorMessageComponent } from './messages/error-message.component';
         ])
     ],
 })
-export class RemoteDesktopComponent implements OnInit, DoCheck {
+export class RemoteDesktopComponent implements OnInit, OnDestroy {
     /**
      * Client that manages the connection to the remote desktop
      */
@@ -140,6 +141,11 @@ export class RemoteDesktopComponent implements OnInit, DoCheck {
 
     @ViewChild('toolbar')
     private toolbar: ElementRef;
+
+    /**
+     * Subscriptions
+     */
+    private subscriptions: Subscription[] = [];
 
     /**
      * Hide or show the toolbar
@@ -163,17 +169,32 @@ export class RemoteDesktopComponent implements OnInit, DoCheck {
     };
 
     /**
-     * Subscribe to the connection state when the component is initialised
+     * Subscribe to the connection state  and full screen state when the component is initialised
      */
     ngOnInit(): void {
-        this.manager.onStateChange.subscribe(this.handleState.bind(this));
+        this.bindSubscriptions();
+    }
+
+    /** 
+     * Remove all subscriptions when the component is destroyed
+     */
+    ngOnDestroy(): void {
+        this.unbindSubscriptions();
     }
 
     /**
-     * Check if the full screen or focused property has changed
+     * Bind the subscriptions
      */
-    ngDoCheck(): void {
-        this.handleFullScreen();
+    private bindSubscriptions(): void {
+        this.subscriptions.push(this.manager.onStateChange.subscribe(this.handleState.bind(this)));
+        this.subscriptions.push(this.manager.onFullScreen.subscribe(this.handleFullScreen.bind(this)));
+    }
+
+    /**
+     * Unbind the subscriptions
+     */
+    private unbindSubscriptions(): void {
+        this.subscriptions.forEach(subscription => subscription.unsubscribe());
     }
 
     /**
@@ -231,7 +252,6 @@ export class RemoteDesktopComponent implements OnInit, DoCheck {
         if (!screenfull.isFullscreen) {
             return;
         }
-        this.manager.setFullScreen(false);
         const containerElement = this.container.nativeElement;
         screenfull.exit(containerElement);
     }
@@ -256,8 +276,8 @@ export class RemoteDesktopComponent implements OnInit, DoCheck {
     /**
      * Go in and out of full screen
      */
-    private handleFullScreen(): void {
-        if (this.manager.isFullScreen()) {
+    private handleFullScreen(newFullScreen: boolean): void {
+        if (newFullScreen) {
             this.enterFullScreen();
         } else {
             this.exitFullScreen();
