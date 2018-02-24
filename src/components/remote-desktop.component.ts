@@ -20,6 +20,7 @@ import { trigger, state, transition, animate, style } from '@angular/animations'
 import { ConnectingMessageComponent } from './messages/connecting-message.component';
 import { DisconnectedMessageComponent } from './messages/disconnected-message.component';
 import { ErrorMessageComponent } from './messages/error-message.component';
+import { DisplayComponent } from '.';
 
 /**
  * The main component for displaying a remote desktop
@@ -99,7 +100,7 @@ import { ErrorMessageComponent } from './messages/error-message.component';
                 <!-- End error message -->
                 
                 <!-- Display -->
-                <ngx-remote-desktop-display *ngIf="isState(states.CONNECTED)" 
+                <ngx-remote-desktop-display *ngIf="isState(states.CONNECTED)"
                     [manager]="manager"
                     (onMouseMove)="handleDisplayMouseMove($event)">
                 </ngx-remote-desktop-display>                
@@ -296,15 +297,19 @@ export class RemoteDesktopComponent implements OnInit, OnDestroy {
         if (!this.manager.isFullScreen()) {
             return;
         }
-        this.showOrHideToolbar($event.x);
+        const toolbarWidth = this.toolbar.nativeElement.clientWidth;
+        if ($event.x >= toolbarWidth) {
+            this.toolbarVisible = false;
+        }
     }
 
-    /**
-     * Show or hide the toolbar
-     * @param x - Mouse x coordinate respective to the container
-     */
-    private showOrHideToolbar(x: number): void {
+    @HostListener('document:mousemove', ['$event'])
+    private onDocumentMousemove($event: MouseEvent) {
+        if (!this.manager.isFullScreen()) {
+            return;
+        }
         const toolbarWidth = this.toolbar.nativeElement.clientWidth;
+        const x = $event.x;
         if (x >= -1 && x <= 0) {
             this.toolbarVisible = true;
         }

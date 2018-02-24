@@ -95,6 +95,7 @@ $ngx-remote-desktop-status-bar-border-color: #005188;
         flex-direction: column;
         overflow: hidden;
         .ngx-remote-desktop-viewport {
+            border: 1px solid $ngx-remote-desktop-viewport-background-color;
             position: relative;
             display: flex;
             flex: 1;

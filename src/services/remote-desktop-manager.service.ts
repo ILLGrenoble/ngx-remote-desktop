@@ -78,6 +78,11 @@ export class RemoteDesktopManager {
     public onFullScreen = new BehaviorSubject<boolean>(false);
 
     /**
+     * When an instruction is received from the tunnel
+     */
+    public onTunnelInstruction = new BehaviorSubject<{ opcode: string, parameters: any }>(null);
+
+    /**
      * The actual underlying remote desktop client
      */
     private client: Client;
@@ -160,7 +165,7 @@ export class RemoteDesktopManager {
     public getTunnel(): Tunnel {
         return this.tunnel;
     }
-    
+
     /**
      * Generate a thumbnail
      * @param {number} width  The width of the thumbnail
@@ -309,6 +314,15 @@ export class RemoteDesktopManager {
         this.client.onclipboard = this.handleClipboard.bind(this);
         this.tunnel.onerror = this.handleTunnelError.bind(this);
         this.tunnel.onstatechange = this.handleTunnelStateChange.bind(this);
+        /*
+        * Override tunnel instruction message
+        */
+        this.tunnel.oninstruction = ((oninstruction) => {
+            return (opcode: string, parameters: any) => {
+                oninstruction(opcode, parameters);
+                this.onTunnelInstruction.next({ opcode, parameters });
+            };
+        })(this.tunnel.oninstruction);
     }
 
     /**
