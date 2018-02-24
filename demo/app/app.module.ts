@@ -17,11 +17,13 @@ import {
 } from './components';
 import { OverlayContainer, FullscreenOverlayContainer } from '@angular/cdk/overlay';
 import { RouterModule } from '@angular/router';
+import { FileSizePipe } from './pipes';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ClipboardModalComponent
+    ClipboardModalComponent,
+    FileSizePipe
   ],
   imports: [
     BrowserModule,

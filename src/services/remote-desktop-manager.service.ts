@@ -297,7 +297,7 @@ export class RemoteDesktopManager {
     }
 
     /**
-     * Build the url query parameters and set the width and height parameters
+     * Build the url query parameters
      */
     private buildConfiguration() {
         const dimensions = this.calculateDimensions();

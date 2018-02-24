@@ -76,18 +76,15 @@ export class AppComponent implements OnInit {
         // URL parameters (image, audio and other query parameters you want to send to the tunnel.)
         const parameters = {
             ip: '192.168.13.232',
-            image: 'image/png'
+            image: 'image/png',
+            width: window.screen.width,
+            height: window.screen.height,
         };
         /**
          *  Create an instance of the remote desktop manager by 
          *  passing in the tunnel and parameters
          */
         this.manager = new RemoteDesktopManager(tunnel, parameters);
-        /**
-         *  ngx-remote-desktop will always send the max screen dimensions as we always want to scale down and never up
-         *  You can override the dimensions parameters that are sent to the tunnel connection 
-         */
-        this.manager.setDimensionParameters('width', 'height');
         /*
          * The manager will establish a connection to: 
          * ws://localhost:8080?width=n&height=n&ip=192.168.13.232&image=image/png
@@ -160,5 +157,16 @@ Subscribe to the remote clipboard and receive data when text is cut or copied
 ```typescript
   const client = this.manager.getClient();
   const tunnel = this.manager.getTunnel();
+```
+
+### Get notified when a tunnel instruction is recevied
+This can be useful for generating stats, .i.e. display the total data received from the tunnel
+```typescript
+this.manager.onTunnelInstruction.subscribe(instruction => {
+    if (instruction && instruction.opcode === 'blob') {
+        const data = atob(instruction.parameters[1]);
+        this.totalTunnelDataReceived += data.length;
+    }
+});
 ```
 

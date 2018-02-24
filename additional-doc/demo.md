@@ -22,6 +22,8 @@ const parameters = {
     port: 3389 // rdp or vnc port
     type: 'rdp' // rdp or vnc
     image: 'image/png',
+    width: window.screen.width,
+    height: window.screen.height,
     audio: 'audio/L16',
     dpi: 96
 };

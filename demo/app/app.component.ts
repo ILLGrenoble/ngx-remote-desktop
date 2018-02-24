@@ -16,7 +16,6 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class AppComponent implements OnInit {
     private manager: RemoteDesktopManager;
-
     constructor(private ngbModal: NgbModal,
         private route: ActivatedRoute,
         private snackBar: MatSnackBar) {
@@ -77,11 +76,13 @@ export class AppComponent implements OnInit {
             const tunnel = new WebSocketTunnel('ws://localhost:8080/ws');
             // URL parameters (image, audio and other query parameters you want to send to the tunnel.)
             const parameters = {
-                hostname: 'localhost',
+                hostname: '172.17.19.61',
                 port: 3389,
                 image: 'image/png',
                 audio: 'audio/L16',
                 dpi: 96,
+                width: window.screen.width,
+                height: window.screen.height,
                 id: connectionId
             };
             /**
@@ -89,12 +90,7 @@ export class AppComponent implements OnInit {
              *  passing in the tunnel and parameters
              */
             this.manager = new RemoteDesktopManager(tunnel, parameters);
-            /**
-             *  ngx-remote-desktop will always send the max screen dimensions 
-             *  as we always want to scale down and never up.
-             *  You can override the dimensions parameters that are sent to the tunnel connection 
-             */
-            this.manager.setDimensionParameters('width', 'height');
+
             /*
              * The manager will establish a connection to: 
              * ws://localhost:8080?ws?ip={address}&image=image/png&audio=audio/L16&dpi=96&width=n&height=n
