@@ -26,26 +26,17 @@ var RemoteDesktopManager = /** @class */ (function () {
          * the remote desktop.
          */
         this.onRemoteClipboardData = new rxjs_1.ReplaySubject(1);
+        this.onKeyboardReset = new rxjs_1.BehaviorSubject(true);
+        this.onFocused = new rxjs_1.BehaviorSubject(true);
+        this.onFullScreen = new rxjs_1.BehaviorSubject(false);
+        /**
+         * When an instruction is received from the tunnel
+         */
+        this.onTunnelInstruction = new rxjs_1.BehaviorSubject(null);
         /**
          * Current state of the connection
          */
         this.state = RemoteDesktopManager.STATE.IDLE;
-        /**
-         * The keyboard and mouse input listeners to the remote display are only bound when
-         * this is set to true.
-         * Set this to false if you need to use the keyboard or mouse inside another component outside
-         * of the display
-         */
-        this.focused = true;
-        /**
-         * When set to true, this will trigger an event to enter into full screen mode and hide the toolbar
-         */
-        this.fullScreen = false;
-        /**
-         * The dimensions parameters to send to the tunnel.
-         * This can be overridden by using  {@link setDimensionParameters}
-         */
-        this.dimensionsParameters = { width: 'width', height: 'height' };
         this.tunnel = tunnel;
         this.client = new guacamole_common_js_1.Client(this.tunnel);
     }
@@ -67,26 +58,20 @@ var RemoteDesktopManager = /** @class */ (function () {
      * @param newFocused
      */
     RemoteDesktopManager.prototype.setFocused = function (newFocused) {
-        this.focused = newFocused;
+        this.onFocused.next(newFocused);
     };
     /**
      * Set full screen
      * @param newFullScreen
      */
     RemoteDesktopManager.prototype.setFullScreen = function (newFullScreen) {
-        this.fullScreen = newFullScreen;
+        this.onFullScreen.next(newFullScreen);
     };
     /**
      * Is the display full screen?
      */
     RemoteDesktopManager.prototype.isFullScreen = function () {
-        return this.fullScreen;
-    };
-    /**
-     * Is the display focused?
-     */
-    RemoteDesktopManager.prototype.isFocused = function () {
-        return this.focused;
+        return this.onFullScreen.getValue();
     };
     /**
      * Is the tunnel connected?
@@ -105,16 +90,6 @@ var RemoteDesktopManager = /** @class */ (function () {
      */
     RemoteDesktopManager.prototype.getTunnel = function () {
         return this.tunnel;
-    };
-    /**
-     * Set the dimensions parameters.
-     * This is used for sending the client dimensions when connecting to the tunnel.
-     * @param width
-     * @param height
-     */
-    RemoteDesktopManager.prototype.setDimensionParameters = function (width, height) {
-        // tslint:disable-next-line:object-literal-shorthand
-        this.dimensionsParameters = { width: width, height: height };
     };
     /**
      * Generate a thumbnail
@@ -162,6 +137,13 @@ var RemoteDesktopManager = /** @class */ (function () {
             this.onRemoteClipboardData.next(text);
             this.client.setClipboard(text);
         }
+    };
+    /**
+     * Reset the keyboard
+     * This will release all keys
+     */
+    RemoteDesktopManager.prototype.resetKeyboard = function () {
+        this.onKeyboardReset.next(true);
     };
     /**
      * Disconnect from the remote desktop
@@ -226,25 +208,32 @@ var RemoteDesktopManager = /** @class */ (function () {
         return params;
     };
     /**
-     * Build the url query parameters and set the width and height parameters
+     * Build the url query parameters
      */
     RemoteDesktopManager.prototype.buildConfiguration = function () {
-        var dimensionsParameters = this.dimensionsParameters;
         var dimensions = this.calculateDimensions();
         var buildParameters = this.buildParameters();
-        buildParameters.set(this.dimensionsParameters.width, dimensions.width.toString());
-        buildParameters.set(this.dimensionsParameters.height, dimensions.height.toString());
         return buildParameters.toString();
     };
     /**
      * Bind the client and tunnel event handlers
      */
     RemoteDesktopManager.prototype.bindEventHandlers = function () {
+        var _this = this;
         this.client.onerror = this.handleClientError.bind(this);
         this.client.onstatechange = this.handleClientStateChange.bind(this);
         this.client.onclipboard = this.handleClipboard.bind(this);
         this.tunnel.onerror = this.handleTunnelError.bind(this);
         this.tunnel.onstatechange = this.handleTunnelStateChange.bind(this);
+        // /*
+        // * Override tunnel instruction message
+        // */
+        this.tunnel.oninstruction = (function (oninstruction) {
+            return function (opcode, parameters) {
+                oninstruction(opcode, parameters);
+                _this.onTunnelInstruction.next({ opcode: opcode, parameters: parameters });
+            };
+        })(this.tunnel.oninstruction);
     };
     /**
      * Handle any client errors by disconnecting and updating the connection state

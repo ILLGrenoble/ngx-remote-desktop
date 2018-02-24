@@ -314,9 +314,9 @@ export class RemoteDesktopManager {
         this.client.onclipboard = this.handleClipboard.bind(this);
         this.tunnel.onerror = this.handleTunnelError.bind(this);
         this.tunnel.onstatechange = this.handleTunnelStateChange.bind(this);
-        /*
-        * Override tunnel instruction message
-        */
+        // /*
+        // * Override tunnel instruction message
+        // */
         this.tunnel.oninstruction = ((oninstruction) => {
             return (opcode: string, parameters: any) => {
                 oninstruction(opcode, parameters);

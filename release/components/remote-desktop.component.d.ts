@@ -1,8 +1,8 @@
-import { OnInit, DoCheck } from '@angular/core';
+import { OnInit, OnDestroy } from '@angular/core';
 /**
  * The main component for displaying a remote desktop
  */
-export declare class RemoteDesktopComponent implements OnInit, DoCheck {
+export declare class RemoteDesktopComponent implements OnInit, OnDestroy {
     /**
      * Client that manages the connection to the remote desktop
      */
@@ -12,6 +12,10 @@ export declare class RemoteDesktopComponent implements OnInit, DoCheck {
     private errorMessage;
     private container;
     private toolbar;
+    /**
+     * Subscriptions
+     */
+    private subscriptions;
     /**
      * Hide or show the toolbar
      */
@@ -26,13 +30,21 @@ export declare class RemoteDesktopComponent implements OnInit, DoCheck {
      */
     private states;
     /**
-     * Subscribe to the connection state when the component is initialised
+     * Subscribe to the connection state  and full screen state when the component is initialised
      */
     ngOnInit(): void;
     /**
-     * Check if the full screen or focused property has changed
+     * Remove all subscriptions when the component is destroyed
      */
-    ngDoCheck(): void;
+    ngOnDestroy(): void;
+    /**
+     * Bind the subscriptions
+     */
+    private bindSubscriptions();
+    /**
+     * Unbind the subscriptions
+     */
+    private unbindSubscriptions();
     /**
      * Set the component state to the new guacamole state
      * @param newState
@@ -63,16 +75,12 @@ export declare class RemoteDesktopComponent implements OnInit, DoCheck {
     /**
      * Go in and out of full screen
      */
-    private handleFullScreen();
+    private handleFullScreen(newFullScreen);
     private handleToolbar();
     /**
      * Handle the display mouse movement
      * @param event Mouse event
      */
     private handleDisplayMouseMove($event);
-    /**
-     * Show or hide the toolbar
-     * @param x - Mouse x coordinate respective to the container
-     */
-    private showOrHideToolbar(x);
+    private onDocumentMousemove($event);
 }

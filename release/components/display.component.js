@@ -20,28 +20,49 @@ var DisplayComponent = /** @class */ (function () {
          * Emit the mouse move events to any subscribers
          */
         this.onMouseMove = new rxjs_1.BehaviorSubject(null);
+        /**
+         * Subscriptions
+         */
+        this.subscriptions = [];
     }
     /**
      * Create the display canvas when initialising the component
      */
     DisplayComponent.prototype.ngOnInit = function () {
         this.createDisplayCanvas();
+        this.bindSubscriptions();
+    };
+    DisplayComponent.prototype.ngAfterViewChecked = function () {
+        this.setDisplayScale();
     };
     /**
      * Unbind all display input listeners when destroying the component
      */
     DisplayComponent.prototype.ngOnDestroy = function () {
         this.removeDisplayInputListeners();
+        this.unbindSubscriptions();
     };
-    DisplayComponent.prototype.ngDoCheck = function () {
-        this.setDisplayScale();
-        this.handleFocused();
+    /**
+     * Bind all subscriptions
+     */
+    DisplayComponent.prototype.bindSubscriptions = function () {
+        var _this = this;
+        this.subscriptions.push(this.manager.onKeyboardReset.subscribe(function (_) {
+            _this.resetKeyboard();
+        }));
+        this.subscriptions.push(this.manager.onFocused.subscribe(this.handleFocused.bind(this)));
+    };
+    /**
+     * Unbind all subscriptions
+     */
+    DisplayComponent.prototype.unbindSubscriptions = function () {
+        this.subscriptions.forEach(function (subscription) { return subscription.unsubscribe(); });
     };
     /**
      * Bind input listeners if display is focused, otherwise, unbind
      */
-    DisplayComponent.prototype.handleFocused = function () {
-        if (this.manager.isFocused()) {
+    DisplayComponent.prototype.handleFocused = function (newFocused) {
+        if (newFocused) {
             this.bindDisplayInputListeners();
         }
         else {
@@ -53,9 +74,14 @@ var DisplayComponent = /** @class */ (function () {
      * @param event
      */
     DisplayComponent.prototype.onWindowBlur = function (event) {
-        if (this.keyboard) {
-            this.keyboard.reset();
-        }
+        this.resetKeyboard();
+    };
+    /**
+     * Resize the display scale when the window is resized
+     * @param event
+     */
+    DisplayComponent.prototype.onWindowResize = function (event) {
+        this.setDisplayScale();
     };
     /**
      * Create the remote desktop display and bind the event handlers
@@ -91,7 +117,6 @@ var DisplayComponent = /** @class */ (function () {
     DisplayComponent.prototype.calculateDisplayScale = function () {
         var viewportElement = this.viewport.nativeElement;
         var display = this.getDisplay();
-        var screenElement = window.screen;
         var scale = Math.min(viewportElement.clientWidth / display.getWidth(), viewportElement.clientHeight / display.getHeight());
         return scale;
     };
@@ -147,6 +172,14 @@ var DisplayComponent = /** @class */ (function () {
         this.onMouseMove.next(mouseState);
     };
     /**
+     * Resetting the keyboard will release all keys
+     */
+    DisplayComponent.prototype.resetKeyboard = function () {
+        if (this.keyboard) {
+            this.keyboard.reset();
+        }
+    };
+    /**
      * Send key down event to the remote desktop
      * @param key
      */
@@ -178,6 +211,12 @@ var DisplayComponent = /** @class */ (function () {
         __metadata("design:paramtypes", [Object]),
         __metadata("design:returntype", void 0)
     ], DisplayComponent.prototype, "onWindowBlur", null);
+    __decorate([
+        core_1.HostListener('window:resize', ['$event']),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object]),
+        __metadata("design:returntype", void 0)
+    ], DisplayComponent.prototype, "onWindowResize", null);
     DisplayComponent = __decorate([
         core_1.Component({
             selector: 'ngx-remote-desktop-display',

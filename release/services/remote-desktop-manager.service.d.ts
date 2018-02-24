@@ -25,6 +25,16 @@ export declare class RemoteDesktopManager {
      * the remote desktop.
      */
     onRemoteClipboardData: ReplaySubject<{}>;
+    onKeyboardReset: BehaviorSubject<boolean>;
+    onFocused: BehaviorSubject<boolean>;
+    onFullScreen: BehaviorSubject<boolean>;
+    /**
+     * When an instruction is received from the tunnel
+     */
+    onTunnelInstruction: BehaviorSubject<{
+        opcode: string;
+        parameters: any;
+    }>;
     /**
      * The actual underlying remote desktop client
      */
@@ -37,22 +47,6 @@ export declare class RemoteDesktopManager {
      * Current state of the connection
      */
     private state;
-    /**
-     * The keyboard and mouse input listeners to the remote display are only bound when
-     * this is set to true.
-     * Set this to false if you need to use the keyboard or mouse inside another component outside
-     * of the display
-     */
-    private focused;
-    /**
-     * When set to true, this will trigger an event to enter into full screen mode and hide the toolbar
-     */
-    private fullScreen;
-    /**
-     * The dimensions parameters to send to the tunnel.
-     * This can be overridden by using  {@link setDimensionParameters}
-     */
-    private dimensionsParameters;
     /**
      * Set up the manager
      * @param tunnel  WebsocketTunnel, HTTPTunnel or ChainedTunnel
@@ -83,10 +77,6 @@ export declare class RemoteDesktopManager {
      */
     isFullScreen(): boolean;
     /**
-     * Is the display focused?
-     */
-    isFocused(): boolean;
-    /**
      * Is the tunnel connected?
      */
     isConnected(): boolean;
@@ -98,13 +88,6 @@ export declare class RemoteDesktopManager {
      * Get the guacamole tunnel
      */
     getTunnel(): Tunnel;
-    /**
-     * Set the dimensions parameters.
-     * This is used for sending the client dimensions when connecting to the tunnel.
-     * @param width
-     * @param height
-     */
-    setDimensionParameters(width: string, height: string): void;
     /**
      * Generate a thumbnail
      * @param {number} width  The width of the thumbnail
@@ -122,6 +105,11 @@ export declare class RemoteDesktopManager {
      * @param {string} text Clipboard text to send
      */
     sendRemoteClipboardData(text: string): void;
+    /**
+     * Reset the keyboard
+     * This will release all keys
+     */
+    resetKeyboard(): void;
     /**
      * Disconnect from the remote desktop
      */
@@ -152,7 +140,7 @@ export declare class RemoteDesktopManager {
      */
     private buildParameters();
     /**
-     * Build the url query parameters and set the width and height parameters
+     * Build the url query parameters
      */
     private buildConfiguration();
     /**

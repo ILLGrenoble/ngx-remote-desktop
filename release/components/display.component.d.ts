@@ -1,6 +1,6 @@
-import { ElementRef, OnInit, OnDestroy, DoCheck } from '@angular/core';
+import { ElementRef, OnInit, OnDestroy, AfterViewChecked } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-export declare class DisplayComponent implements OnInit, OnDestroy, DoCheck {
+export declare class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
     private viewport;
     /**
      * Emit the mouse move events to any subscribers
@@ -19,25 +19,42 @@ export declare class DisplayComponent implements OnInit, OnDestroy, DoCheck {
      * Remote desktop mouse
      */
     private mouse;
+    /**
+     * Subscriptions
+     */
+    private subscriptions;
     constructor(viewport: ElementRef);
     /**
      * Create the display canvas when initialising the component
      */
     ngOnInit(): void;
+    ngAfterViewChecked(): void;
     /**
      * Unbind all display input listeners when destroying the component
      */
     ngOnDestroy(): void;
-    ngDoCheck(): void;
+    /**
+     * Bind all subscriptions
+     */
+    private bindSubscriptions();
+    /**
+     * Unbind all subscriptions
+     */
+    private unbindSubscriptions();
     /**
      * Bind input listeners if display is focused, otherwise, unbind
      */
-    private handleFocused();
+    private handleFocused(newFocused);
     /**
      * Release all the keyboards when the window loses focus
      * @param event
      */
     private onWindowBlur(event);
+    /**
+     * Resize the display scale when the window is resized
+     * @param event
+     */
+    private onWindowResize(event);
     /**
      * Create the remote desktop display and bind the event handlers
      */
@@ -79,6 +96,10 @@ export declare class DisplayComponent implements OnInit, OnDestroy, DoCheck {
      * @param mouseState
      */
     private handleMouseState(mouseState);
+    /**
+     * Resetting the keyboard will release all keys
+     */
+    private resetKeyboard();
     /**
      * Send key down event to the remote desktop
      * @param key
