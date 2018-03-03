@@ -1,20 +1,19 @@
 import {
+    AfterViewChecked,
+    ChangeDetectionStrategy,
     Component,
-    Input,
-    ViewChild,
     ElementRef,
+    HostListener,
+    Input,
+    OnDestroy,
     OnInit,
     Output,
-    OnChanges,
-    OnDestroy,
-    HostListener,
-    DoCheck,
-    AfterViewInit,
-    AfterViewChecked,
-    ChangeDetectionStrategy
+    Renderer2,
+    ViewChild,
 } from '@angular/core';
-import { Mouse, Keyboard } from '@illgrenoble/guacamole-common-js';
+import { Keyboard, Mouse } from '@illgrenoble/guacamole-common-js';
 import { BehaviorSubject, Subscription } from 'rxjs';
+
 import { RemoteDesktopManager } from '../services';
 
 @Component({
@@ -58,7 +57,7 @@ export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
      */
     private subscriptions: Subscription[] = [];
 
-    constructor(private viewport: ElementRef) {
+    constructor(private viewport: ElementRef, private renderer: Renderer2) {
     }
 
     /**
@@ -77,6 +76,7 @@ export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
      * Unbind all display input listeners when destroying the component
      */
     ngOnDestroy(): void {
+        this.removeDisplay();
         this.removeDisplayInputListeners();
         this.unbindSubscriptions();
     }
@@ -175,11 +175,17 @@ export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
      */
     private createDisplay(): void {
         const element = this.display.nativeElement;
-        while (element.firstChild) {
-            element.removeChild(element.firstChild);
-        }
         const display = this.getDisplay();
-        element.appendChild(display.getElement());
+        this.renderer.appendChild(element, display.getElement());
+    }
+
+    /**
+     * Remove the display
+     */
+    private removeDisplay(): void {
+        const element = this.display.nativeElement;
+        const display = this.getDisplay();
+        this.renderer.removeChild(element, display.getElement());
     }
 
     /**

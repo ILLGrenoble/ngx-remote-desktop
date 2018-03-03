@@ -1,17 +1,18 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import {
-    RemoteDesktopComponent,
-    ToolbarItemComponent,
-    MessageComponent,
+    ConnectingMessageComponent,
+    DisconnectedMessageComponent,
     DisplayComponent,
     ErrorMessageComponent,
-    DisconnectedMessageComponent,
-    ConnectingMessageComponent,
+    MessageComponent,
+    RemoteDesktopComponent,
     StatusBarComponent,
-    StatusBarItemComponent
+    StatusBarItemComponent,
+    ToolbarItemComponent,
 } from './components';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
     imports: [

@@ -1,11 +1,12 @@
-import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ClipboardModalComponent } from './components';
-import * as FileSaver from 'file-saver';
-import { RemoteDesktopManager } from '../../src/services';
-import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute } from '@angular/router';
+import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import * as FileSaver from 'file-saver';
+
+import { RemoteDesktopManager } from '../../src/services';
+import { ClipboardModalComponent } from './components';
 
 @Component({
     selector: 'app-root',

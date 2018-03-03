@@ -1,26 +1,22 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import {
     Component,
-    OnInit,
-    Input,
-    ViewChild,
-    ElementRef,
-    ViewEncapsulation,
-    HostListener,
-    OnChanges,
-    forwardRef,
     ContentChild,
-    DoCheck,
-    OnDestroy
+    ElementRef,
+    HostListener,
+    Input,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    ViewEncapsulation,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
+import * as screenfull from 'screenfull';
 
 import { RemoteDesktopManager } from '../services';
-import { Observable, Subscription } from 'rxjs';
-import * as screenfull from 'screenfull';
-import { trigger, state, transition, animate, style } from '@angular/animations';
 import { ConnectingMessageComponent } from './messages/connecting-message.component';
 import { DisconnectedMessageComponent } from './messages/disconnected-message.component';
 import { ErrorMessageComponent } from './messages/error-message.component';
-import { DisplayComponent } from '.';
 
 /**
  * The main component for displaying a remote desktop

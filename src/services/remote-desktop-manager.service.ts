@@ -1,14 +1,6 @@
-import {
-    Client,
-    Tunnel,
-    WebSocketTunnel,
-    ChainedTunnel,
-    HTTPTunnel,
-    Status,
-    StringReader
-} from '@illgrenoble/guacamole-common-js';
-import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { URLSearchParams } from '@angular/http';
+import { Client, StringReader, Tunnel } from '@illgrenoble/guacamole-common-js';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 
 /**
  * Manages the connection to the remote desktop
