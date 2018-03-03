@@ -6,3 +6,4 @@ export * from './messages/connecting-message.component';
 export * from './messages/error-message.component';
 export * from './messages/disconnected-message.component';
 export * from './status-bar.component';
+export * from './status-bar-item.component';

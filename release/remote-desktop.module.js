@@ -6,10 +6,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = require("@angular/core");
 var common_1 = require("@angular/common");
-var components_1 = require("./components");
+var core_1 = require("@angular/core");
 var animations_1 = require("@angular/platform-browser/animations");
+var components_1 = require("./components");
 var NgxRemoteDesktopModule = /** @class */ (function () {
     function NgxRemoteDesktopModule() {
     }
@@ -27,7 +27,8 @@ var NgxRemoteDesktopModule = /** @class */ (function () {
                 components_1.ErrorMessageComponent,
                 components_1.DisconnectedMessageComponent,
                 components_1.ConnectingMessageComponent,
-                components_1.StatusBarComponent
+                components_1.StatusBarComponent,
+                components_1.StatusBarItemComponent
             ],
             exports: [
                 components_1.RemoteDesktopComponent,
@@ -35,7 +36,8 @@ var NgxRemoteDesktopModule = /** @class */ (function () {
                 components_1.ErrorMessageComponent,
                 components_1.DisconnectedMessageComponent,
                 components_1.ConnectingMessageComponent,
-                components_1.StatusBarComponent
+                components_1.StatusBarComponent,
+                components_1.StatusBarItemComponent
             ],
             entryComponents: [],
             bootstrap: [components_1.RemoteDesktopComponent]

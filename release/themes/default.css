@@ -14,12 +14,12 @@
     height: 20px;
     width: 100%;
     display: flex;
-    background: #007acc;
-    font-weight: 700;
+    background: #272a31;
+    font-weight: normal;
     font-size: 12px;
     color: #fff;
     padding: 0px 5px 0px 5px;
-    border-top: 1px solid #005188;
+    border-top: 1px solid #131418;
     justify-content: space-between; }
     .ngx-remote-desktop .ngx-remote-desktop-status-bar a,
     .ngx-remote-desktop .ngx-remote-desktop-status-bar strong {
@@ -30,6 +30,11 @@
       text-decoration: underline; }
     .ngx-remote-desktop .ngx-remote-desktop-status-bar strong {
       text-decoration: none; }
+    .ngx-remote-desktop .ngx-remote-desktop-status-bar a {
+      text-decoration: none;
+      outline: none; }
+    .ngx-remote-desktop .ngx-remote-desktop-status-bar .ngx-remote-desktop-status-bar {
+      flex: 1; }
   .ngx-remote-desktop .ngx-remote-desktop-toolbar {
     flex: 0 0 35px;
     height: 35px;
@@ -74,7 +79,7 @@
     flex-direction: column;
     overflow: hidden; }
     .ngx-remote-desktop .ngx-remote-desktop-container .ngx-remote-desktop-viewport {
-      border: 1px solid #2f323a;
+      border: 1px solid #272a31;
       position: relative;
       display: flex;
       flex: 1;
@@ -82,7 +87,7 @@
       align-items: center;
       width: 100%;
       max-height: 100%;
-      background: #2f323a; }
+      background: #272a31; }
     .ngx-remote-desktop .ngx-remote-desktop-container .ngx-remote-desktop-message {
       flex-direction: column;
       align-items: center;

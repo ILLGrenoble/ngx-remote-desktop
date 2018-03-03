@@ -9,10 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = require("@angular/core");
-var services_1 = require("../services");
-var screenfull = require("screenfull");
 var animations_1 = require("@angular/animations");
+var core_1 = require("@angular/core");
+var screenfull = require("screenfull");
+var services_1 = require("../services");
 var connecting_message_component_1 = require("./messages/connecting-message.component");
 var disconnected_message_component_1 = require("./messages/disconnected-message.component");
 var error_message_component_1 = require("./messages/error-message.component");

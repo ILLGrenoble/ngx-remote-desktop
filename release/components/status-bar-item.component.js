@@ -8,21 +8,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 /**
- * Status bar component
+ * Status bar item component
  */
-var StatusBarComponent = /** @class */ (function () {
-    function StatusBarComponent() {
+var StatusBarItemComponent = /** @class */ (function () {
+    function StatusBarItemComponent() {
     }
-    StatusBarComponent = __decorate([
+    StatusBarItemComponent = __decorate([
         core_1.Component({
-            selector: 'ngx-remote-desktop-status-bar',
-            template: "<ng-content select=\"ngx-remote-desktop-status-bar-item\"></ng-content>",
+            selector: 'ngx-remote-desktop-status-bar-item',
+            template: "<ng-content></ng-content>",
             host: {
-                class: 'ngx-remote-desktop-status-bar'
+                class: 'ngx-remote-desktop-status-bar-item'
             }
         })
-    ], StatusBarComponent);
-    return StatusBarComponent;
+    ], StatusBarItemComponent);
+    return StatusBarItemComponent;
 }());
-exports.StatusBarComponent = StatusBarComponent;
-//# sourceMappingURL=status-bar.component.js.map
+exports.StatusBarItemComponent = StatusBarItemComponent;
+//# sourceMappingURL=status-bar-item.component.js.map

@@ -14,8 +14,9 @@ var guacamole_common_js_1 = require("@illgrenoble/guacamole-common-js");
 var rxjs_1 = require("rxjs");
 var services_1 = require("../services");
 var DisplayComponent = /** @class */ (function () {
-    function DisplayComponent(viewport) {
+    function DisplayComponent(viewport, renderer) {
         this.viewport = viewport;
+        this.renderer = renderer;
         /**
          * Emit the mouse move events to any subscribers
          */
@@ -39,6 +40,7 @@ var DisplayComponent = /** @class */ (function () {
      * Unbind all display input listeners when destroying the component
      */
     DisplayComponent.prototype.ngOnDestroy = function () {
+        this.removeDisplay();
         this.removeDisplayInputListeners();
         this.unbindSubscriptions();
     };
@@ -125,11 +127,16 @@ var DisplayComponent = /** @class */ (function () {
      */
     DisplayComponent.prototype.createDisplay = function () {
         var element = this.display.nativeElement;
-        while (element.firstChild) {
-            element.removeChild(element.firstChild);
-        }
         var display = this.getDisplay();
-        element.appendChild(display.getElement());
+        this.renderer.appendChild(element, display.getElement());
+    };
+    /**
+     * Remove the display
+     */
+    DisplayComponent.prototype.removeDisplay = function () {
+        var element = this.display.nativeElement;
+        var display = this.getDisplay();
+        this.renderer.removeChild(element, display.getElement());
     };
     /**
      * Bind input listeners for keyboard and mouse
@@ -221,9 +228,10 @@ var DisplayComponent = /** @class */ (function () {
         core_1.Component({
             selector: 'ngx-remote-desktop-display',
             host: { class: 'ngx-remote-desktop-viewport' },
-            template: "\n        <div class=\"ngx-remote-desktop-display\" #display>\n        </div>\n    "
+            template: "\n        <div class=\"ngx-remote-desktop-display\" #display>\n        </div>\n    ",
+            changeDetection: core_1.ChangeDetectionStrategy.OnPush
         }),
-        __metadata("design:paramtypes", [core_1.ElementRef])
+        __metadata("design:paramtypes", [core_1.ElementRef, core_1.Renderer2])
     ], DisplayComponent);
     return DisplayComponent;
 }());

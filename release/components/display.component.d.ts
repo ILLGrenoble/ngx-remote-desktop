@@ -1,7 +1,8 @@
-import { ElementRef, OnInit, OnDestroy, AfterViewChecked } from '@angular/core';
+import { AfterViewChecked, ElementRef, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 export declare class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
     private viewport;
+    private renderer;
     /**
      * Emit the mouse move events to any subscribers
      */
@@ -23,7 +24,7 @@ export declare class DisplayComponent implements OnInit, OnDestroy, AfterViewChe
      * Subscriptions
      */
     private subscriptions;
-    constructor(viewport: ElementRef);
+    constructor(viewport: ElementRef, renderer: Renderer2);
     /**
      * Create the display canvas when initialising the component
      */
@@ -79,6 +80,10 @@ export declare class DisplayComponent implements OnInit, OnDestroy, AfterViewChe
      * Assign the display to the client
      */
     private createDisplay();
+    /**
+     * Remove the display
+     */
+    private removeDisplay();
     /**
      * Bind input listeners for keyboard and mouse
      */
