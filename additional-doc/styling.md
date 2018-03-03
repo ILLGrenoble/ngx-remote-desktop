@@ -18,3 +18,5 @@ To use it, you need to include `release/themes/default.css` into your applicatio
 		 - `ngx-remote-desktop-message`: Messages (connecting, disconnected etc.)
 			 - `ngx-remote-desktop-message-title`: Title of the message
 			 - `ngx-remote-desktop-message-body`: Body of the message
+	- `ngx-remote-desktop-status-bar`: Status bar
+		`ngx-remote-desktop-status-bar-item`: Status bar item

@@ -8,7 +8,8 @@ import {
     ErrorMessageComponent,
     DisconnectedMessageComponent,
     ConnectingMessageComponent,
-    StatusBarComponent
+    StatusBarComponent,
+    StatusBarItemComponent
 } from './components';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -25,7 +26,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         ErrorMessageComponent,
         DisconnectedMessageComponent,
         ConnectingMessageComponent,
-        StatusBarComponent
+        StatusBarComponent,
+        StatusBarItemComponent
     ],
     exports: [
         RemoteDesktopComponent,
@@ -33,7 +35,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         ErrorMessageComponent,
         DisconnectedMessageComponent,
         ConnectingMessageComponent,
-        StatusBarComponent
+        StatusBarComponent,
+        StatusBarItemComponent
     ],
     entryComponents: [
 

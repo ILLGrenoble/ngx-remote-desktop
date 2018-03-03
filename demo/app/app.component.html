@@ -29,10 +29,12 @@
 
     <!-- Status bar -->
     <ngx-remote-desktop-status-bar *ngIf="manager.isConnected()">
-      <span>
-        You are currently connected to: <strong>Machine 1</strong>
-      </span>
-      <span>Need help? Look at our <a href="#">documentation</a></span>
+      <ngx-remote-desktop-status-bar-item>
+          You are currently connected to: <strong>Machine 1</strong>
+      </ngx-remote-desktop-status-bar-item>
+      <ngx-remote-desktop-status-bar-item>
+          <span>Need help? Look at our <a href="#">documentation</a></span>
+      </ngx-remote-desktop-status-bar-item>
     </ngx-remote-desktop-status-bar>
     
   </ngx-remote-desktop>

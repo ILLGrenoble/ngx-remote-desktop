@@ -41,7 +41,7 @@ import { WebSocketTunnel } from '@illgrenoble/guacamole-common-js';
 
             <!-- Status bar -->
             <ngx-remote-desktop-status-bar *ngIf="manager.isConnected()">
-                Hello world!
+                <ngx-remote-desktop-status-bar-item>Hello world!</ngx-remote-desktop-status-bar-item>
             </ngx-remote-desktop-status-bar>
         </ngx-remote-desktop>
     `

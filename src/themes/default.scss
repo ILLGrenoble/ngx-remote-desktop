@@ -3,11 +3,11 @@ $ngx-remote-desktop-toolbar-border-color: #131418;
 $ngx-remote-desktop-toolbar-item-color:rgba(255, 255, 255, 0.6);
 $ngx-remote-desktop-toolbar-item-hover-color: rgba(255, 255, 255, 1);
 $ngx-remote-desktop-toolbar-width: 170px;
-$ngx-remote-desktop-viewport-background-color: #2f323a;
+$ngx-remote-desktop-viewport-background-color: #272a31;
 $ngx-remote-desktop-font-family: inherit;
 $ngx-remote-desktop-background-color: #ffffff;
-$ngx-remote-desktop-status-bar-background-color: #007acc;
-$ngx-remote-desktop-status-bar-border-color: #005188;
+$ngx-remote-desktop-status-bar-background-color: #272a31;
+$ngx-remote-desktop-status-bar-border-color: #131418;
 
 .ngx-remote-desktop {
     font-family: $ngx-remote-desktop-font-family;
@@ -21,13 +21,13 @@ $ngx-remote-desktop-status-bar-border-color: #005188;
     .ngx-remote-desktop-status-bar-hidden {
         display: none;
     }
-    .ngx-remote-desktop-status-bar {
+    .ngx-remote-desktop-status-bar {   
         flex: 0 0 20px;
         height: 20px;
         width: 100%;
         display: flex;
         background: $ngx-remote-desktop-status-bar-background-color;
-        font-weight: 700;
+        font-weight: normal;
         font-size: 12px;
         color: #fff;
         padding: 0px 5px 0px 5px;
@@ -43,6 +43,13 @@ $ngx-remote-desktop-status-bar-border-color: #005188;
         }
         strong {
             text-decoration: none;
+        }
+        a {
+            text-decoration: none;
+            outline: none;
+        }
+        .ngx-remote-desktop-status-bar {
+            flex: 1;
         }
     }
     .ngx-remote-desktop-toolbar {

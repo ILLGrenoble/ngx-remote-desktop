@@ -10,7 +10,8 @@ import {
     HostListener,
     DoCheck,
     AfterViewInit,
-    AfterViewChecked
+    AfterViewChecked,
+    ChangeDetectionStrategy
 } from '@angular/core';
 import { Mouse, Keyboard } from '@illgrenoble/guacamole-common-js';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -22,7 +23,8 @@ import { RemoteDesktopManager } from '../services';
     template: `
         <div class="ngx-remote-desktop-display" #display>
         </div>
-    `
+    `,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
 

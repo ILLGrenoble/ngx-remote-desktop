@@ -7,7 +7,7 @@ import {
  */
 @Component({
     selector: 'ngx-remote-desktop-status-bar',
-    template: `<ng-content></ng-content>`,
+    template: `<ng-content select="ngx-remote-desktop-status-bar-item"></ng-content>`,
     host: {
         class: 'ngx-remote-desktop-status-bar'
     }
