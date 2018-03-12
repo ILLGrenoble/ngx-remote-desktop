@@ -1,5 +1,5 @@
 <div class="vdi-container">
-  <ngx-remote-desktop [manager]="manager" (reconnect)="handleReconnect($event)">
+  <ngx-remote-desktop [manager]="manager">
     <!-- Toolbar items -->
     <ngx-remote-desktop-toolbar-item align="left" *ngIf="manager.isConnected()" (click)="handleScreenshot()">
         <i class="fa fa-print"></i> Take screenshot
