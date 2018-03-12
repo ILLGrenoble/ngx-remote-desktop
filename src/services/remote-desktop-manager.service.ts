@@ -1,6 +1,6 @@
 import { URLSearchParams } from '@angular/http';
 import { Client, StringReader, Tunnel } from '@illgrenoble/guacamole-common-js';
-import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 
 /**
  * Manages the connection to the remote desktop
@@ -54,7 +54,7 @@ export class RemoteDesktopManager {
      * Remote desktop connection state observable
      * Subscribe to this if you want to be notified when the connection state changes
      */
-    public onStateChange = new BehaviorSubject(RemoteDesktopManager.STATE.CONNECTING);
+    public onStateChange = new BehaviorSubject(RemoteDesktopManager.STATE.IDLE);
 
     /**
      * Remote desktop clipboard observable.
@@ -68,6 +68,8 @@ export class RemoteDesktopManager {
     public onFocused = new BehaviorSubject<boolean>(true);
 
     public onFullScreen = new BehaviorSubject<boolean>(false);
+
+    public onReconnect = new Subject<boolean>();
 
     /**
      * When an instruction is received from the tunnel
@@ -85,16 +87,11 @@ export class RemoteDesktopManager {
     private tunnel: Tunnel;
 
     /**
-     * Current state of the connection
-     */
-    private state = RemoteDesktopManager.STATE.IDLE;
-
-    /**
      * Set up the manager
      * @param tunnel  WebsocketTunnel, HTTPTunnel or ChainedTunnel
      * @param parameters Query parameters to send to the tunnel url
      */
-    constructor(tunnel: Tunnel, private parameters = {}) {
+    constructor(tunnel: Tunnel) {
         this.tunnel = tunnel;
         this.client = new Client(this.tunnel);
     }
@@ -103,7 +100,7 @@ export class RemoteDesktopManager {
      * Get the guacamole connection state
      */
     public getState() {
-        return this.state;
+        return this.onStateChange.getValue();
     }
 
     /**
@@ -111,7 +108,7 @@ export class RemoteDesktopManager {
      * @param state
      */
     public isState(state: string): boolean {
-        return state === this.state;
+        return state === this.onStateChange.getValue();
     }
 
     /**
@@ -141,7 +138,7 @@ export class RemoteDesktopManager {
      * Is the tunnel connected?
      */
     public isConnected(): boolean {
-        return this.state === RemoteDesktopManager.STATE.CONNECTED;
+        return this.onStateChange.getValue() === RemoteDesktopManager.STATE.CONNECTED;
     }
 
     /**
@@ -229,8 +226,8 @@ export class RemoteDesktopManager {
     /**
      * Connect to the remote desktop
      */
-    public connect(): void {
-        const configuration = this.buildConfiguration();
+    public connect(parameters = {}): void {
+        const configuration = this.buildParameters(parameters);
         this.client.connect(configuration);
         this.bindEventHandlers();
     }
@@ -240,8 +237,7 @@ export class RemoteDesktopManager {
      * @param state Connection state
      */
     private setState(state: string): void {
-        this.state = state;
-        this.onStateChange.next(this.state);
+        this.onStateChange.next(state);
     }
 
     /**
@@ -264,37 +260,16 @@ export class RemoteDesktopManager {
     }
 
     /**
-     * Calculate the display dimensions.
-     * We always take the full width and height of the screen as we
-     * always want to scale up rather than scale down.
-     */
-    private calculateDimensions(): { width: number, height: number } {
-        const screen = window.screen;
-        const width = screen.width;
-        const height = screen.height;
-        return { height, width };
-    }
-
-    /**
      * Build the URL query parameters to send to the tunnel connection
      */
-    private buildParameters(): URLSearchParams {
+    private buildParameters(parameters = {}): string {
         const params = new URLSearchParams();
-        for (const key in this.parameters) {
-            if (this.parameters.hasOwnProperty(key)) {
-                params.set(key, this.parameters[key]);
+        for (const key in parameters) {
+            if (parameters.hasOwnProperty(key)) {
+                params.set(key, parameters[key]);
             }
         }
-        return params;
-    }
-
-    /**
-     * Build the url query parameters
-     */
-    private buildConfiguration() {
-        const dimensions = this.calculateDimensions();
-        const buildParameters = this.buildParameters();
-        return buildParameters.toString();
+        return params.toString();
     }
 
     /**
@@ -306,9 +281,9 @@ export class RemoteDesktopManager {
         this.client.onclipboard = this.handleClipboard.bind(this);
         this.tunnel.onerror = this.handleTunnelError.bind(this);
         this.tunnel.onstatechange = this.handleTunnelStateChange.bind(this);
-        // /*
-        // * Override tunnel instruction message
-        // */
+        /*
+         * Override tunnel instruction message
+         */
         this.tunnel.oninstruction = ((oninstruction) => {
             return (opcode: string, parameters: any) => {
                 oninstruction(opcode, parameters);

@@ -1,5 +1,4 @@
 import {
-    AfterViewChecked,
     ChangeDetectionStrategy,
     Component,
     ElementRef,
@@ -10,9 +9,11 @@ import {
     Output,
     Renderer2,
     ViewChild,
+    AfterViewChecked,
 } from '@angular/core';
-import { Keyboard, Mouse } from '@illgrenoble/guacamole-common-js';
+import { Client, Display, Keyboard, Mouse } from '@illgrenoble/guacamole-common-js';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 import { RemoteDesktopManager } from '../services';
 
@@ -68,10 +69,6 @@ export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.bindSubscriptions();
     }
 
-    ngAfterViewChecked(): void {
-        this.setDisplayScale();
-    }
-
     /**
      * Unbind all display input listeners when destroying the component
      */
@@ -81,13 +78,15 @@ export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.unbindSubscriptions();
     }
 
+    ngAfterViewChecked(): void {
+        this.setDisplayScale();
+    }
+
     /** 
      * Bind all subscriptions
      */
     private bindSubscriptions(): void {
-        this.subscriptions.push(this.manager.onKeyboardReset.subscribe(_ => {
-            this.resetKeyboard();
-        }));
+        this.subscriptions.push(this.manager.onKeyboardReset.subscribe(_ => this.resetKeyboard()));
         this.subscriptions.push(this.manager.onFocused.subscribe(this.handleFocused.bind(this)));
     }
 
@@ -141,30 +140,29 @@ export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
      */
     private setDisplayScale() {
         const display = this.getDisplay();
-        const scale = this.calculateDisplayScale();
+        const scale = this.calculateDisplayScale(display);
         display.scale(scale);
     }
 
     /**
      * Get the remote desktop display
      */
-    private getDisplay() {
+    private getDisplay(): Display {
         return this.manager.getClient().getDisplay();
     }
 
     /**
      * Get the remote desktop client
      */
-    private getClient() {
+    private getClient(): Client {
         return this.manager.getClient();
     }
 
     /**
      * Calculate the scale for the display
      */
-    private calculateDisplayScale(): number {
+    private calculateDisplayScale(display: Display): number {
         const viewportElement = this.viewport.nativeElement;
-        const display = this.getDisplay();
         const scale = Math.min(viewportElement.clientWidth / display.getWidth(),
             viewportElement.clientHeight / display.getHeight());
         return scale;

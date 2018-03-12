@@ -1,16 +1,18 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import {
+    ChangeDetectionStrategy,
     Component,
     ContentChild,
     ElementRef,
-    HostListener,
     Input,
     OnDestroy,
     OnInit,
     ViewChild,
     ViewEncapsulation,
+    HostListener,
+    Output,
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import * as screenfull from 'screenfull';
 
 import { RemoteDesktopManager } from '../services';
@@ -48,11 +50,10 @@ import { ErrorMessageComponent } from './messages/error-message.component';
             <!-- End full screen toolbar -->
             <section class="ngx-remote-desktop-container">
                 <!-- Connecting message -->
-                <div *ngIf="isState(states.CONNECTING)">
+                <div *ngIf="(state|async) === states.CONNECTING">
                     <div class="ngx-remote-desktop-message" *ngIf="connectingMessage" >
                         <ng-content select="ngx-remote-desktop-connecting-message"></ng-content>
                     </div>
-        
                     <ngx-remote-desktop-message  *ngIf="!connectingMessage"
                         title="Connecting to remote desktop"
                         message="Attempting to connect to the remote desktop. Waiting for response..."
@@ -62,7 +63,7 @@ import { ErrorMessageComponent } from './messages/error-message.component';
                 <!-- End connecting message -->
 
                 <!-- Disconnected message -->
-                <div *ngIf="isState(states.DISCONNECTED)">
+                <div *ngIf="(state|async) === states.DISCONNECTED">
                     <div class="ngx-remote-desktop-message" *ngIf="disconnectedMessage">
                         <ng-content select="ngx-remote-desktop-disconnected-message"></ng-content>
                     </div>
@@ -70,7 +71,7 @@ import { ErrorMessageComponent } from './messages/error-message.component';
                         title="Disconnected"
                         message="The connection to the remote desktop terminated successfully"
                         type="error">
-                        <button (click)="handleConnect()" class="ngx-remote-desktop-message-body-btn">
+                        <button (click)="manager.onReconnect.next(true)" class="ngx-remote-desktop-message-body-btn">
                             Reconnect
                         </button>
                     </ngx-remote-desktop-message>
@@ -78,8 +79,7 @@ import { ErrorMessageComponent } from './messages/error-message.component';
                 <!-- End disconnected message -->
                 
                 <!-- Error message -->
-                <div *ngIf="isState(states.ERROR)">
-
+                <div *ngIf="(state|async) === states.ERROR">
                     <div class="ngx-remote-desktop-message" *ngIf="errorMessage">
                         <ng-content select="ngx-remote-desktop-error-message"></ng-content>
                     </div>
@@ -88,7 +88,7 @@ import { ErrorMessageComponent } from './messages/error-message.component';
                         title="Connection error"
                         message="The remote desktop server is currently unreachable."
                         type="error">
-                        <button (click)="handleConnect()" class="ngx-remote-desktop-message-body-btn">
+                        <button (click)="manager.onReconnect.next(true)" class="ngx-remote-desktop-message-body-btn">
                             Connect
                         </button>
                     </ngx-remote-desktop-message>
@@ -96,7 +96,7 @@ import { ErrorMessageComponent } from './messages/error-message.component';
                 <!-- End error message -->
                 
                 <!-- Display -->
-                <ngx-remote-desktop-display *ngIf="isState(states.CONNECTED)"
+                <ngx-remote-desktop-display *ngIf="(state|async) === states.CONNECTED"
                     [manager]="manager"
                     (onMouseMove)="handleDisplayMouseMove($event)">
                 </ngx-remote-desktop-display>                
@@ -108,6 +108,7 @@ import { ErrorMessageComponent } from './messages/error-message.component';
         </main>
     `,
     encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Default,
     animations: [
         trigger('toolbarAnimation', [
             state('1', style({ transform: 'translateX(0%)' })),
@@ -138,7 +139,7 @@ export class RemoteDesktopComponent implements OnInit, OnDestroy {
 
     @ViewChild('toolbar')
     private toolbar: ElementRef;
-
+    
     /**
      * Subscriptions
      */
@@ -150,12 +151,7 @@ export class RemoteDesktopComponent implements OnInit, OnDestroy {
     private toolbarVisible: boolean = true;
 
     /**
-     * Manage the component state
-     */
-    private state: string;
-
-    /**
-     * Guacamole has more states than the list below however for the component we only interested
+     * Guacamole has more states than the list below however for the component we are only interested
      * in managing four states.
      */
     private states = {
@@ -164,6 +160,11 @@ export class RemoteDesktopComponent implements OnInit, OnDestroy {
         DISCONNECTED: 'DISCONNECTED',
         ERROR: 'ERROR'
     };
+
+    /**
+     * Manage the component state
+     */
+    private state: BehaviorSubject<string> = new BehaviorSubject<string>(this.states.CONNECTING);
 
     /**
      * Subscribe to the connection state  and full screen state when the component is initialised
@@ -199,22 +200,7 @@ export class RemoteDesktopComponent implements OnInit, OnDestroy {
      * @param newState
      */
     private setState(newState: string): void {
-        this.state = newState;
-    }
-
-    /**
-     * Connect to the remote desktop
-     */
-    private handleConnect(): void {
-        this.manager.connect();
-    }
-
-    /**
-     * Check if the given state equals the current component state
-     * @param newState 
-     */
-    private isState(newState: string) {
-        return this.state === newState;
+        this.state.next(newState);
     }
 
     /**
@@ -240,6 +226,7 @@ export class RemoteDesktopComponent implements OnInit, OnDestroy {
                 this.setState(this.states.ERROR);
                 break;
         }
+
     }
 
     /**

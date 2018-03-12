@@ -73,23 +73,24 @@ export class AppComponent implements OnInit {
     ngOnInit() {
         // Setup tunnel. The tunnel can be either: WebsocketTunnel, HTTPTunnel or ChainedTunnel
         const tunnel = new WebSocketTunnel('ws://localhost:8080');
-        // URL parameters (image, audio and other query parameters you want to send to the tunnel.)
+        /**
+         *  Create an instance of the remote desktop manager by 
+         *  passing in the tunnel and parameters
+         */
+        this.manager = new RemoteDesktopManager(tunnel);
+
+              // URL parameters (image, audio and other query parameters you want to send to the tunnel.)
         const parameters = {
             ip: '192.168.13.232',
             image: 'image/png',
             width: window.screen.width,
             height: window.screen.height,
         };
-        /**
-         *  Create an instance of the remote desktop manager by 
-         *  passing in the tunnel and parameters
-         */
-        this.manager = new RemoteDesktopManager(tunnel, parameters);
         /*
          * The manager will establish a connection to: 
          * ws://localhost:8080?width=n&height=n&ip=192.168.13.232&image=image/png
          */
-        this.manager.connect();
+        this.manager.connect(parameters);
     }
 
 }

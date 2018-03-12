@@ -16,8 +16,8 @@ import { ClipboardModalComponent } from './components';
 })
 export class AppComponent implements OnInit {
     private manager: RemoteDesktopManager;
+
     constructor(private ngbModal: NgbModal,
-        private route: ActivatedRoute,
         private snackBar: MatSnackBar) {
 
     }
@@ -67,42 +67,39 @@ export class AppComponent implements OnInit {
         }, () => this.manager.setFocused(true));
     }
 
+    handleConnect() {
+        const parameters = {
+            hostname: '192.168.13.232',
+            port: 3389,
+            image: 'image/png',
+            audio: 'audio/L16',
+            dpi: 96,
+            width: window.screen.width,
+            height: window.screen.height
+        };
+        /*
+         * The manager will establish a connection to: 
+         * ws://localhost:8080?ws?ip={address}&image=image/png&audio=audio/L16&dpi=96&width=n&height=n
+         */
+        this.manager.connect(parameters);
+    }
+
     ngOnInit() {
-        this.route.queryParams.subscribe(params => {
-            // Optional to join an existing guacd connection
-            const connectionId = params['id'] || null;
-
-            // Setup tunnel. The tunnel can be either: WebsocketTunnel, HTTPTunnel or ChainedTunnel
-            const tunnel = new WebSocketTunnel('ws://localhost:8080/ws');
-            // URL parameters (image, audio and other query parameters you want to send to the tunnel.)
-            const parameters = {
-                hostname: '172.17.19.61',
-                port: 3389,
-                image: 'image/png',
-                audio: 'audio/L16',
-                dpi: 96,
-                width: window.screen.width,
-                height: window.screen.height,
-                id: connectionId
-            };
-            /**
-             *  Create an instance of the remote desktop manager by 
-             *  passing in the tunnel and parameters
-             */
-            this.manager = new RemoteDesktopManager(tunnel, parameters);
-
-            /*
-             * The manager will establish a connection to: 
-             * ws://localhost:8080?ws?ip={address}&image=image/png&audio=audio/L16&dpi=96&width=n&height=n
-             */
-            this.manager.connect();
-            this.manager.onRemoteClipboardData.subscribe(text => {
-                const snackbar = this.snackBar.open('Received from remote clipboard', 'OPEN CLIPBOARD', {
-                    duration: 1500,
-                });
-                snackbar.onAction().subscribe(() => this.handleClipboard());
+        // Setup tunnel. The tunnel can be either: WebsocketTunnel, HTTPTunnel or ChainedTunnel
+        const tunnel = new WebSocketTunnel('ws://localhost:8080/ws');
+        /**
+         *  Create an instance of the remote desktop manager by 
+         *  passing in the tunnel
+         */
+        this.manager = new RemoteDesktopManager(tunnel);
+        this.handleConnect();
+        this.manager.onRemoteClipboardData.subscribe(text => {
+            const snackbar = this.snackBar.open('Received from remote clipboard', 'OPEN CLIPBOARD', {
+                duration: 1500,
             });
+            snackbar.onAction().subscribe(() => this.handleClipboard());
         });
+        this.manager.onReconnect.subscribe(reconnect => this.handleConnect());
 
     }
 
