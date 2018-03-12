@@ -33,9 +33,6 @@ var DisplayComponent = /** @class */ (function () {
         this.createDisplayCanvas();
         this.bindSubscriptions();
     };
-    DisplayComponent.prototype.ngAfterViewChecked = function () {
-        this.setDisplayScale();
-    };
     /**
      * Unbind all display input listeners when destroying the component
      */
@@ -44,14 +41,15 @@ var DisplayComponent = /** @class */ (function () {
         this.removeDisplayInputListeners();
         this.unbindSubscriptions();
     };
+    DisplayComponent.prototype.ngAfterViewChecked = function () {
+        this.setDisplayScale();
+    };
     /**
      * Bind all subscriptions
      */
     DisplayComponent.prototype.bindSubscriptions = function () {
         var _this = this;
-        this.subscriptions.push(this.manager.onKeyboardReset.subscribe(function (_) {
-            _this.resetKeyboard();
-        }));
+        this.subscriptions.push(this.manager.onKeyboardReset.subscribe(function (_) { return _this.resetKeyboard(); }));
         this.subscriptions.push(this.manager.onFocused.subscribe(this.handleFocused.bind(this)));
     };
     /**
@@ -98,7 +96,7 @@ var DisplayComponent = /** @class */ (function () {
      */
     DisplayComponent.prototype.setDisplayScale = function () {
         var display = this.getDisplay();
-        var scale = this.calculateDisplayScale();
+        var scale = this.calculateDisplayScale(display);
         display.scale(scale);
     };
     /**
@@ -116,9 +114,8 @@ var DisplayComponent = /** @class */ (function () {
     /**
      * Calculate the scale for the display
      */
-    DisplayComponent.prototype.calculateDisplayScale = function () {
+    DisplayComponent.prototype.calculateDisplayScale = function (display) {
         var viewportElement = this.viewport.nativeElement;
-        var display = this.getDisplay();
         var scale = Math.min(viewportElement.clientWidth / display.getWidth(), viewportElement.clientHeight / display.getHeight());
         return scale;
     };

@@ -1,10 +1,9 @@
 import { Client, Tunnel } from '@illgrenoble/guacamole-common-js';
-import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 /**
  * Manages the connection to the remote desktop
  */
 export declare class RemoteDesktopManager {
-    private parameters;
     static STATE: {
         IDLE: string;
         CONNECTING: string;
@@ -28,6 +27,7 @@ export declare class RemoteDesktopManager {
     onKeyboardReset: BehaviorSubject<boolean>;
     onFocused: BehaviorSubject<boolean>;
     onFullScreen: BehaviorSubject<boolean>;
+    onReconnect: Subject<boolean>;
     /**
      * When an instruction is received from the tunnel
      */
@@ -44,15 +44,11 @@ export declare class RemoteDesktopManager {
      */
     private tunnel;
     /**
-     * Current state of the connection
-     */
-    private state;
-    /**
      * Set up the manager
      * @param tunnel  WebsocketTunnel, HTTPTunnel or ChainedTunnel
      * @param parameters Query parameters to send to the tunnel url
      */
-    constructor(tunnel: Tunnel, parameters?: {});
+    constructor(tunnel: Tunnel);
     /**
      * Get the guacamole connection state
      */
@@ -117,7 +113,7 @@ export declare class RemoteDesktopManager {
     /**
      * Connect to the remote desktop
      */
-    connect(): void;
+    connect(parameters?: {}): void;
     /**
      * Set the connection state and emit the new state to any subscribers
      * @param state Connection state
@@ -130,19 +126,9 @@ export declare class RemoteDesktopManager {
      */
     private handleClipboard(stream, mimetype);
     /**
-     * Calculate the display dimensions.
-     * We always take the full width and height of the screen as we
-     * always want to scale up rather than scale down.
-     */
-    private calculateDimensions();
-    /**
      * Build the URL query parameters to send to the tunnel connection
      */
-    private buildParameters();
-    /**
-     * Build the url query parameters
-     */
-    private buildConfiguration();
+    private buildParameters(parameters?);
     /**
      * Bind the client and tunnel event handlers
      */

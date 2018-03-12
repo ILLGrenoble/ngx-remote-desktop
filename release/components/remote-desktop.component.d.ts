@@ -21,14 +21,14 @@ export declare class RemoteDesktopComponent implements OnInit, OnDestroy {
      */
     private toolbarVisible;
     /**
-     * Manage the component state
-     */
-    private state;
-    /**
-     * Guacamole has more states than the list below however for the component we only interested
+     * Guacamole has more states than the list below however for the component we are only interested
      * in managing four states.
      */
     private states;
+    /**
+     * Manage the component state
+     */
+    private state;
     /**
      * Subscribe to the connection state  and full screen state when the component is initialised
      */
@@ -50,15 +50,6 @@ export declare class RemoteDesktopComponent implements OnInit, OnDestroy {
      * @param newState
      */
     private setState(newState);
-    /**
-     * Connect to the remote desktop
-     */
-    private handleConnect();
-    /**
-     * Check if the given state equals the current component state
-     * @param newState
-     */
-    private isState(newState);
     /**
      * Receive the state from the desktop client and update this components state
      * @param newState - state received from the guacamole client

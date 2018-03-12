@@ -12,14 +12,12 @@ var RemoteDesktopManager = /** @class */ (function () {
      * @param tunnel  WebsocketTunnel, HTTPTunnel or ChainedTunnel
      * @param parameters Query parameters to send to the tunnel url
      */
-    function RemoteDesktopManager(tunnel, parameters) {
-        if (parameters === void 0) { parameters = {}; }
-        this.parameters = parameters;
+    function RemoteDesktopManager(tunnel) {
         /**
          * Remote desktop connection state observable
          * Subscribe to this if you want to be notified when the connection state changes
          */
-        this.onStateChange = new rxjs_1.BehaviorSubject(RemoteDesktopManager.STATE.CONNECTING);
+        this.onStateChange = new rxjs_1.BehaviorSubject(RemoteDesktopManager.STATE.IDLE);
         /**
          * Remote desktop clipboard observable.
          * Subscribe to this if you want to be notified if text has been cut/copied within
@@ -29,14 +27,11 @@ var RemoteDesktopManager = /** @class */ (function () {
         this.onKeyboardReset = new rxjs_1.BehaviorSubject(true);
         this.onFocused = new rxjs_1.BehaviorSubject(true);
         this.onFullScreen = new rxjs_1.BehaviorSubject(false);
+        this.onReconnect = new rxjs_1.Subject();
         /**
          * When an instruction is received from the tunnel
          */
         this.onTunnelInstruction = new rxjs_1.BehaviorSubject(null);
-        /**
-         * Current state of the connection
-         */
-        this.state = RemoteDesktopManager.STATE.IDLE;
         this.tunnel = tunnel;
         this.client = new guacamole_common_js_1.Client(this.tunnel);
     }
@@ -44,14 +39,14 @@ var RemoteDesktopManager = /** @class */ (function () {
      * Get the guacamole connection state
      */
     RemoteDesktopManager.prototype.getState = function () {
-        return this.state;
+        return this.onStateChange.getValue();
     };
     /**
      * Check to see if the given state equals the current state
      * @param state
      */
     RemoteDesktopManager.prototype.isState = function (state) {
-        return state === this.state;
+        return state === this.onStateChange.getValue();
     };
     /**
      * Set the display focus
@@ -77,7 +72,7 @@ var RemoteDesktopManager = /** @class */ (function () {
      * Is the tunnel connected?
      */
     RemoteDesktopManager.prototype.isConnected = function () {
-        return this.state === RemoteDesktopManager.STATE.CONNECTED;
+        return this.onStateChange.getValue() === RemoteDesktopManager.STATE.CONNECTED;
     };
     /**
      * Get the guacamole client
@@ -154,8 +149,9 @@ var RemoteDesktopManager = /** @class */ (function () {
     /**
      * Connect to the remote desktop
      */
-    RemoteDesktopManager.prototype.connect = function () {
-        var configuration = this.buildConfiguration();
+    RemoteDesktopManager.prototype.connect = function (parameters) {
+        if (parameters === void 0) { parameters = {}; }
+        var configuration = this.buildParameters(parameters);
         this.client.connect(configuration);
         this.bindEventHandlers();
     };
@@ -164,8 +160,7 @@ var RemoteDesktopManager = /** @class */ (function () {
      * @param state Connection state
      */
     RemoteDesktopManager.prototype.setState = function (state) {
-        this.state = state;
-        this.onStateChange.next(this.state);
+        this.onStateChange.next(state);
     };
     /**
      * Receive clipboard data from the remote desktop and emit an event to the client
@@ -185,35 +180,17 @@ var RemoteDesktopManager = /** @class */ (function () {
         }
     };
     /**
-     * Calculate the display dimensions.
-     * We always take the full width and height of the screen as we
-     * always want to scale up rather than scale down.
-     */
-    RemoteDesktopManager.prototype.calculateDimensions = function () {
-        var screen = window.screen;
-        var width = screen.width;
-        var height = screen.height;
-        return { height: height, width: width };
-    };
-    /**
      * Build the URL query parameters to send to the tunnel connection
      */
-    RemoteDesktopManager.prototype.buildParameters = function () {
+    RemoteDesktopManager.prototype.buildParameters = function (parameters) {
+        if (parameters === void 0) { parameters = {}; }
         var params = new http_1.URLSearchParams();
-        for (var key in this.parameters) {
-            if (this.parameters.hasOwnProperty(key)) {
-                params.set(key, this.parameters[key]);
+        for (var key in parameters) {
+            if (parameters.hasOwnProperty(key)) {
+                params.set(key, parameters[key]);
             }
         }
-        return params;
-    };
-    /**
-     * Build the url query parameters
-     */
-    RemoteDesktopManager.prototype.buildConfiguration = function () {
-        var dimensions = this.calculateDimensions();
-        var buildParameters = this.buildParameters();
-        return buildParameters.toString();
+        return params.toString();
     };
     /**
      * Bind the client and tunnel event handlers
@@ -225,9 +202,9 @@ var RemoteDesktopManager = /** @class */ (function () {
         this.client.onclipboard = this.handleClipboard.bind(this);
         this.tunnel.onerror = this.handleTunnelError.bind(this);
         this.tunnel.onstatechange = this.handleTunnelStateChange.bind(this);
-        // /*
-        // * Override tunnel instruction message
-        // */
+        /*
+         * Override tunnel instruction message
+         */
         this.tunnel.oninstruction = (function (oninstruction) {
             return function (opcode, parameters) {
                 oninstruction(opcode, parameters);

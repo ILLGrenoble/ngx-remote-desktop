@@ -1,4 +1,4 @@
-import { AfterViewChecked, ElementRef, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { ElementRef, OnDestroy, OnInit, Renderer2, AfterViewChecked } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 export declare class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
     private viewport;
@@ -29,11 +29,11 @@ export declare class DisplayComponent implements OnInit, OnDestroy, AfterViewChe
      * Create the display canvas when initialising the component
      */
     ngOnInit(): void;
-    ngAfterViewChecked(): void;
     /**
      * Unbind all display input listeners when destroying the component
      */
     ngOnDestroy(): void;
+    ngAfterViewChecked(): void;
     /**
      * Bind all subscriptions
      */
@@ -75,7 +75,7 @@ export declare class DisplayComponent implements OnInit, OnDestroy, AfterViewChe
     /**
      * Calculate the scale for the display
      */
-    private calculateDisplayScale();
+    private calculateDisplayScale(display);
     /**
      * Assign the display to the client
      */
