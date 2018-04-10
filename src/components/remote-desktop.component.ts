@@ -126,11 +126,6 @@ export class RemoteDesktopComponent implements OnInit, OnDestroy {
     public manager: RemoteDesktopManager;
 
     /**
-     * Manage the component state
-     */
-    public state: BehaviorSubject<string> = new BehaviorSubject<string>(this.states.CONNECTING);
-
-    /**
      * Guacamole has more states than the list below however for the component we are only interested
      * in managing four states.
      */
@@ -141,6 +136,11 @@ export class RemoteDesktopComponent implements OnInit, OnDestroy {
         ERROR: 'ERROR'
     };
     
+    /**
+     * Manage the component state
+     */
+    public state: BehaviorSubject<string> = new BehaviorSubject<string>(this.states.CONNECTING);
+
     @ContentChild(ConnectingMessageComponent)
     private connectingMessage: ConnectingMessageComponent;
 
