@@ -123,7 +123,23 @@ export class RemoteDesktopComponent implements OnInit, OnDestroy {
      * Client that manages the connection to the remote desktop
      */
     @Input()
-    private manager: RemoteDesktopManager;
+    public manager: RemoteDesktopManager;
+
+    /**
+     * Guacamole has more states than the list below however for the component we are only interested
+     * in managing four states.
+     */
+    public states = {
+        CONNECTING: 'CONNECTING',
+        CONNECTED: 'CONNECTED',
+        DISCONNECTED: 'DISCONNECTED',
+        ERROR: 'ERROR'
+    };
+    
+    /**
+     * Manage the component state
+     */
+    public state: BehaviorSubject<string> = new BehaviorSubject<string>(this.states.CONNECTING);
 
     @ContentChild(ConnectingMessageComponent)
     private connectingMessage: ConnectingMessageComponent;
@@ -149,22 +165,6 @@ export class RemoteDesktopComponent implements OnInit, OnDestroy {
      * Hide or show the toolbar
      */
     private toolbarVisible: boolean = true;
-
-    /**
-     * Guacamole has more states than the list below however for the component we are only interested
-     * in managing four states.
-     */
-    private states = {
-        CONNECTING: 'CONNECTING',
-        CONNECTED: 'CONNECTED',
-        DISCONNECTED: 'DISCONNECTED',
-        ERROR: 'ERROR'
-    };
-
-    /**
-     * Manage the component state
-     */
-    private state: BehaviorSubject<string> = new BehaviorSubject<string>(this.states.CONNECTING);
 
     /**
      * Subscribe to the connection state  and full screen state when the component is initialised

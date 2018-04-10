@@ -26,17 +26,17 @@ export class MessageComponent {
      * Title of the message to display
      */
     @Input()
-    private title: string;
+    public title: string;
 
     /**
      * Content of the message to display
      */
     @Input()
-    private message: string;
+    public message: string;
 
     /**
      * Message type. Can be 'success' or 'error'
      */
     @Input()
-    private type = 'success';
+    public type = 'success';
 }
