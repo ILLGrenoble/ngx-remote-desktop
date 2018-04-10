@@ -23,14 +23,6 @@ var error_message_component_1 = require("./messages/error-message.component");
 var RemoteDesktopComponent = /** @class */ (function () {
     function RemoteDesktopComponent() {
         /**
-         * Subscriptions
-         */
-        this.subscriptions = [];
-        /**
-         * Hide or show the toolbar
-         */
-        this.toolbarVisible = true;
-        /**
          * Guacamole has more states than the list below however for the component we are only interested
          * in managing four states.
          */
@@ -44,6 +36,14 @@ var RemoteDesktopComponent = /** @class */ (function () {
          * Manage the component state
          */
         this.state = new rxjs_1.BehaviorSubject(this.states.CONNECTING);
+        /**
+         * Subscriptions
+         */
+        this.subscriptions = [];
+        /**
+         * Hide or show the toolbar
+         */
+        this.toolbarVisible = true;
     }
     /**
      * Subscribe to the connection state  and full screen state when the component is initialised

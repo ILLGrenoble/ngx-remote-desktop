@@ -1,4 +1,6 @@
 import { OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { RemoteDesktopManager } from '../services';
 /**
  * The main component for displaying a remote desktop
  */
@@ -6,7 +8,21 @@ export declare class RemoteDesktopComponent implements OnInit, OnDestroy {
     /**
      * Client that manages the connection to the remote desktop
      */
-    private manager;
+    manager: RemoteDesktopManager;
+    /**
+     * Guacamole has more states than the list below however for the component we are only interested
+     * in managing four states.
+     */
+    states: {
+        CONNECTING: string;
+        CONNECTED: string;
+        DISCONNECTED: string;
+        ERROR: string;
+    };
+    /**
+     * Manage the component state
+     */
+    state: BehaviorSubject<string>;
     private connectingMessage;
     private disconnectedMessage;
     private errorMessage;
@@ -20,15 +36,6 @@ export declare class RemoteDesktopComponent implements OnInit, OnDestroy {
      * Hide or show the toolbar
      */
     private toolbarVisible;
-    /**
-     * Guacamole has more states than the list below however for the component we are only interested
-     * in managing four states.
-     */
-    private states;
-    /**
-     * Manage the component state
-     */
-    private state;
     /**
      * Subscribe to the connection state  and full screen state when the component is initialised
      */

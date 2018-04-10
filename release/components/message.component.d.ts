@@ -6,13 +6,13 @@ export declare class MessageComponent {
     /**
      * Title of the message to display
      */
-    private title;
+    title: string;
     /**
      * Content of the message to display
      */
-    private message;
+    message: string;
     /**
      * Message type. Can be 'success' or 'error'
      */
-    private type;
+    type: string;
 }
