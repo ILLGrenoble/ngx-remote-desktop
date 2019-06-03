@@ -1,4 +1,4 @@
-import { URLSearchParams } from '@angular/http';
+import { HttpParams } from '@angular/common/http';
 import { Client, StringReader, Tunnel } from '@illgrenoble/guacamole-common-js';
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 
@@ -263,10 +263,10 @@ export class RemoteDesktopManager {
      * Build the URL query parameters to send to the tunnel connection
      */
     private buildParameters(parameters = {}): string {
-        const params = new URLSearchParams();
+        let params = new HttpParams();
         for (const key in parameters) {
             if (parameters.hasOwnProperty(key)) {
-                params.set(key, parameters[key]);
+                params = params.set(key, parameters[key]);
             }
         }
         return params.toString();

@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { NgxRemoteDesktopModule } from '../../src';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
@@ -28,7 +28,7 @@ import { FileSizePipe } from './pipes';
   imports: [
     BrowserModule,
     NgxRemoteDesktopModule,
-    HttpModule,
+    HttpClientModule,
     MatSnackBarModule,
     CodemirrorModule,
     FormsModule,
