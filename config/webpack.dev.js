@@ -5,6 +5,7 @@ const {
     CheckerPlugin
 } = require('awesome-typescript-loader');
 
+
 const commonConfig = require('./webpack.common');
 const {
     ENV,
@@ -15,7 +16,7 @@ module.exports = function (options) {
     return webpackMerge(commonConfig({
         env: ENV
     }), {
-        devtool: 'cheap-module-source-map',
+        devtool: 'cheap-module-eval-source-map',
         devServer: {
             port: 9999,
             hot: options.HMR,
@@ -30,43 +31,48 @@ module.exports = function (options) {
                 reasons: false,
                 warnings: true,
                 assets: false,
-                version: false
+                version: false,
+                stats: {
+                    warningsFilter: /System.import/ // https://github.com/angular/angular/issues/21560
+                }
             }
         },
         entry: {
-            'app': './demo/bootstrap.ts',
-            'polyfills': './demo/polyfills.ts'
+            'main': './demo/main.ts'
         },
+        entry: {
+            polyfills: './demo/polyfills.ts',
+            main: './demo/main.ts'
+        },
+        optimization: {
+            noEmitOnErrors: true
+        },
+        target: "web",
         module: {
-            exprContextCritical: false,
-            rules: [{
-                    enforce: 'pre',
-                    test: /\.js$/,
-                    loader: 'source-map-loader',
-                    exclude: /(node_modules)/
-                },
+            rules: [
                 {
-                    enforce: 'pre',
-                    test: /\.ts$/,
-                    loader: 'tslint-loader',
-                    exclude: /(node_modules|release|dist|demo)/
+                    // Mark files inside `@angular/core` as using SystemJS style dynamic imports.
+                    // Removing this will cause deprecation warnings to appear.
+                    test: /[\/\\]@angular[\/\\]core[\/\\].+\.js$/,
+                    parser: { system: true },  // enable SystemJS
                 },
                 {
                     test: /\.ts$/,
                     loaders: [
-                        'awesome-typescript-loader',
+                        {
+                            loader: 'awesome-typescript-loader',
+                            options: {
+                                configFileName: dir('tsconfig.json')
+                            }
+                        },
                         'angular2-template-loader'
                     ],
-                    exclude: [/\.(spec|e2e|d)\.ts$/]
+                    exclude: [/node_modules/]
                 }
             ]
         },
         plugins: [
             new CheckerPlugin(),
-            new webpack.optimize.CommonsChunkPlugin({
-                name: ['polyfills'],
-                minChunks: Infinity
-            }),
             new HtmlWebpackPlugin({
                 template: 'demo/index.html',
                 chunksSortMode: 'dependency',

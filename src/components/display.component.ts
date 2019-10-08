@@ -12,9 +12,7 @@ import {
     AfterViewChecked,
 } from '@angular/core';
 import { Client, Display, Keyboard, Mouse } from '@illgrenoble/guacamole-common-js';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { Observable } from 'rxjs/Observable';
-
+import { BehaviorSubject, Subscription, Observable } from 'rxjs';
 import { RemoteDesktopManager } from '../services';
 
 @Component({
@@ -40,7 +38,7 @@ export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
     @Input()
     private manager: RemoteDesktopManager;
 
-    @ViewChild('display')
+    @ViewChild('display', { static: true})
     private display: ElementRef;
 
     /**

@@ -141,19 +141,19 @@ export class RemoteDesktopComponent implements OnInit, OnDestroy {
      */
     public state: BehaviorSubject<string> = new BehaviorSubject<string>(this.states.CONNECTING);
 
-    @ContentChild(ConnectingMessageComponent)
+    @ContentChild(ConnectingMessageComponent, { static: true})
     private connectingMessage: ConnectingMessageComponent;
 
-    @ContentChild(DisconnectedMessageComponent)
+    @ContentChild(DisconnectedMessageComponent, { static: true})
     private disconnectedMessage: DisconnectedMessageComponent;
 
-    @ContentChild(ErrorMessageComponent)
+    @ContentChild(ErrorMessageComponent, { static: true})
     private errorMessage: ErrorMessageComponent;
 
-    @ViewChild('container')
+    @ViewChild('container', { static: true})
     private container: ElementRef;
 
-    @ViewChild('toolbar')
+    @ViewChild('toolbar', { static: true})
     private toolbar: ElementRef;
     
     /**

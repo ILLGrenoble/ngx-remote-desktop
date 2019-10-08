@@ -16,7 +16,6 @@ import {
   ClipboardModalComponent
 } from './components';
 import { OverlayContainer, FullscreenOverlayContainer } from '@angular/cdk/overlay';
-import { RouterModule } from '@angular/router';
 import { FileSizePipe } from './pipes';
 
 @NgModule({
@@ -32,8 +31,7 @@ import { FileSizePipe } from './pipes';
     MatSnackBarModule,
     CodemirrorModule,
     FormsModule,
-    RouterModule.forRoot([]),
-    NgbModule.forRoot()
+    NgbModule
   ],
   providers: [{provide: OverlayContainer, useClass: FullscreenOverlayContainer},
   ],

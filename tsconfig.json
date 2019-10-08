@@ -26,9 +26,13 @@
     "src/declarations.d.ts",
     "src/index.ts"
   ],
+  "include": [
+    "demo/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ],
+  
   "compileOnSave": false,
   "buildOnSave": false,
   "awesomeTypescriptLoaderOptions": {

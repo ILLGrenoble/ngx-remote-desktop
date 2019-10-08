@@ -10,8 +10,7 @@ module.exports = function(env) {
   return webpackMerge(commonConfig({ env: ENV }), {
     devtool: 'source-map',
     entry: {
-      'app': './demo/bootstrap.ts',
-      'polyfills': './demo/polyfills.ts'
+      'app': './demo/bootstrap.ts'
     },
     module: {
       exprContextCritical: false,
@@ -35,10 +34,6 @@ module.exports = function(env) {
     plugins: [
       new webpack.optimize.ModuleConcatenationPlugin(),
       new CheckerPlugin(),
-      new webpack.optimize.CommonsChunkPlugin({
-        name: ['polyfills'],
-        minChunks: Infinity
-      }),
       new HtmlWebpackPlugin({
         template: 'demo/index.html',
         chunksSortMode: 'dependency',
@@ -50,7 +45,8 @@ module.exports = function(env) {
         dry: false
       }),
       new webpack.optimize.UglifyJsPlugin()
-    ]
+    ],
+  }
   });
 
 };

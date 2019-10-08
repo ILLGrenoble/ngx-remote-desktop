@@ -41,7 +41,7 @@ module.exports = function (env) {
     output: {
       path: dir('release'),
       libraryTarget: 'umd',
-      library: 'ngxDatatable',
+      library: 'ngxRemoteDesktop',
       umdNamedDefine: true
     },
     externals: {
