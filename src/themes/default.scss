@@ -1,154 +1,154 @@
-$ngx-remote-desktop-toolbar-background-color: rgba(39, 42, 49, 1.0);
-$ngx-remote-desktop-toolbar-border-color: #131418;
-$ngx-remote-desktop-toolbar-item-color:rgba(255, 255, 255, 0.6);
-$ngx-remote-desktop-toolbar-item-hover-color: rgba(255, 255, 255, 1);
-$ngx-remote-desktop-toolbar-width: 170px;
-$ngx-remote-desktop-viewport-background-color: #272a31;
-$ngx-remote-desktop-font-family: inherit;
-$ngx-remote-desktop-background-color: #ffffff;
-$ngx-remote-desktop-status-bar-background-color: #272a31;
-$ngx-remote-desktop-status-bar-border-color: #131418;
+// $ngx-remote-desktop-toolbar-background-color: rgba(39, 42, 49, 1.0);
+// $ngx-remote-desktop-toolbar-border-color: #131418;
+// $ngx-remote-desktop-toolbar-item-color:rgba(255, 255, 255, 0.6);
+// $ngx-remote-desktop-toolbar-item-hover-color: rgba(255, 255, 255, 1);
+// $ngx-remote-desktop-toolbar-width: 170px;
+// $ngx-remote-desktop-viewport-background-color: #272a31;
+// $ngx-remote-desktop-font-family: inherit;
+// $ngx-remote-desktop-background-color: #ffffff;
+// $ngx-remote-desktop-status-bar-background-color: #272a31;
+// $ngx-remote-desktop-status-bar-border-color: #131418;
 
-.ngx-remote-desktop {
-    font-family: $ngx-remote-desktop-font-family;
-    background: $ngx-remote-desktop-background-color;
-    width: 100%;
-    height: 100%;
-    max-height: 100%;
-    flex-direction: column;
-    display: flex;
-    overflow: hidden;
-    .ngx-remote-desktop-status-bar-hidden {
-        display: none;
-    }
-    .ngx-remote-desktop-status-bar {   
-        flex: 0 0 20px;
-        height: 20px;
-        width: 100%;
-        display: flex;
-        background: $ngx-remote-desktop-status-bar-background-color;
-        font-weight: normal;
-        font-size: 12px;
-        color: #fff;
-        padding: 0px 5px 0px 5px;
-        border-top: 1px solid $ngx-remote-desktop-status-bar-border-color;
-        justify-content: space-between;
-        a,
-        strong {
-            padding-right: 2px;
-            padding-left: 2px;
-            color: white;
-            font-weight: bold;
-            text-decoration: underline;
-        }
-        strong {
-            text-decoration: none;
-        }
-        a {
-            text-decoration: none;
-            outline: none;
-        }
-        .ngx-remote-desktop-status-bar {
-            flex: 1;
-        }
-    }
-    .ngx-remote-desktop-toolbar {
-        flex: 0 0 35px;
-        height: 35px;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        border-bottom: 1px solid $ngx-remote-desktop-toolbar-border-color;
-        background: $ngx-remote-desktop-toolbar-background-color;
-        font-weight: 700;
-        &.ngx-remote-desktop-toolbar-fullscreen {
-            position: absolute;
-            top: 0px;
-            left: 0;
-            width: $ngx-remote-desktop-toolbar-width;
-            height: 100%;
-            z-index: 1000;
-            flex-flow: column wrap;
-            .ngx-remote-desktop-toolbar-items {
-                flex-direction: column;
-            }
-            border-right: 1px solid $ngx-remote-desktop-toolbar-border-color;
-            border-bottom: none;
-        }
-        .ngx-remote-desktop-toolbar-items {
-            display: flex;
-            flex-direction: row;
-            padding-left: 0;
-            margin-bottom: 0;
-            list-style: none;
-            .ngx-remote-desktop-toolbar-item {
-                line-height: 18px;
-                text-align: center;
-                text-decoration: none;
-                user-select: none;
-                padding: 0.5em 0.5em;
-                color: $ngx-remote-desktop-toolbar-item-color;
-                font-weight: 400;
-                &:hover {
-                    cursor: pointer;
-                    color: $ngx-remote-desktop-toolbar-item-hover-color;
-                }
-            }
-        }
-    }
-    .ngx-remote-desktop-container {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        overflow: hidden;
-        .ngx-remote-desktop-viewport {
-            border: 1px solid $ngx-remote-desktop-viewport-background-color;
-            position: relative;
-            display: flex;
-            flex: 1;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            max-height: 100%;
-            background: $ngx-remote-desktop-viewport-background-color;
-        }
-        .ngx-remote-desktop-message {
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            display: flex;
-            padding: 20px;
-            word-wrap: break-word;
-            .ngx-remote-desktop-message-title {
-                margin-bottom: 0.75rem;
-                font-size: 1.25rem;
-                &-success {
-                    color: #28a745;
-                }
-                &-error {
-                    color: #dc3545;
-                }
-            }
-            .ngx-remote-desktop-message-body {
-                .ngx-remote-desktop-message-body-btn {
-                    cursor: pointer;
-                    color: #212529;
-                    background-color: #e2e6ea;
-                    border-color: #dae0e5;
-                    display: inline-block;
-                    font-weight: 400;
-                    text-align: center;
-                    white-space: nowrap;
-                    vertical-align: middle;
-                    user-select: none;
-                    border: 1px solid transparent;
-                    padding: .375rem .75rem;
-                    font-size: 1rem;
-                    line-height: 1.5;
-                    border-radius: .25rem;
-                    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-                }
-            }
-        }
-    }
-}
+// .ngx-remote-desktop {
+//     font-family: $ngx-remote-desktop-font-family;
+//     background: $ngx-remote-desktop-background-color;
+//     width: 100%;
+//     height: 100%;
+//     max-height: 100%;
+//     flex-direction: column;
+//     display: flex;
+//     overflow: hidden;
+//     .ngx-remote-desktop-status-bar-hidden {
+//         display: none;
+//     }
+//     .ngx-remote-desktop-status-bar {   
+//         flex: 0 0 20px;
+//         height: 20px;
+//         width: 100%;
+//         display: flex;
+//         background: $ngx-remote-desktop-status-bar-background-color;
+//         font-weight: normal;
+//         font-size: 12px;
+//         color: #fff;
+//         padding: 0px 5px 0px 5px;
+//         border-top: 1px solid $ngx-remote-desktop-status-bar-border-color;
+//         justify-content: space-between;
+//         a,
+//         strong {
+//             padding-right: 2px;
+//             padding-left: 2px;
+//             color: white;
+//             font-weight: bold;
+//             text-decoration: underline;
+//         }
+//         strong {
+//             text-decoration: none;
+//         }
+//         a {
+//             text-decoration: none;
+//             outline: none;
+//         }
+//         .ngx-remote-desktop-status-bar {
+//             flex: 1;
+//         }
+//     }
+//     .ngx-remote-desktop-toolbar {
+//         flex: 0 0 35px;
+//         height: 35px;
+//         width: 100%;
+//         display: flex;
+//         justify-content: space-between;
+//         border-bottom: 1px solid $ngx-remote-desktop-toolbar-border-color;
+//         background: $ngx-remote-desktop-toolbar-background-color;
+//         font-weight: 700;
+//         &.ngx-remote-desktop-toolbar-fullscreen {
+//             position: absolute;
+//             top: 0px;
+//             left: 0;
+//             width: $ngx-remote-desktop-toolbar-width;
+//             height: 100%;
+//             z-index: 1000;
+//             flex-flow: column wrap;
+//             .ngx-remote-desktop-toolbar-items {
+//                 flex-direction: column;
+//             }
+//             border-right: 1px solid $ngx-remote-desktop-toolbar-border-color;
+//             border-bottom: none;
+//         }
+//         .ngx-remote-desktop-toolbar-items {
+//             display: flex;
+//             flex-direction: row;
+//             padding-left: 0;
+//             margin-bottom: 0;
+//             list-style: none;
+//             .ngx-remote-desktop-toolbar-item {
+//                 line-height: 18px;
+//                 text-align: center;
+//                 text-decoration: none;
+//                 user-select: none;
+//                 padding: 0.5em 0.5em;
+//                 color: $ngx-remote-desktop-toolbar-item-color;
+//                 font-weight: 400;
+//                 &:hover {
+//                     cursor: pointer;
+//                     color: $ngx-remote-desktop-toolbar-item-hover-color;
+//                 }
+//             }
+//         }
+//     }
+//     .ngx-remote-desktop-container {
+//         display: flex;
+//         flex: 1;
+//         flex-direction: column;
+//         overflow: hidden;
+//         .ngx-remote-desktop-viewport {
+//             border: 1px solid $ngx-remote-desktop-viewport-background-color;
+//             position: relative;
+//             display: flex;
+//             flex: 1;
+//             justify-content: center;
+//             align-items: center;
+//             width: 100%;
+//             max-height: 100%;
+//             background: $ngx-remote-desktop-viewport-background-color;
+//         }
+//         .ngx-remote-desktop-message {
+//             flex-direction: column;
+//             align-items: center;
+//             justify-content: center;
+//             display: flex;
+//             padding: 20px;
+//             word-wrap: break-word;
+//             .ngx-remote-desktop-message-title {
+//                 margin-bottom: 0.75rem;
+//                 font-size: 1.25rem;
+//                 &-success {
+//                     color: #28a745;
+//                 }
+//                 &-error {
+//                     color: #dc3545;
+//                 }
+//             }
+//             .ngx-remote-desktop-message-body {
+//                 .ngx-remote-desktop-message-body-btn {
+//                     cursor: pointer;
+//                     color: #212529;
+//                     background-color: #e2e6ea;
+//                     border-color: #dae0e5;
+//                     display: inline-block;
+//                     font-weight: 400;
+//                     text-align: center;
+//                     white-space: nowrap;
+//                     vertical-align: middle;
+//                     user-select: none;
+//                     border: 1px solid transparent;
+//                     padding: .375rem .75rem;
+//                     font-size: 1rem;
+//                     line-height: 1.5;
+//                     border-radius: .25rem;
+//                     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+//                 }
+//             }
+//         }
+//     }
+// }

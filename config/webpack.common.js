@@ -50,24 +50,24 @@ module.exports = function(options = {}) {
             { loader: 'postcss-loader' }
           ]
         },
-        {
-          test: /\.scss$/,
-          use: [
-            ExtractTextPlugin.extract({
-              fallbackLoader: 'style-loader',
-              loader: 'css-loader'
-            }),
-            { loader: 'to-string-loader' }, 
-            { loader: 'css-loader' },
-            { loader: 'postcss-loader' },
-            { 
-              loader: 'sass-loader',
-              options: {
-                sourceMap: true
-              }
-            }
-          ]
-        }
+        // {
+        //   test: /\.scss$/,
+        //   use: [
+        //     ExtractTextPlugin.extract({
+        //       fallbackLoader: 'style-loader',
+        //       loader: 'css-loader'
+        //     }),
+        //     { loader: 'to-string-loader' }, 
+        //     { loader: 'css-loader' },
+        //     { loader: 'postcss-loader' },
+        //     { 
+        //       loader: 'sass-loader',
+        //       options: {
+        //         sourceMap: true
+        //       }
+        //     }
+        //   ]
+        // }
       ]
     },
     plugins: [
