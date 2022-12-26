@@ -40,8 +40,7 @@ export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
     @Input()
     private manager: RemoteDesktopManager;
 
-    @ViewChild('display')
-    private display: ElementRef;
+    @ViewChild('display',{read: 'ElementRef', static: true}) public display: ElementRef;
 
     /**
      * Remote desktop keyboard
@@ -65,6 +64,7 @@ export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
      * Create the display canvas when initialising the component
      */
     ngOnInit(): void {
+        console.log('ngOnInit');
         this.createDisplayCanvas();
         this.bindSubscriptions();
     }
@@ -79,6 +79,7 @@ export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
     }
 
     ngAfterViewChecked(): void {
+        console.log('ngAfterViewChecked');
         this.setDisplayScale();
     }
 
@@ -130,6 +131,7 @@ export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
      * Create the remote desktop display and bind the event handlers
      */
     private createDisplayCanvas(): void {
+        console.log('createDisplayCanvas');
         this.createDisplay();
         this.createDisplayInputs();
         this.bindDisplayInputListeners();
@@ -172,6 +174,7 @@ export class DisplayComponent implements OnInit, OnDestroy, AfterViewChecked {
      * Assign the display to the client
      */
     private createDisplay(): void {
+        console.log('createDisplay');
         const element = this.display.nativeElement;
         const display = this.getDisplay();
         this.renderer.appendChild(element, display.getElement());
